@@ -4,6 +4,7 @@ import service.UserJoinService;
 
 public class UserController {
     private final String HTTP_GET = "GET";
+    private final String JOIN_FORM = "/user/form.html";
     private final String CREATE_USER_URL = "/user/create";
     UserJoinService userJoinService;
 
@@ -15,7 +16,7 @@ public class UserController {
         // GET 요청인 경우 분리
         if (httpMethod.equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
-            if (path.equals("/user/form.html")) {
+            if (path.equals(JOIN_FORM)) {
                 return showUserJoinForm();
             }
             // 회원가입일 경우
