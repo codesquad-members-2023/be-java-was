@@ -31,15 +31,15 @@ public class RequestHandler implements Runnable {
             String line = br.readLine();
 
             String[] splitHeader = line.split(" ");
+
             String uriPath = getURIPath(splitHeader);
             String path = getPath(uriPath);
             String httpMethod = splitHeader[0];
-            String[] split = path.split("/");
-            String controllerName = split[1];
+
+            String controllerName = findController(path);
 
             if (controllerName.equals("user")) {
-                String queryParameters = getQueryParameters(uriPath);
-                path = userController.process(httpMethod, path, queryParameters);
+                path = userController.process(httpMethod, path, uriPath);
             }
 
             byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
@@ -81,9 +81,8 @@ public class RequestHandler implements Runnable {
         return split[0];
     }
 
-    private String getQueryParameters(String uriPath) {
-        String[] split = uriPath.split("\\?");
-        System.out.println("split = " + split[1]);
+    private String findController(String path) {
+        String[] split = path.split("/");
         return split[1];
     }
 }
