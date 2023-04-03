@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 
+import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +13,11 @@ public class RequestHandler implements Runnable {
     private static final String commonPath = "./src/main/resources/templates";
 
     private Socket connection;
+    private UserController userController;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, UserController userController) {
         this.connection = connectionSocket;
+        this.userController = userController;
     }
 
     public void run() {
