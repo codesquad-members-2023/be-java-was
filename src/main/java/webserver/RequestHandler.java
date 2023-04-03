@@ -7,6 +7,7 @@ import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import utility.HttpRequestUtility;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,13 +30,11 @@ public class RequestHandler implements Runnable {
             }
             logger.debug("request line: {}", line);
 
-            String[] splittedRequestHeader = line.split(" ");
-            String path = splittedRequestHeader[1];
-            logger.debug("request path: {}", path);
+            String url = HttpRequestUtility.getUrl(line);
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
