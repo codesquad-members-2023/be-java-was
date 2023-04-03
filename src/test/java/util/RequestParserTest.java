@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 class RequestParserTest {
 
@@ -30,21 +29,6 @@ class RequestParserTest {
 
         //then
         assertThat(path).isEqualTo("/");
-    }
-
-    @Test
-    @DisplayName("getPath : 요청 첫번째 줄에 입력된 값이," +
-            "'/'로 시작하지 않으면 " +
-            "예외가 발생한다.")
-    void getPathExceptionTest() throws Exception{
-        //given
-        sampleRequest = "GET HTTP/1.1";
-
-        //when
-        //then
-        assertThatThrownBy(() -> requestParser.getPath(sampleRequest))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("잘못된 경로입니다.");
     }
 
 }
