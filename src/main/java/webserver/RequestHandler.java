@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.RequestParser;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -30,13 +31,11 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
 
-            String[] requestLine = line.split(" ");
-            String url = requestLine[1];
-            if (url.equals("/")) {
-                url = requestLine[1] = "/index.html";
-            }
+            RequestParser requestParser = new RequestParser(line);
 
-            logger.debug("request: [{}], url: [{}]", line, url);
+            String[] parsedUrl = requestParser.separateUrls();
+
+            logger.debug("request: [{}], url: [{}]", line, parsedUrl[1]);
 
             while (!line.equals("")) {
                 line = br.readLine();
@@ -44,7 +43,7 @@ public class RequestHandler implements Runnable {
             }
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
+            byte[] body = Files.readAllBytes(new File(commonPath + parsedUrl[1]).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {

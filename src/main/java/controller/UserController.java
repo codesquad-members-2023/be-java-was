@@ -5,7 +5,7 @@ public class UserController {
         private static UserController instance;
 
         // private 생성자
-        private UserController() {
+        public UserController() {
 
         }
 
@@ -20,5 +20,11 @@ public class UserController {
             }
             return instance;
         }
+
+        public String mapToFunctions(String[] parsedUrl) {
+
+            return "test";
+        }
+
 
 }
