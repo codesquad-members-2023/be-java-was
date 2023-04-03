@@ -22,13 +22,16 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
+            StringBuilder sb = new StringBuilder();
 
             String requestStr = br.readLine();
 
             while (!requestStr.equals("")) {
-                logger.info(requestStr);
+                sb.append(requestStr).append("\n");
                 requestStr = br.readLine();
             }
+
+            logger.info(sb.toString());
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = "Hello World".getBytes();
