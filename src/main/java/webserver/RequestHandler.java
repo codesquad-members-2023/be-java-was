@@ -2,11 +2,13 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.UserService;
 import util.RequestParser;
 
 public class RequestHandler implements Runnable {
@@ -14,6 +16,7 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
     private RequestParser parser;
+    private UserService userService;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
@@ -26,18 +29,19 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            userService = new UserService();
 
-            String requestStr = br.readLine();
-            String path = parser.getPath(requestStr);
+            String requestLine = br.readLine();
 
-            while (!requestStr.equals("")) {
-                sb.append(requestStr).append("\n");
-                requestStr = br.readLine();
+            String path = parser.getPath(requestLine);
+            String method = parser.getMethod(requestLine);
+
+            if (path.equals("/user/create") && method.equals("GET")) {
+                Map<String, String> param = parser.getQueryParammeter(requestLine);
+                User joinedMember = userService.join(param);
             }
 
-            logger.info("Path = {}", path);
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
