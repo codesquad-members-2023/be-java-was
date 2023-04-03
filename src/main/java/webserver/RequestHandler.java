@@ -26,13 +26,16 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
 
+            String[] uriPath = line.split(" ");
+            String path = uriPath[1];
+
             logger.debug("request line : {}", line);
             while (!(line = br.readLine()).equals("")) {
                 logger.debug("header : {}", line);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = "Hello World".getBytes();
+            byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
