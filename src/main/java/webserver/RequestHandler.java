@@ -26,9 +26,11 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
 
-
             String[] requestLine = line.split(" ");
             String url = requestLine[1];
+            if (url.equals("/")) {
+                url = requestLine[1] = "/index.html";
+            }
 
             logger.debug("request: [{}], url: [{}]", line, url);
 
