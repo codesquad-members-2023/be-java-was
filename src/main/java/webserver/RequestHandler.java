@@ -29,6 +29,10 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
+            // 모든 리퀘스트 출력
+            HttpRequestUtils.getAllRequest(line, br);
+
+            // path 설정
             String url = HttpRequestUtils.getUrl(line);
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
