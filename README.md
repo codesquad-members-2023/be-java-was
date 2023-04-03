@@ -3,6 +3,8 @@ Java Web Application Server 2022
 
 
 # 학습 기록
+- [git wiki 참조](https://github.com/new-pow/be-java-was/wiki)
+
 ## 4월 3일 월요일
 ### 개인 학습 목표
 - 오늘 블로깅 하기 반드시
