@@ -30,10 +30,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
-
-            RequestParser requestParser = new RequestParser(line);
-
-            String[] parsedUrl = requestParser.separateUrls();
+            String[] parsedUrl = RequestParser.separateUrls(line);
 
             logger.debug("request: [{}], url: [{}]", line, parsedUrl[1]);
 
