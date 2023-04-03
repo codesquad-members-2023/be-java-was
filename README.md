@@ -4,6 +4,9 @@ Java Web Application Server 2022
 ## 5주차 학습 계획
 - [웹 서버 구현 실습 시작하기 영상 시청](https://www.youtube.com/watch?v=4kb448OJ7Mw)
 - Http 학습
+  - Http Request
+  - Http Response
+  - query parameter
 - 웹 서버 학습
 - Java Optional 학습
 - Java 예외 처리 학습
