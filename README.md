@@ -7,6 +7,7 @@ Java Web Application Server 2022
   - Http Request
   - Http Response
   - query parameter
+- 자바 쓰레드 학습
 - 웹 서버 학습
 - Java Optional 학습
 - Java 예외 처리 학습
