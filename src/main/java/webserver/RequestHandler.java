@@ -28,22 +28,23 @@ public class RequestHandler implements Runnable {
         parser = new RequestParser();
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
+            DataOutputStream dos = new DataOutputStream(out);
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            userService = new UserService();
-
             String requestLine = br.readLine();
 
             String path = parser.getPath(requestLine);
             String method = parser.getMethod(requestLine);
 
             if (path.equals("/user/create") && method.equals("GET")) {
+                userService = new UserService();
                 Map<String, String> param = parser.getQueryParammeter(requestLine);
-                User joinedMember = userService.join(param);
+                userService.join(param);
+
+                response302Header(dos,"/index.html");
             }
 
 
-            DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
@@ -57,6 +58,16 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos, String path) {
+        try {
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: "+path+"\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
