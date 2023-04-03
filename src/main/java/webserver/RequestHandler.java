@@ -3,6 +3,7 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class RequestHandler implements Runnable {
             logger.info("Path = {}", path);
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("./src/main/resources/templates"+path).toPath());
+            byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
