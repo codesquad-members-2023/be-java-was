@@ -30,7 +30,7 @@ public class RequestHandler implements Runnable {
             }
 
             // 모든 리퀘스트 출력
-            HttpRequestUtils.getAllRequest(line, br);
+            HttpRequestUtils.getRequestHeader(line, br);
 
             // path 설정
             String url = HttpRequestUtils.getUrl(line);

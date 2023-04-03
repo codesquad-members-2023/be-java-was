@@ -16,9 +16,9 @@ public class HttpRequestUtils {
         return path;
     }
 
-    public static void getAllRequest(String line, BufferedReader br) throws IOException {
+    public static void getRequestHeader(String line, BufferedReader br) throws IOException {
         while(!line.equals("")){
-            logger.debug("request: {}", line);
+            logger.debug("requestHeader: {}", line);
             line = br.readLine();
         }
     }
