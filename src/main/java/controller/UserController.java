@@ -4,7 +4,6 @@ import java.util.Map;
 
 import model.User;
 import util.HttpRequest;
-import util.HttpRequestUtils;
 
 public class UserController {
 
@@ -21,8 +20,8 @@ public class UserController {
         return httpRequest.getUrl();
     }
 
-    public String userJoin(HttpRequest httpRequest) {
-        Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest);
+    private String userJoin(HttpRequest httpRequest) {
+        Map<String, String> params = httpRequest.getParams();
         User user = new User(params.get("userId"), params.get("password"), params.get("name"),
                 params.get("email"));
 

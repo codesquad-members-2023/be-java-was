@@ -1,12 +1,16 @@
 package util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class HttpRequest {
     private String method;
     private String url;
     private String httpVersion;
     private Map<String, String> params = new HashMap<>();
 
-    public HttpRequest(String requestLine) {
+
+    public void init(String requestLine) {
         String[] requestTokens = requestLine.split(" ");
         method = requestTokens[0];
         httpVersion = requestTokens[2];
@@ -15,7 +19,8 @@ public class HttpRequest {
         //쿼리 파라미터가 있는 경우와 없는 경우 구분
         if (urlWithParams.contains("?")) {
             url = urlWithParams.split("\\?")[0];
-            queryString = urlWithParams.split("\\?")[1];
+            String queryString = urlWithParams.split("\\?")[1];
+            params = HttpRequestUtils.parseQueryParams(queryString);
             return ;
         }
         url = urlWithParams;
@@ -29,8 +34,8 @@ public class HttpRequest {
         return url;
     }
 
-    public String getQueryString() {
-        return queryString;
+    public Map<String, String> getParams() {
+        return params;
     }
 
     public void setUrl(String url) {
@@ -42,7 +47,7 @@ public class HttpRequest {
         return "HttpRequest{" +
                 "method='" + method + '\'' +
                 ", url='" + url + '\'' +
-                ", queryString='" + queryString + '\'' +
+                ", params=" + params +
                 '}';
     }
 }
