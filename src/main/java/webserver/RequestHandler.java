@@ -25,6 +25,7 @@ import util.HttpRequest;
 import util.HttpRequestUtils;
 
 public class RequestHandler implements Runnable {
+    private UserController userController = new UserController();
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -48,17 +49,22 @@ public class RequestHandler implements Runnable {
                 logger.debug("header : {}", requestHeader);
             }
 
-            UserController.requestMapping(httpRequest);
+            String view = userController.requestMapping(httpRequest);
 
-            sendResponse(out, httpRequest.getUrl());
+            mapView(out, view);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void sendResponse(OutputStream out, String requestUrl) throws IOException {
+    private void mapView(OutputStream out, String view) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
-        byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + requestUrl).toPath());
+
+        if (view.startsWith("redirect:") ) {
+            response302Header(dos, view);
+            return ;
+        }
+        byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + view).toPath());
         response200Header(dos, body.length);
         responseBody(dos, body);
     }
@@ -70,6 +76,16 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos, String view) {
+        try {
+            //헤더 작성
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: " + view.split("redirect:")[1] + "\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

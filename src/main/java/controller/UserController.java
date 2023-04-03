@@ -8,20 +8,24 @@ import util.HttpRequestUtils;
 
 public class UserController {
 
-    public static void requestMapping(HttpRequest httpRequest) {
+    public String requestMapping(HttpRequest httpRequest) {
         if (httpRequest.getUrl().equals("/")) {
             httpRequest.setUrl("/index.html");
+            return httpRequest.getUrl();
         }
 
         if (httpRequest.getUrl().equals("/user/create")) {
-            userJoin(httpRequest);
+            return userJoin(httpRequest);
         }
 
+        return httpRequest.getUrl();
     }
 
-    public static void userJoin(HttpRequest httpRequest) {
+    public String userJoin(HttpRequest httpRequest) {
         Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest);
         User user = new User(params.get("userId"), params.get("password"), params.get("name"),
                 params.get("email"));
+
+        return "redirect:/";
     }
 }
