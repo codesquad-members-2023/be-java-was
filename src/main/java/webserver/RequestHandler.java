@@ -63,13 +63,27 @@ public class RequestHandler implements Runnable {
     private void mapView(OutputStream out, String view) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
 
-        if (view.startsWith("redirect:") ) {
+        if (view.startsWith("redirect:")) {
             response302Header(dos, view);
-            return ;
+            return;
         }
+
+        byte[] body = mapStaticOrTemplateFiles(view, dos);
+
+        responseBody(dos, body);
+    }
+
+    private byte[] mapStaticOrTemplateFiles(String view, DataOutputStream dos) throws IOException {
+        //Static 파일 경로에서 탐색
+        if (view.startsWith("/css") || view.startsWith("/js") || view.startsWith("/fonts")) {
+            byte[] body = Files.readAllBytes(new File("src/main/resources/static" + view).toPath());
+            response200StyleHeader(dos, body.length);
+            return body;
+        }
+        //나머지는 Template 파일에서 탐색
         byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + view).toPath());
         response200Header(dos, body.length);
-        responseBody(dos, body);
+        return body;
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
@@ -77,6 +91,20 @@ public class RequestHandler implements Runnable {
             //헤더 작성
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+
+            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response200StyleHeader(DataOutputStream dos, int lengthOfBodyContent) {
+        try {
+            //헤더 작성
+            dos.writeBytes("HTTP/1.1 200 OK \r\n");
+            dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
+
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
