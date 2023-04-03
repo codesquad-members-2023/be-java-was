@@ -13,7 +13,6 @@ public class HttpRequestUtility {
         logger.debug("request path: {}", path);
         if (path.equals("/")) {
             path += "index.html";
-            System.out.println(path);
         }
         return path;
     }
