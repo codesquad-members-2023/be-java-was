@@ -3,15 +3,10 @@ package util;
 import java.util.HashMap;
 import java.util.Map;
 
-import static util.Method.GET;
-
 public class RequestParser {
 
-    public Method getMethod(String line) {
-        if (line.split(" ")[1].equals(GET.name())) {
-            return GET;
-        }
-        return null;
+    public String getMethod(String line) {
+        return line.split(" ")[0];
     }
 
     public String getUriPath(String line) {
