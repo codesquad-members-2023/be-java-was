@@ -30,7 +30,12 @@ public class GetMappingProvider {
         return "src/main/resources/templates";
     }
 
-    public String mappingUsersForm() {
+    public String mappingUserForm() {
         return "src/main/resources/templates/user";
+    }
+
+    public String mappingUserCreate() {
+
+        return "redirect:src/main/resources/templates/index.html";
     }
 }
