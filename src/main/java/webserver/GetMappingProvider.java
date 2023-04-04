@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class GetURLCollection {
+public class GetMappingProvider {
     public String methodNameToURL(String methodName) {
         String name = methodName.replaceAll("^mapping", "");
         Pattern pattern = Pattern.compile("[A-Za-z][a-z]*");
