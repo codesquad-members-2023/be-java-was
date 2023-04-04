@@ -11,13 +11,6 @@ import static org.assertj.core.api.Assertions.*;
 
 class HttpRequestUtilsTest {
 
-    Map<String,String> testMap;
-
-    @BeforeEach
-    void init(){
-        testMap = new HashMap<>();
-    }
-
     @Test
     @DisplayName("요청을 받아서 경로를 확인한다")
     void getUrl() {
@@ -46,7 +39,7 @@ class HttpRequestUtilsTest {
         String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         // when
-        testMap = HttpRequestUtils.parseQueryString(request);
+        Map<String, String> testMap = HttpRequestUtils.parseQueryString(request);
 
         // then
         assertThat(testMap.get("userId")).isEqualTo("javajigi");
@@ -57,7 +50,7 @@ class HttpRequestUtilsTest {
     void querySize(){
         String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1";
 
-        testMap = HttpRequestUtils.parseQueryString(request);
+        Map<String, String> testMap = HttpRequestUtils.parseQueryString(request);
 
         assertThat(testMap.size()).isEqualTo(3);
 
