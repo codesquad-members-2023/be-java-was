@@ -31,8 +31,9 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
             String[] parsedUrl = RequestParser.separateUrls(line);
+            String url = userController.mapToFunctions(parsedUrl);
 
-            logger.debug("request: [{}], url: [{}]", line, parsedUrl[1]);
+            logger.debug("request: [{}], url: [{}]", line, url);
 
             while (!line.equals("")) {
                 line = br.readLine();
@@ -40,7 +41,7 @@ public class RequestHandler implements Runnable {
             }
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(commonPath + parsedUrl[1]).toPath());
+            byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
