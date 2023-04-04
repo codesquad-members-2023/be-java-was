@@ -32,12 +32,15 @@ public class RequestHandler implements Runnable {
 
             String[] splitHeader = line.split(" ");
 
+            // uriPath = 전체 uri (쿼리 파라미터 분리 전)
             String uriPath = getURIPath(splitHeader);
+            // 쿼리 파라미터 분리 후 uri
             String path = getPath(uriPath);
             String httpMethod = splitHeader[0];
 
             String controllerName = findController(path);
 
+            // user 컨트롤러로 전송
             if (controllerName.equals("user")) {
                 path = userController.process(httpMethod, path, uriPath);
             }

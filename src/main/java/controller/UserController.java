@@ -12,6 +12,7 @@ public class UserController {
         this.userJoinService = userJoinService;
     }
 
+    // TODO : 에러페이지 생성, 회원가입 검증
     public String process(String httpMethod, String path, String uriPath) {
         // GET 요청인 경우 분리
         if (httpMethod.equals(HTTP_GET)) {
@@ -34,6 +35,7 @@ public class UserController {
         return "/index.html";
     }
 
+    // 쿼리 파라미터 받아서 userInformation 반환
     private String getQueryParameters(String uriPath) {
         String[] split = uriPath.split("\\?");
         return split[1];
