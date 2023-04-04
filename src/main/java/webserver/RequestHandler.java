@@ -30,20 +30,25 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
-            String[] parsedUrl = RequestParser.separateUrls(line);
-            String url = userController.mapToFunctions(parsedUrl);
+            logger.debug("request first line = {}", line);
 
-            logger.debug("request: [{}], url: [{}]", line, url);
+            if (line != null) {
+                String[] parsedUrl = RequestParser.separateUrls(line);
+                String url = userController.mapToFunctions(parsedUrl);
 
-            while (!line.equals("")) {
-                line = br.readLine();
-                logger.debug("request: {}", line);
+                logger.debug("request: [{}], url: [{}]", line, url);
+
+                while (!line.equals("")) {
+                    line = br.readLine();
+                    logger.debug("request: {}", line);
+                }
+
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
             }
 
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
