@@ -4,17 +4,21 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 
+import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.RequestParser;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final String commonPath = "./src/main/resources/templates";
 
     private Socket connection;
+    private UserController userController;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, UserController userController) {
         this.connection = connectionSocket;
+        this.userController = userController;
     }
 
     public void run() {
@@ -26,24 +30,25 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
+            logger.debug("request first line = {}", line);
 
-            String[] requestLine = line.split(" ");
-            String url = requestLine[1];
-            if (url.equals("/")) {
-                url = requestLine[1] = "/index.html";
+            if (line != null) {
+                String[] parsedUrl = RequestParser.separateUrls(line);
+                String url = userController.mapToFunctions(parsedUrl);
+
+                logger.debug("request: [{}], url: [{}]", line, url);
+
+                while (!line.equals("")) {
+                    line = br.readLine();
+                    logger.debug("request: {}", line);
+                }
+
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
             }
 
-            logger.debug("request: [{}], url: [{}]", line, url);
-
-            while (!line.equals("")) {
-                line = br.readLine();
-                logger.debug("request: {}", line);
-            }
-
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
