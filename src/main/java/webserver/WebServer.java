@@ -10,7 +10,7 @@ public class WebServer {
     private static final Logger logger = LoggerFactory.getLogger(WebServer.class);
     private static final int DEFAULT_PORT = 8080;
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         int port = 0;
         if (args == null || args.length == 0) {
             port = DEFAULT_PORT;
@@ -26,6 +26,13 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 Thread thread = new Thread(new RequestHandler(connection));
+                /**
+                 * run과 start의 차이
+                 * run은 메인에서 실행. 메인 스택 위에 쌓는다
+                 * start는 쓰레드 공간이 생성된다. (스택)
+                 * 차이점 공부하기
+                 */
+                // thread.run();
                 thread.start();
             }
         }

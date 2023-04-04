@@ -3,7 +3,9 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.util.Map;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
@@ -25,16 +27,26 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line = br.readLine();
-            if(line == null){ // line이 null일때 무시
+            if (line == null) { // line이 null일때 무시
                 return;
             }
 
             String url = HttpRequestUtils.getUrl(line);
+            logger.debug("url = {} ",url);
 
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            if (url.startsWith("/user/create")) {
+                int index = url.indexOf("?");
+                String queryString = url.substring(index + 1);
+                Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
+                logger.debug("params = {} ",params);
+                User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+                logger.debug("User : {} ", user);
+                url = "/index.html";
+            }
+                DataOutputStream dos = new DataOutputStream(out);
+                byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
+                response200Header(dos, body.length);
+                responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
