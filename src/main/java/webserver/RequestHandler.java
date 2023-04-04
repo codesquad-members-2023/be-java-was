@@ -3,20 +3,24 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 
+import config.AppConfig;
+import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class RequestHandler implements Runnable {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
+    private AppConfig appConfig = new AppConfig();
 
-    private Socket connection;
+    private final Socket connection;
+    private final UserController userController = appConfig.userController();
 
-    public RequestHandler(Socket connectionSocket) {
-        this.connection = connectionSocket;
+    public RequestHandler(Socket connection) {
+        this.connection = connection;
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
+        log.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
@@ -26,20 +30,28 @@ public class RequestHandler implements Runnable {
 
             String line = br.readLine();
 
-            String[] uriPath = line.split(" ");
-            String path = uriPath[1];
+            String[] splitHeader = line.split(" ");
 
-            logger.debug("request line : {}", line);
-            while (!(line = br.readLine()).equals("")) {
-                logger.debug("header : {}", line);
+            // uriPath = 전체 uri (쿼리 파라미터 분리 전)
+            String uriPath = getURIPath(splitHeader);
+            // 쿼리 파라미터 분리 후 uri
+            String path = getPath(uriPath);
+            String httpMethod = splitHeader[0];
+
+            String controllerName = findController(path);
+
+            // user 컨트롤러로 전송
+            if (controllerName.equals("user")) {
+                path = userController.process(httpMethod, path, uriPath);
             }
 
-            DataOutputStream dos = new DataOutputStream(out);
             byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
+
+            DataOutputStream dos = new DataOutputStream(out);
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -50,7 +62,7 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
     }
 
@@ -59,7 +71,21 @@ public class RequestHandler implements Runnable {
             dos.write(body, 0, body.length);
             dos.flush();
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
         }
+    }
+
+    private String getURIPath(String[] splitHeader) {
+        return splitHeader[1];
+    }
+
+    private String getPath(String uriPath) {
+        String[] split = uriPath.split("\\?");
+        return split[0];
+    }
+
+    private String findController(String path) {
+        String[] split = path.split("/");
+        return split[1];
     }
 }
