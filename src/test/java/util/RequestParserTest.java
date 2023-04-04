@@ -8,7 +8,7 @@ class RequestParserTest {
 
     @Test
     @DisplayName("Http Header의 request line을 받았을 때 길이가 3인 문자열 배열을 반환한다.")
-    void testSeparateUrlsCheckReturnSize() {
+    void testSeparateUrlsCheckSizeOfReturnData() {
         // given
         String requestLine = "GET /create HttpVersion";
 
@@ -31,5 +31,32 @@ class RequestParserTest {
 
         // then
         Assertions.assertThat(parsedUrl).containsExactly(expected);
+    }
+
+    @Test
+    @DisplayName("쿼리 파라미터가 포함된 resource url이 입력되면 2개로 분리되는지 확인한다.")
+    void testParseQueryParameterCheckSizeOfReturnData() {
+        // given
+        String resourceUrl = "/create?userId=testA&password=A&name=testerA&email=testA@test.com";
+
+        // when
+        String[] parsedData = RequestParser.parseQueryParameter(resourceUrl);
+
+        // then
+        Assertions.assertThat(parsedData.length).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("쿼리 파라미터가 포함된 resource url이 입력되면 경로와 데이터 단위로 분리되는지 확인한다.")
+    void testParseQueryParameterCheckMapping() {
+        // given
+        String resourceUrl = "/create?userId=testA&password=A&name=testerA&email=testA@test.com";
+
+        // when
+        String[] parsedData = RequestParser.parseQueryParameter(resourceUrl);
+        String[] expected = {"/create", "userId=testA&password=A&name=testerA&email=testA@test.com"};
+
+        // then
+        Assertions.assertThat(parsedData).containsExactly(expected);
     }
 }
