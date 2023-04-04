@@ -8,12 +8,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.URI;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import controller.UserController;
+import model.User;
+import util.HttpRequest;
+import util.HttpRequestUtils;
+
 public class RequestHandler implements Runnable {
+    private UserController userController = new UserController();
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
@@ -29,25 +41,32 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            String requestLine = br.readLine();
-            logger.debug("request line : {}", requestLine);
+            HttpRequest httpRequest = new HttpRequest(br.readLine());
+            logger.debug("http Request : {}", httpRequest.toString());
+
             String requestHeader;
             while (!(requestHeader = br.readLine()).equals("")) {
                 logger.debug("header : {}", requestHeader);
             }
-            //Request Tokenizer
-            String[] requestTokens = requestLine.split(" ");
-            //Path 추출
-            String requestUrl = requestTokens[1];
 
-            //Data 출력
-            DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates"+requestUrl).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
+            String view = userController.requestMapping(httpRequest);
+
+            mapView(out, view);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private void mapView(OutputStream out, String view) throws IOException {
+        DataOutputStream dos = new DataOutputStream(out);
+
+        if (view.startsWith("redirect:") ) {
+            response302Header(dos, view);
+            return ;
+        }
+        byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + view).toPath());
+        response200Header(dos, body.length);
+        responseBody(dos, body);
     }
 
     private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
@@ -57,6 +76,16 @@ public class RequestHandler implements Runnable {
             dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
+    private void response302Header(DataOutputStream dos, String view) {
+        try {
+            //헤더 작성
+            dos.writeBytes("HTTP/1.1 302 Found \r\n");
+            dos.writeBytes("Location: " + view.split("redirect:")[1] + "\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
