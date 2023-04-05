@@ -1,5 +1,7 @@
 package webserver;
 
+import static util.ContentsType.*;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -22,9 +24,11 @@ import org.slf4j.LoggerFactory;
 
 import controller.UserController;
 import model.User;
+import util.ContentsType;
+import util.HttpHeaders;
 import util.HttpRequest;
 import util.HttpRequestUtils;
-
+import util.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private UserController userController = new UserController();
@@ -92,36 +96,24 @@ public class RequestHandler implements Runnable {
         //Static 파일 경로에서 탐색
         if (view.startsWith("/css") || view.startsWith("/js") || view.startsWith("/fonts")) {
             byte[] body = Files.readAllBytes(new File("src/main/resources/static" + view).toPath());
-            response200StyleHeader(dos, body.length);
+            response200Header(dos, body.length, "200", "OK", CSS.getContentType());
             return body;
         }
         //나머지는 Template 파일에서 탐색
         byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + view).toPath());
-        response200Header(dos, body.length);
+        response200Header(dos, body.length, "200", "OK", HTML.getContentType());
         return body;
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String statusCode,
+            String statusMessage, String contentType) {
         try {
             //헤더 작성
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            HttpResponse httpResponse = new HttpResponse("HTTP/1.1", statusCode, statusMessage,
+                    new HttpHeaders(Map.of("Content-Type", contentType, "Content-Length",
+                            String.valueOf(lengthOfBodyContent))));
 
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200StyleHeader(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            //헤더 작성
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/css;charset=utf-8\r\n");
-
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
+            dos.writeBytes(httpResponse.toString());
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -130,8 +122,9 @@ public class RequestHandler implements Runnable {
     private void response302Header(DataOutputStream dos, String view) {
         try {
             //헤더 작성
-            dos.writeBytes("HTTP/1.1 302 Found \r\n");
-            dos.writeBytes("Location: " + view.split("redirect:")[1] + "\r\n");
+            HttpResponse httpResponse = new HttpResponse("HTTP/1.1", "302", "Found",
+                    new HttpHeaders(Map.of("Location", view.split("redirect:")[1])));
+            dos.writeBytes(httpResponse.toString());
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

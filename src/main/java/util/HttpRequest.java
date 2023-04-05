@@ -2,6 +2,9 @@ package util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpRequest {
     private String method;
@@ -15,15 +18,16 @@ public class HttpRequest {
      * @param requestLine
      */
     public void init(String requestLine) {
-        String[] requestTokens = requestLine.split(" ");
-        method = requestTokens[0];
-        httpVersion = requestTokens[2];
+        StringTokenizer requestTokens = new StringTokenizer(requestLine, " ");
+        method = requestTokens.nextToken();
+        String urlWithParams = requestTokens.nextToken();
+        httpVersion = requestTokens.nextToken();
 
-        String urlWithParams = requestTokens[1];
         //쿼리 파라미터가 있는 경우와 없는 경우 구분
         if (urlWithParams.contains("?")) {
-            url = urlWithParams.split("\\?")[0];
-            String queryString = urlWithParams.split("\\?")[1];
+            StringTokenizer urlTokens = new StringTokenizer(urlWithParams, "\\?");
+            url = urlTokens.nextToken();
+            String queryString = urlTokens.nextToken();
             params = HttpRequestUtils.parseQueryParams(queryString);
             return ;
         }
