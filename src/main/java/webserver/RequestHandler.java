@@ -60,19 +60,34 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    /**
+     * View의 위치에 있는 파일을 찾아 HTTP 응답으로 보냅니다.
+     * @param out
+     * @param view
+     * @throws IOException
+     */
     private void mapView(OutputStream out, String view) throws IOException {
         DataOutputStream dos = new DataOutputStream(out);
 
+        //Redirect 키워드가 있는 경우 redirect 헤더로 작성
         if (view.startsWith("redirect:")) {
             response302Header(dos, view);
             return;
         }
 
+        //그 외의 경우 200 OK 응답을 반환
         byte[] body = mapStaticOrTemplateFiles(view, dos);
-
         responseBody(dos, body);
     }
 
+    /**
+     * css, js, fonts는 static 폴더에서 파일을 탐색하여 반환합니다. (content header를 text/css로 변경해서 보냅니다.)
+     * 나머지(html 파일)는 templates 폴더에서 탐색합니다.
+     * @param view
+     * @param dos
+     * @return
+     * @throws IOException
+     */
     private byte[] mapStaticOrTemplateFiles(String view, DataOutputStream dos) throws IOException {
         //Static 파일 경로에서 탐색
         if (view.startsWith("/css") || view.startsWith("/js") || view.startsWith("/fonts")) {

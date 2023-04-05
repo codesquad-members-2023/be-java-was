@@ -16,14 +16,19 @@ public class WebClient {
     private static final int DEFAULT_PORT = 8080;
     private final static String serverName = "localhost";
 
+    /**
+     * 클라이언트 연결 및 index.html HTTP GET 요청 전송
+     * @param logger
+     */
+
     public static void connect(Logger logger) {
         try {
             logger.debug("서버 연결 : {} 포트 번호 : {}", serverName, DEFAULT_PORT);
-            Socket clientSocket = new Socket(serverName, DEFAULT_PORT);
+            Socket socket = new Socket(serverName, DEFAULT_PORT);
 
             BufferedReader readDataFromServer = new BufferedReader(
-                    new InputStreamReader(clientSocket.getInputStream(), "UTF-8"));
-            DataOutputStream sendDataToServer = new DataOutputStream(clientSocket.getOutputStream());
+                    new InputStreamReader(socket.getInputStream(), "UTF-8"));
+            DataOutputStream sendDataToServer = new DataOutputStream(socket.getOutputStream());
 
             //Server로 HTTP 요청 전송
             sendDataToServer.writeBytes("GET / HTTP/1.1\r\n"

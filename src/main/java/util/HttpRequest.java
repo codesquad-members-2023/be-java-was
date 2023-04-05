@@ -9,7 +9,11 @@ public class HttpRequest {
     private String httpVersion;
     private Map<String, String> params = new HashMap<>();
 
-
+    /**
+     * HTTP Request의 첫 줄을 인자로 받아 method, url, http 버전 정보를 파싱하여 저장합니다.
+     * 쿼리 파라미터가 있는 경우 params에 key - value를 저장합니다.
+     * @param requestLine
+     */
     public void init(String requestLine) {
         String[] requestTokens = requestLine.split(" ");
         method = requestTokens[0];
