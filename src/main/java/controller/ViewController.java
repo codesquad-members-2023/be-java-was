@@ -13,23 +13,30 @@ import static webserver.protocol.Method.GET;
 public class ViewController implements Controller{
     private Logger logger = LoggerFactory.getLogger(ViewController.class);
 
+    /**
+     * 작업을 처리할 메서드를 호출한다.
+     * @param httpRequest
+     * @param httpResponse
+     */
     @Override
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
 
             if (GET.equals(httpRequest.getMethod())) {
 
-                if (httpRequest.getPath().equals("/")) {
-                    forwardIndex(httpRequest, httpResponse);
+                if (ContentType.of(httpRequest.getPath())!=ContentType.HTML) {   // style 요청을 받은 경우
+                    httpResponse.forwardStatic(httpRequest.getPath())
+                            .response();
+                    return;
                 }
 
-                if (StyleType.anyMatchStyle(httpRequest.getPath()).isPresent()) {   // style 요청을 받은 경우
-                    logger.info("path = {}", httpRequest.getPath());
-
+                if (httpRequest.isPath("/")) {
+                    httpResponse.forward("/index.html")
+                            .response();
+                    return;
                 }
 
-                // 그 외의 경로는 temmplate에서 경로에 맞는 문서를 반환한다.
-                httpResponse.forward(httpRequest.getPath())
+                httpResponse.forward(httpRequest.getPath()) // 그 외의 경로는 temmplate에서 경로에 맞는 문서를 반환한다.
                         .response();
             }
 
