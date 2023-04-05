@@ -1,10 +1,8 @@
-package util;
+package request;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HttpRequest {
     private String method;

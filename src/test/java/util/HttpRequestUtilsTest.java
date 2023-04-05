@@ -1,11 +1,10 @@
 package util;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
+
+import request.HttpRequestUtils;
 
 class HttpRequestUtilsTest {
 

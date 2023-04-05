@@ -3,7 +3,7 @@ package controller;
 import java.util.Map;
 
 import model.User;
-import util.HttpRequest;
+import request.HttpRequest;
 
 public class UserController {
     /**

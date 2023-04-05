@@ -1,4 +1,4 @@
-package util;
+package response;
 
 public enum ContentsType {
     HTML("text/html;charset=utf-8"),

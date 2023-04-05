@@ -1,4 +1,4 @@
-package util;
+package response;
 
 /**
  * 이 클래스는 Response에 대한 메타 데이터를 저장합니다.

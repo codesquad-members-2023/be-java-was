@@ -1,6 +1,6 @@
 package webserver;
 
-import static util.ContentsType.*;
+import static response.ContentsType.*;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -10,25 +10,16 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.net.SocketException;
-import java.net.URI;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import controller.UserController;
-import model.User;
-import util.ContentsType;
-import util.HttpHeaders;
-import util.HttpRequest;
-import util.HttpRequestUtils;
-import util.HttpResponse;
+import response.HttpHeaders;
+import request.HttpRequest;
+import response.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private UserController userController = new UserController();
