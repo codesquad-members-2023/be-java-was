@@ -1,5 +1,6 @@
 package controller;
 
+import config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
@@ -9,7 +10,11 @@ public class FrontController {
     private Controller controller;
     private final String USER_URL = "/user/";
 
-    // PATH를 받아 작업을 담당하는 컨트롤러 생성자를 호출하여 작업을 시키는 역할을 한다.
+    /**
+     * 작업을 처리할 컨트롤러를 호출한다.
+     * @param httpRequest
+     * @param httpResponse
+     */
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         String path = httpRequest.getPath();
 

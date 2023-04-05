@@ -24,6 +24,7 @@ public class ProtocolParser {
 
     public static Map<String, String> parseQueryParammeter(String requestLine) {
         String[] queryString = parseUriPath(requestLine).split("\\?");
+        // TODO 뒤 쿼리 파라미터 없으면 회원 가입도 중지하는게 좋지 않을까?
         if (queryString.length == 1) {
             return new HashMap<>();
         }
