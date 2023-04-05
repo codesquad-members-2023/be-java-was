@@ -45,6 +45,7 @@ public class HttpRequestUtils {
         }
 
         String[] tokens = keyValue.split("=");
+        // tokens 예외상황 고려
         if (tokens.length != 2) {
             return null;
         }

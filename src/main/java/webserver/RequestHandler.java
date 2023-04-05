@@ -37,6 +37,8 @@ public class RequestHandler implements Runnable {
 
             // path 설정
             String url = HttpRequestUtils.getUrl(line);
+
+            // 가입하는 경우
             if (url.startsWith("/user") && url.contains("/create?")) {
                 int index = url.indexOf("?");
                 String queryString = url.substring(index + 1);
