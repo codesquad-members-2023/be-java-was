@@ -25,6 +25,12 @@ public class HttpResponse {
         this.headers = new HashMap<>();
     }
 
+    /**
+     * forward responseLine, 반환할 body를 준비한다. 단, static에서 파일을 찾아 반환한다.
+     * @param path
+     * @return
+     * @throws IOException
+     */
     public HttpResponse forwardStatic(String path) throws IOException {
         try {
             responseLine = "HTTP/1.1 200 OK";
@@ -38,6 +44,12 @@ public class HttpResponse {
         return this;
     }
 
+    /**
+     * forward responseLine, 반환할 body를 준비한다.
+     * @param path
+     * @return
+     * @throws IOException
+     */
     public HttpResponse forward(String path) throws IOException {
         try {
             responseLine = "HTTP/1.1 200 OK";
@@ -51,47 +63,72 @@ public class HttpResponse {
         return this;
     }
 
+    /**
+     * redirect responseLine을 준비하고, header에 Location을 매개변수로 받은 경로로 추가한다.
+     * @param path
+     * @return
+     */
     public HttpResponse redirect(String path) {
         responseLine = "HTTP/1.1 302 Found";
         setHeader("Location", path);
         return this;
     }
 
+    /**
+     * 모든 멤버가 준비가 된 후, 마지막에 호출하여 DataOutputStream으로 작성한 후 flush 한다.
+     */
     public void response() {
         try {
             writeStatusCode();    // status 코드에 해당되는 ResponseLine을 작성한다.
-            writeHeader();  // 응답하기 전, head를 넣는다.
+            writeHeader();  // 응답하기 전, head를 작성한다..
 
-            if (body.length > 0) {
+            if (body.length > 0) {  // body가 있을 경우
                 writeBody();
             }
 
-            dos.writeBytes("\r\n");
             dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
+    /**
+     * header에 키와 값을 추가한다. 외부에서 수동으로 넣을 수도 있을까 싶어 public으로 공개해두었다.
+     * @param key
+     * @param value
+     */
     public HttpResponse setHeader(String key, String value) {
         headers.put(key, value);
         return this;
     }
 
+    /**
+     * responseLine에 저장된 값을 DataOutputStream에 작성한다.
+     * @throws IOException
+     */
     private void writeStatusCode() throws IOException {
         dos.writeBytes(responseLine + " \r\n");
     }
 
+    /**
+     * header에 저장된 키와 값을 DataOutputStream에 작성한다.
+     * @throws IOException
+     */
     private void writeHeader() throws IOException {
         for (Map.Entry<String, String> entries : headers.entrySet()) {
             dos.writeBytes(String.format("%s: %s\r\n", entries.getKey(), entries.getValue()));
         }
+
+        dos.writeBytes("\r\n");
     }
 
+    /**
+     * body에 저장된 값을 DataOutputStream에 작성한다.
+     */
     private void writeBody() {
         try {
-            dos.writeBytes("\r\n");
             dos.write(body, 0, body.length);
+            dos.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
