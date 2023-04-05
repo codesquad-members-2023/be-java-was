@@ -1,6 +1,6 @@
 package webserver.protocol;
 
-public enum MethodType {
+public enum Method {
     GET;
 
     public boolean equals(String methodname) {
