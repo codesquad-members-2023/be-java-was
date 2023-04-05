@@ -30,8 +30,10 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            String line = br.readLine();
+            log.info("line = {} ", line);
 
-            HttpRequest httpRequest = new HttpRequest(br.readLine());
+            HttpRequest httpRequest = new HttpRequest(line);
             HttpResponse httpResponse = new HttpResponse();
 
             String path = httpRequest.getUrl();

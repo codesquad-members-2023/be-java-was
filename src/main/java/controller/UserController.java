@@ -23,23 +23,23 @@ public class UserController {
         if (request.getMethod().equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
             if (request.getUrl().equals(JOIN_FORM)) {
-                return showUserJoinForm();
+                return "/user/form.html";
             }
             // 회원가입일 경우
             if (request.getUrl().equals(CREATE_USER_URL)) {
-                return addUser(request.getQueryString());
+                return addUser(request.getQueryString(), response);
             }
         }
 
         return "/error";
     }
 
-    private String addUser(String queryParameters) {
+    private String addUser(String queryParameters, HttpResponse response) {
         userJoinService.addUser(queryParameters);
-        return "/index.html";
+
+        response.setStatus(302);
+        response.setHeader("Location", "/index.html");
+        return response.getResponse();
     }
 
-    private String showUserJoinForm() {
-        return "/user/form.html";
-    }
 }
