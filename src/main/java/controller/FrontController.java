@@ -16,6 +16,7 @@ public class FrontController {
         if (path.startsWith(USER_URL)) {     // user 관련 요청을 받는 경우
             controller = AppConfig.getUserController();  // 의존성을 낮추기 위해 추상 타입에 의존하는 것이 좋다.
             controller.run(httpRequest, httpResponse);
+            return;
         }
 
         controller = AppConfig.getViewController();  // 기본 컨트롤러
