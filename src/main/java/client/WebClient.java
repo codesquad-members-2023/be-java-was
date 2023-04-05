@@ -31,7 +31,6 @@ public class WebClient {
                     + "Accept-Encoding: gzip, deflate, br\r\n"
                     + "Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7\r\n"
                     + "Cache-Control: no-cache\r\n\r\n");
-                    //+ "Connection: keep-alive\r\n\r\n");
 
             //첫 줄 읽기
             String httpResponseLine = readDataFromServer.readLine();
@@ -51,7 +50,7 @@ public class WebClient {
             }
 
             //소켓 종료 안함
-            while () {
+            while (true) {
 
             }
         } catch (IOException e) {
