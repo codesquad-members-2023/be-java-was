@@ -7,6 +7,7 @@ import config.AppConfig;
 import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.HttpRequest;
 
 public class RequestHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -14,6 +15,7 @@ public class RequestHandler implements Runnable {
 
     private final Socket connection;
     private final UserController userController = appConfig.userController();
+    private HttpRequest httpRequest;
 
     public RequestHandler(Socket connection) {
         this.connection = connection;
@@ -29,20 +31,15 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
+            httpRequest = new HttpRequest(line);
 
-            String[] splitHeader = line.split(" ");
+            String path = httpRequest.getUrl();
 
-            // uriPath = 전체 uri (쿼리 파라미터 분리 전)
-            String uriPath = getURIPath(splitHeader);
-            // 쿼리 파라미터 분리 후 uri
-            String path = getPath(uriPath);
-            String httpMethod = splitHeader[0];
-
-            String controllerName = findController(path);
+            String controllerName = findController(httpRequest.getUrl());
 
             // user 컨트롤러로 전송
             if (controllerName.equals("user")) {
-                path = userController.process(httpMethod, path, uriPath);
+                path = userController.process(httpRequest.getMethod(), path, httpRequest.getQueryString());
             }
 
             byte[] body = getClass().getResourceAsStream("/templates" + path).readAllBytes();
@@ -73,15 +70,6 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             log.error(e.getMessage());
         }
-    }
-
-    private String getURIPath(String[] splitHeader) {
-        return splitHeader[1];
-    }
-
-    private String getPath(String uriPath) {
-        String[] split = uriPath.split("\\?");
-        return split[0];
     }
 
     private String findController(String path) {
