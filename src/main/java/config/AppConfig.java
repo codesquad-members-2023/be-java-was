@@ -15,5 +15,4 @@ public class AppConfig {
     public UserJoinService userJoinService() {
         return new UserJoinService();
     }
-
 }

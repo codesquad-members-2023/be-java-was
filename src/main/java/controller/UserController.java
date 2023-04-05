@@ -23,7 +23,7 @@ public class UserController {
         if (request.getMethod().equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
             if (request.getUrl().equals(JOIN_FORM)) {
-                return "/user/form.html";
+                return JOIN_FORM;
             }
             // 회원가입일 경우
             if (request.getUrl().equals(CREATE_USER_URL)) {

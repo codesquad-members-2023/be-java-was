@@ -4,8 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -63,28 +65,22 @@ public class HttpResponse {
             return "font/woff";
         }
         if (path.endsWith(".ico")) {
-            return "image/x-icon";
+            return "image/jpeg";
         }
 
         return "text/html";
     }
 
     private byte[] findBody(String contentType, String path) throws IOException {
-        if (contentType.equals("text/css")) {
-            return getClass().getResourceAsStream("/static" + path).readAllBytes();
+        if (contentType.equals("text/css") || contentType.equals("application/javascript")) {
+            return Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
         }
-        if (contentType.equals("application/javascript")) {
-            return getClass().getResourceAsStream("/static" + path).readAllBytes();
-        }
-        if (contentType.equals("font/woff")) {
-            return getClass().getResourceAsStream("/static/fonts" + path).readAllBytes();
-        }
-        if (contentType.equals("font/ttf")) {
-            return getClass().getResourceAsStream("/static/fonts" + path).readAllBytes();
+        if (contentType.equals("font/ttf") || contentType.equals("font/woff")) {
+            return Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
         }
         log.info("contentType = {}", contentType);
 
-        return getClass().getResourceAsStream("/templates" + path).readAllBytes();
+        return Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
     }
 
     public void setStatus(int status) {
