@@ -4,6 +4,7 @@ import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
+import util.ParseQueryUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -42,7 +43,7 @@ public class RequestHandler implements Runnable {
             if (url.startsWith("/user") && url.contains("/create?")) {
                 int index = url.indexOf("?");
                 String queryString = url.substring(index + 1);
-                Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
+                Map<String, String> params = ParseQueryUtils.parseQueryString(queryString);
                 User user = new User(params.get("userId"), params.get("password")
                         , URLDecoder.decode(params.get("name"), StandardCharsets.UTF_8), params.get("email"));
                 logger.debug("User: {}", user);
