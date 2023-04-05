@@ -56,15 +56,7 @@ public class HttpResponse {
     }
 
     private byte[] findBody(String contentType, String path) throws IOException {
-        if (contentType.equals("text/css") || contentType.equals("application/javascript")) {
-            return Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
-        }
-        if (contentType.equals("font/ttf") || contentType.equals("font/woff")) {
-            return Files.readAllBytes(new File("src/main/resources/static" + path).toPath());
-        }
-        log.info("contentType = {}", contentType);
-
-        return Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
+        return Files.readAllBytes(new File(ResponseBody.findResponseBody(contentType).getPath() + path).toPath());
     }
 
     public void setStatus(int status) {
@@ -76,11 +68,11 @@ public class HttpResponse {
     }
 
     private String getStatusCode(int status) {
-        if (status == 302) {
-            return "Found";
+        if (status == HttpStatus.MOVED_TEMPORARILY.getValue()) {
+            return HttpStatus.MOVED_TEMPORARILY.getReason();
         }
 
-        return "OK";
+        return HttpStatus.OK.getReason();
     }
 
     public String getResponse() {
