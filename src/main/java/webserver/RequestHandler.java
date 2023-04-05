@@ -32,12 +32,8 @@ public class RequestHandler implements Runnable {
             while (!((header = br.readLine()).equals(""))) {
                 sb.append(header).append("\n");
             }
-            logger.info("requestLine = {}", requestLine);
-            logger.info("----- header start -----\n" +
-                    sb.toString() +
-                    "\n----- header end -----");
 
-            HttpRequest httpRequest = new HttpRequest(requestLine);
+            HttpRequest httpRequest = new HttpRequest(requestLine, sb.toString());
             HttpResponse httpResponse = new HttpResponse(new DataOutputStream(out));
 
             FrontController controller = new FrontController();
