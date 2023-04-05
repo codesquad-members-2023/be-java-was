@@ -3,6 +3,8 @@ package controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserJoinService;
+import util.HttpRequest;
+import util.HttpResponse;
 
 public class UserController {
     private final String HTTP_GET = "GET";
@@ -16,17 +18,16 @@ public class UserController {
     }
 
     // TODO : 에러페이지 생성, 회원가입 검증
-    public String process(String httpMethod, String path, String queryParam) {
+    public String process(HttpRequest request, HttpResponse response) {
         // GET 요청인 경우 분리
-        if (httpMethod.equals(HTTP_GET)) {
+        if (request.getMethod().equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
-            if (path.equals(JOIN_FORM)) {
+            if (request.getUrl().equals(JOIN_FORM)) {
                 return showUserJoinForm();
             }
             // 회원가입일 경우
-            if (path.equals(CREATE_USER_URL)) {
-                String queryParameters = queryParam;
-                return addUser(queryParameters);
+            if (request.getUrl().equals(CREATE_USER_URL)) {
+                return addUser(request.getQueryString());
             }
         }
 
