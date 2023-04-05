@@ -7,11 +7,19 @@ import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
+import java.io.IOException;
+
+import static webserver.protocol.Method.GET;
 
 public class UserController implements Controller{
     private Logger logger = LoggerFactory.getLogger(UserController.class);
     private final String ROOT = "/user";
 
+    /**
+     * 작업을 처리할 메서드를 호출한다.
+     * @param httpRequest
+     * @param httpResponse
+     */
     @Override
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
