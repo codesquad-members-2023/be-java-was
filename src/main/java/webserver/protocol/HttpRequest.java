@@ -16,7 +16,7 @@ public class HttpRequest {
         this.method = ProtocolParser.parseMethod(requestLine);
         this.path = ProtocolParser.parsePath(requestLine);
         this.httpVersion = ProtocolParser.parseVersion(requestLine);
-        this.queryParameter = ProtocolParser.parseQueryParammeter(requestLine);
+        this.queryParameter = ProtocolParser.parseQueryParameter(requestLine);
         this.headers = ProtocolParser.parseHeaders(headerStr);
     }
 
@@ -24,7 +24,7 @@ public class HttpRequest {
         this.method = ProtocolParser.parseMethod(requestLine);
         this.path = ProtocolParser.parsePath(requestLine);
         this.httpVersion = ProtocolParser.parseVersion(requestLine);
-        this.queryParameter = ProtocolParser.parseQueryParammeter(requestLine);
+        this.queryParameter = ProtocolParser.parseQueryParameter(requestLine);
         this.headers = new HashMap<>();
     }
 
