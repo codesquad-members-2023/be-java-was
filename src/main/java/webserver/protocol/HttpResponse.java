@@ -1,6 +1,5 @@
 package webserver.protocol;
 
-import webserver.RequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +10,6 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class HttpResponse {
-    private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private DataOutputStream dos;
     private String responseLine;
     private Map<String, String> headers;
@@ -43,15 +41,6 @@ public class HttpResponse {
         return this;
     }
 
-    public HttpResponse forward(String path, StyleType type) throws IOException {
-        try {
-            body = Files.readAllBytes(new File("src/main/resources/static"+path).toPath());
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes(String.format("Content-Length: %d \r\n", body.length));
-            dos.writeBytes(String.format("Content-Type: %s;charset=utf-8\r\n", type.getValue()));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
         return this;
     }
 

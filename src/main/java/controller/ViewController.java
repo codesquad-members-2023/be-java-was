@@ -4,12 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
-import webserver.protocol.StyleType;
+import webserver.protocol.ContentType;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 
-import static webserver.protocol.MethodType.GET;
+import static webserver.protocol.Method.GET;
 
 public class ViewController implements Controller{
     private Logger logger = LoggerFactory.getLogger(ViewController.class);
@@ -37,18 +36,5 @@ public class ViewController implements Controller{
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    private void forwardStyle(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        StyleType styleType = StyleType.anyMatchStyle(httpRequest.getPath())
-                .orElseThrow(() -> new NoSuchElementException("해당 문서를 찾을 수 없습니다."));
-
-        httpResponse.forward(httpRequest.getPath(), styleType)
-                .response();
-    }
-
-    private void forwardIndex(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        httpResponse.forward("/index.html")
-                .response();
     }
 }

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
-import static webserver.protocol.MethodType.GET;
 
 public class UserController implements Controller{
     private Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -15,13 +14,21 @@ public class UserController implements Controller{
 
     @Override
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
-        if (GET.equals(httpRequest.getMethod())) {
+        try {
+            if (GET.equals(httpRequest.getMethod())) {
 
-            if (httpRequest.getPath().equals(ROOT+"/create")) {
-                join(httpRequest, httpResponse);
+                if (httpRequest.isPath(ROOT + "/form.html")) {
+                    httpResponse.forward(httpRequest.getPath())
+                            .response();
+                }
+
+                if (httpRequest.isPath(ROOT + "/create")) {
+                    join(httpRequest, httpResponse);
+                }
             }
+        } catch (IOException e) {
+            logger.error(e.getMessage());
         }
-
     }
 
     private void join(HttpRequest httpRequest, HttpResponse httpResponse) {
