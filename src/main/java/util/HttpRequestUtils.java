@@ -55,12 +55,21 @@ public class HttpRequestUtils {
         return new Pair(tokens[0], tokens[1]);
     }
 
-    public static void getRequestHeader(String line, BufferedReader br) throws IOException {
-        logger.debug("----------RequestHeader-START------------");
-        while (!line.equals("")) {
-            logger.debug("requestHeader: {}", line);
-            line = br.readLine();
+    public static String getRequestHeader(BufferedReader br) {
+        try {
+            logger.debug("----------RequestHeader-START------------");
+            String headerLine = br.readLine();
+            String firstLine = headerLine;
+            while (headerLine != null && !headerLine.equals("")) {
+                logger.debug("requestHeader: {}", headerLine);
+                headerLine = br.readLine();
+            }
+            logger.debug("----------RequestHeader-END--------------");
+            return firstLine;
+        } catch (IOException e) {
+            logger.error("error: occurred while reading the request header", e);
         }
-        logger.debug("----------RequestHeader-END--------------");
+
+        return null;
     }
 }

@@ -28,13 +28,12 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String line = br.readLine();
+
+            // 모든 리퀘스트 출력 & 첫 라인 리턴
+            String line = HttpRequestUtils.getRequestHeader(br);
             if (line == null) {
                 return;
             }
-
-            // 모든 리퀘스트 출력
-            HttpRequestUtils.getRequestHeader(line, br);
 
             // path 설정
             String url = HttpRequestUtils.getUrl(line);
@@ -44,7 +43,7 @@ public class RequestHandler implements Runnable {
                 Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
                 User user = new User(params.get("userId"), params.get("password")
                         , URLDecoder.decode(params.get("name"), StandardCharsets.UTF_8), params.get("email"));
-                logger.info("User: {}", user);
+                logger.debug("User: {}", user);
 
                 url = "/user/list.html";
             }
