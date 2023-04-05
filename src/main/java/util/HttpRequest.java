@@ -13,7 +13,7 @@ public class HttpRequest {
 
         // 쿼리 파라미터 분리 후 url
         this.url = getPath(uriPath);
-        this.method= splitHeader[0];
+        this.method = splitHeader[0];
         this.queryString = getQueryParameters(uriPath);
     }
 
@@ -49,6 +49,9 @@ public class HttpRequest {
 
     private String getQueryParameters(String uriPath) {
         String[] split = uriPath.split("\\?");
-        return split[1];
+        if (split.length > 1) {
+            return split[1];
+        }
+        return "";
     }
 }
