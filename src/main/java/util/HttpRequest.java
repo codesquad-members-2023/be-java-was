@@ -3,11 +3,13 @@ package util;
 public class HttpRequest {
     private String method;
     private String url;
-    private String queryString;
+    private String httpVersion;
+    private Map<String, String> params = new HashMap<>();
 
     public HttpRequest(String requestLine) {
         String[] requestTokens = requestLine.split(" ");
         method = requestTokens[0];
+        httpVersion = requestTokens[2];
 
         String urlWithParams = requestTokens[1];
         //쿼리 파라미터가 있는 경우와 없는 경우 구분
