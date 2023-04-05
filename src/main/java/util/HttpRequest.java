@@ -43,8 +43,7 @@ public class HttpRequest {
     }
 
     private String getPath(String uriPath) {
-        String[] split = uriPath.split("\\?");
-        return split[0];
+        return uriPath.split("\\?")[0];
     }
 
     private String getQueryParameters(String uriPath) {
