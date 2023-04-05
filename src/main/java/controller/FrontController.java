@@ -13,27 +13,21 @@ public class FrontController {
 
     // PATH를 받아 작업을 담당하는 컨트롤러 생성자를 호출하여 작업을 시키는 역할을 한다.
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
-        try {
-            Controller controller;
-            String path = httpRequest.getPath();
+        String path = httpRequest.getPath();
+        Controller controller;
 
-            if (StyleType.anyMatchStyle(path).isPresent()) {   // style 요청을 받은 경우
-                logger.info("path = {}", httpRequest.getPath());
-                controller = new StyleController();
-                controller.run(httpRequest, httpResponse);
-            }
-
-            // user 관련 요청을 받은 경우
-            if (path.startsWith("/user")) {
-                controller = new UserController();
-                controller.run(httpRequest, httpResponse);
-            }
-
-            // 기본값 컨트롤러
-            controller = new ViewController();
+        if (StyleType.anyMatchStyle(path).isPresent()) {   // style 요청을 받은 경우
+            logger.info("path = {}", httpRequest.getPath());
+            controller = new StyleController();
             controller.run(httpRequest, httpResponse);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
         }
+
+        if (path.startsWith("/user")) {     // user 관련 요청을 받은 경우
+            controller = new UserController();
+            controller.run(httpRequest, httpResponse);
+        }
+
+        controller = new ViewController();  // 기본값 컨트롤러
+        controller.run(httpRequest, httpResponse);
     }
 }
