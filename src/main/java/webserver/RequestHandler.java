@@ -24,6 +24,7 @@ import model.User;
 import util.HttpRequest;
 import util.HttpRequestUtils;
 
+
 public class RequestHandler implements Runnable {
     private UserController userController = new UserController();
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -41,8 +42,9 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            HttpRequest httpRequest = new HttpRequest(br.readLine());
-            logger.debug("http Request : {}", httpRequest.toString());
+            HttpRequest httpRequest = new HttpRequest();
+            httpRequest.init(br.readLine());
+            logger.debug("http Request : {}", httpRequest);
 
             String requestHeader;
             while (!(requestHeader = br.readLine()).equals("")) {
