@@ -44,4 +44,14 @@ public class ProtocolParser {
     private static String decode(String value) {
         return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
+
+    public static Map<String, String> parseHeaders(String headerStr) {
+        Map<String, String> headers = new HashMap<>();
+
+        for (String line : headerStr.split("\n")) {
+            headers.put(line.split(": ")[0], line.split(": ")[1]);
+        }
+
+        return headers;
+    }
 }
