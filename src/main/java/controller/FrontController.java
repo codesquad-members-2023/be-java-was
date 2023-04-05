@@ -16,12 +16,6 @@ public class FrontController {
         String path = httpRequest.getPath();
         Controller controller;
 
-        if (StyleType.anyMatchStyle(path).isPresent()) {   // style 요청을 받은 경우
-            logger.info("path = {}", httpRequest.getPath());
-            controller = new StyleController();
-            controller.run(httpRequest, httpResponse);
-        }
-
         if (path.startsWith("/user")) {     // user 관련 요청을 받은 경우
             controller = new UserController();
             controller.run(httpRequest, httpResponse);
