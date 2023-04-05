@@ -22,7 +22,9 @@ public class HttpRequestUtils {
         return method;
     }
 
-    public static Map<String, String> parseQueryString(String queryString) {
+    public static Map<String, String> parseQueryString(String url) {
+        int index = url.indexOf("?");
+        String queryString = url.substring(index + 1);
         Map<String,String> params = new HashMap<>();
         String[] tokens = queryString.split("&");
         for(int i=0; i< tokens.length; i++){
@@ -31,5 +33,7 @@ public class HttpRequestUtils {
         }
         return params;
     }
+
+
 
 }

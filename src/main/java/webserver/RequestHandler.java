@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.util.Map;
 
+import controller.UserController;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,8 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line = br.readLine();
+            String line = HttpRequest.startLine(in);
+
             if (line == null) { // line이 null일때 무시
                 return;
             }
@@ -35,18 +36,15 @@ public class RequestHandler implements Runnable {
             logger.debug("url = {} ",url);
 
             if (url.startsWith("/user/create")) {
-                int index = url.indexOf("?");
-                String queryString = url.substring(index + 1);
-                Map<String, String> params = HttpRequestUtils.parseQueryString(queryString);
-                logger.debug("params = {} ",params);
-                User user = new User(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
-                logger.debug("User : {} ", user);
+                Map<String, String> params = HttpRequestUtils.parseQueryString(url);
+                UserController.addUser(params);
                 url = "/index.html";
             }
                 DataOutputStream dos = new DataOutputStream(out);
                 byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
                 response200Header(dos, body.length);
                 responseBody(dos, body);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
