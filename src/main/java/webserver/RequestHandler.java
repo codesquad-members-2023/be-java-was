@@ -13,10 +13,9 @@ import util.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
-    private AppConfig appConfig = new AppConfig();
 
     private final Socket connection;
-    private final UserController userController = appConfig.userController();
+    private final UserController userController = AppConfig.userController();
 
     public RequestHandler(Socket connection) {
         this.connection = connection;
