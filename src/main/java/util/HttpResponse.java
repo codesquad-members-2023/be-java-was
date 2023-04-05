@@ -52,23 +52,7 @@ public class HttpResponse {
     }
 
     private String getContentType(String path) {
-        if (path.endsWith(".css")) {
-            return "text/css";
-        }
-        if (path.endsWith(".js")) {
-            return "application/javascript";
-        }
-        if (path.endsWith(".ttf")) {
-            return "font/ttf";
-        }
-        if (path.endsWith(".woff")) {
-            return "font/woff";
-        }
-        if (path.endsWith(".ico")) {
-            return "image/jpeg";
-        }
-
-        return "text/html";
+        return ContentType.findContentType(path).getValue();
     }
 
     private byte[] findBody(String contentType, String path) throws IOException {
