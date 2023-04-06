@@ -53,10 +53,4 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    public String getDefaultPath(String path){
-        if(path.equals("/")){
-            return "/index.html";
-        }
-        return path;
-    }
 }
