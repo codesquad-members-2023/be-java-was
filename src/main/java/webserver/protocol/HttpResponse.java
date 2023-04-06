@@ -24,26 +24,7 @@ public class HttpResponse {
         this.DOS = dos;
         this.HTTP_VERSION = version;
         this.body = new byte[0];
-        this.headers = new HashMap<>();
-    }
-
-    /**
-     * forward responseLine, 반환할 body를 준비한다. 단, static에서 파일을 찾아 반환한다.
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    public HttpResponse forwardStatic(String path) throws IOException {
-        try {
-            responseLine = "HTTP/1.1 200 OK";
-            body = Files.readAllBytes(new File("src/main/resources/static"+path).toPath());
-
-            setHeader("Content-Type", ContentType.of(path).value);
-            setHeader("Content-Length", String.valueOf(body.length));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        return this;
+        this.HEADERS = new HashMap<>();
     }
 
     /**
@@ -54,10 +35,12 @@ public class HttpResponse {
      */
     public HttpResponse forward(String path) throws IOException {
         try {
-            responseLine = "HTTP/1.1 200 OK";
-            body = Files.readAllBytes(new File("src/main/resources/templates"+path).toPath());
+            ContentType type = ContentType.of(path);
 
-            setHeader("Content-Type", ContentType.of(path).value);
+            statusCode = StatusCode.OK;
+            body = Files.readAllBytes(new File(type.getTypeDirectory() + path).toPath());
+
+            setHeader("Content-Type", type.getHeadValue());
             setHeader("Content-Length", String.valueOf(body.length));
         } catch (IOException e) {
             logger.error(e.getMessage());
@@ -71,7 +54,7 @@ public class HttpResponse {
      * @return
      */
     public HttpResponse redirect(String path) {
-        responseLine = "HTTP/1.1 302 Found";
+        statusCode = StatusCode.FOUND;
         setHeader("Location", path);
         return this;
     }
@@ -81,10 +64,10 @@ public class HttpResponse {
      */
     public void response() {
         try {
-            writeStatusCode();    // status 코드에 해당되는 ResponseLine을 작성한다.
-            writeHeader();  // 응답하기 전, head를 작성한다..
+            writeStatusCode();
+            writeHeader();
 
-            if (body.length > 0) {  // body가 있을 경우
+            if (body.length > 0) {
                 writeBody();
             }
 
