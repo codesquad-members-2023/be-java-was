@@ -32,21 +32,18 @@ public class RequestHandler implements Runnable {
             }
 
             HttpRequest httpRequest = new HttpRequest();
-
             String url = httpRequest.getUrl(line);
+
             HttpResponse httpResponse = new HttpResponse(out);
             httpResponse.forward(url);
+
             logger.debug("url = {} ", url);
 
             if (url.startsWith("/user/create")) {
                 Map<String, String> params = httpRequest.parseQueryString(url);
                 httpRequest.addUser(params);
-                httpResponse.response302Header("/index.html");
+                httpResponse.redirect("/index.html");
             }
-
-            byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
-            httpResponse.response200Header(body.length);
-            httpResponse.responseBody(body);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
