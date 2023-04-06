@@ -7,6 +7,7 @@ public enum ResponseBody {
     JS("application/javascript", "src/main/resources/static"),
     TTF("font/ttf", "src/main/resources/static"),
     WOF("font/woff", "src/main/resources/static"),
+    PNG("font/woff", "src/main/resources/static/images"),
     ICO("image/x-icon", "src/main/resources/templates"),
     BASIC("text/html", "src/main/resources/templates");
 
