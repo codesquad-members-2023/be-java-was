@@ -2,10 +2,12 @@ package response;
 
 public enum ContentsType {
 
-    CSS("text/css;charset=utf-8", "src/main/resources/static", "/css"),
-    JS("application/javascript", "src/main/resources/static", "/js"),
-    FONTS("application/octet-stream", "src/main/resources/static", "/fonts"),
-    HTML("text/html;charset=utf-8", "src/main/resources/templates", "");
+    CSS("text/css;charset=utf-8", "src/main/resources/static", ".*\\.css"),
+    JS("application/javascript", "src/main/resources/static", ".*\\.js"),
+    FONTS("application/octet-stream", "src/main/resources/static", ".*\\.woff$|.*\\.woff2$.*\\.woff3$"),
+    PNG("image/png", "src/main/resources/static", ".*\\.png"),
+    ICO("image/avif", "src/main/resources/templates",".*\\.ico"),
+    HTML("text/html;charset=utf-8", "src/main/resources/templates", ".*\\.html");
 
     private String contentType;
     private String locatedPath;
