@@ -16,6 +16,9 @@ public class HttpResponse {
         this.httpHeaders = httpHeaders;
     }
 
+    public void setHttpHeaders(int contentLength) {
+        httpHeaders.put("Content-Length", String.valueOf(contentLength));
+    }
 
     @Override
     public String toString() {
