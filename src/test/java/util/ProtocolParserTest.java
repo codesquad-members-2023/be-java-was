@@ -1,5 +1,6 @@
 package util;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ class ProtocolParserTest {
     }
 
     @Test
-    @DisplayName("getUriPath : 요청 첫번째 줄이 입력되었을 때," +
+    @DisplayName("getUriPath : request line이 입력되었을 때," +
             "uripath를 문자열로 반환할 수 있다.")
     void getUriPathTest() throws Exception{
         //given
@@ -31,11 +32,11 @@ class ProtocolParserTest {
         HttpRequest httpRequest = new HttpRequest(sampleRequest);
 
         //then
-        assertThat(httpRequest.getPath()).isEqualTo("/");
+        assertThat(httpRequest.getPATH()).isEqualTo("/");
     }
 
     @Test
-    @DisplayName("getUrl : 요청 첫번재 줄에서 path를 문자열로 반환할 수 있다.")
+    @DisplayName("getUrl : request line에서 path를 문자열로 반환할 수 있다.")
     void getPathTest() throws Exception{
         //given
         sampleRequest = "GET /user/create?userId=member&password=1234&name=user&email=asdf%40naver HTTP/1.1";
@@ -44,11 +45,11 @@ class ProtocolParserTest {
         HttpRequest httpRequest = new HttpRequest(sampleRequest);
 
         //then
-        assertThat(httpRequest.getPath()).isEqualTo("/model/create");
+        assertThat(httpRequest.getPATH()).isEqualTo("/user/create");
     }
 
     @Test
-    @DisplayName("getQueryParameter : 요청 첫번재 줄에서 path를 쿼리파라미터 맵으로 반환할 수 있다.")
+    @DisplayName("getQueryParameter : request line에서 path를 쿼리파라미터 맵으로 반환할 수 있다.")
     public void getQueryParameterTest() throws Exception{
         //given
         sampleRequest = "GET /user/create?userId=member&password=1234&name=user&email=asdf@naver HTTP/1.1";
