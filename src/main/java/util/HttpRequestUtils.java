@@ -1,5 +1,6 @@
 package util;
 
+import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,7 @@ public class HttpRequestUtils {
         Map<String, String> params = ParseQueryUtils.parseQueryString(queryString);
         User user = new User(decoding(params.get("userId")), decoding(params.get("password"))
                 , decoding(params.get("name")), decoding(params.get("email")));
+        Database.addUser(user);
         logger.debug("User: {}", user);
 
         return "/index.html";
