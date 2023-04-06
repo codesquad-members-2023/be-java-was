@@ -15,7 +15,7 @@ public class UserController {
         private static UserController instance;
 
         // private 생성자
-        public UserController() {
+        private UserController() {
 
         }
 
