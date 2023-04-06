@@ -36,6 +36,10 @@ public class RequestHandler implements Runnable {
 
             String path = httpRequest.getUrl();
 
+            if (path.equals("/")) {
+                path = "/index.html";
+            }
+
             // user 컨트롤러로 전송
             if (path.startsWith("/user")) {
                 path = userController.process(httpRequest, httpResponse);
