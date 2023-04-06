@@ -21,6 +21,7 @@ public class ViewController implements Controller{
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
 
+            if (GET.equals(httpRequest.getMETHOD())) {
 
                 if (httpRequest.isPath("/")) {
                     httpResponse.forward("/index.html")
@@ -28,7 +29,7 @@ public class ViewController implements Controller{
                     return;
                 }
 
-                httpResponse.forward(httpRequest.getPath()) // 그 외의 경로는 temmplate에서 경로에 맞는 문서를 반환한다.
+                httpResponse.forward(httpRequest.getPATH()) // 그 외의 경로는 temmplate에서 경로에 맞는 문서를 반환한다.
                         .response();
             }
 
