@@ -58,9 +58,12 @@ class ProtocolParserTest {
         HttpRequest httpRequest = new HttpRequest(sampleRequest);
 
         //then
-        assertThat(httpRequest.getParameter("userId")).isEqualTo("member");
-        assertThat(httpRequest.getParameter("password")).isEqualTo("1234");
-        assertThat(httpRequest.getParameter("email")).isEqualTo("asdf@naver");
+        SoftAssertions.assertSoftly( softAssertions -> {
+            assertThat(httpRequest.getParameter("userId")).isEqualTo("member");
+            assertThat(httpRequest.getParameter("password")).isEqualTo("1234");
+            assertThat(httpRequest.getParameter("email")).isEqualTo("asdf@naver");
+
+        });
     }
 
     @Test
