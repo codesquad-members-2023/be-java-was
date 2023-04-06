@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
 
 public class UserJoinService {
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final int VALUE = 1;
 
     public void addUser(String userInformation) {
         String[] allInformation = userInformation.split("&");
