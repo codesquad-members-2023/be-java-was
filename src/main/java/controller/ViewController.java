@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
-import webserver.protocol.ContentType;
 
 import java.io.IOException;
 
@@ -22,13 +21,6 @@ public class ViewController implements Controller{
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
 
-            if (GET.equals(httpRequest.getMethod())) {
-
-                if (ContentType.of(httpRequest.getPath())!=ContentType.HTML) {   // style 요청을 받은 경우
-                    httpResponse.forwardStatic(httpRequest.getPath())
-                            .response();
-                    return;
-                }
 
                 if (httpRequest.isPath("/")) {
                     httpResponse.forward("/index.html")
