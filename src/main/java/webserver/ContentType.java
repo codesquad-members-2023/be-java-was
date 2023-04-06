@@ -3,21 +3,30 @@ package webserver;
 import java.util.Arrays;
 
 public enum ContentType {
-    JS("application/javascript", ".js"),
-    CSS("text/css", ".css"),
-    WOFF("font/woff", ".woff"),
-    HTML("text/html;charset=utf-8", ".html");
+    JS("application/javascript", ".js", "/static"),
+    CSS("text/css", ".css","/static"),
+    WOFF("font/woff", ".woff","/static"),
+    ICO("image/avif",".ico","/templates"),
+    PNG("image/png", ".png", "/static"),
+    HTML("text/html;charset=utf-8", ".html","/templates");
 
-    String value;
-    String pattern;
+    private String value;
+    private String pattern;
+    private String path;
+    private String defaultPath = "src/main/resources";
 
-    public String getPattern(){
+    public String getValue(){
         return value;
     }
 
-    ContentType(String value, String pattern) {
+    public String getPath(){
+        return defaultPath + path;
+    }
+
+    ContentType(String value, String pattern,String path) {
         this.value = value;
         this.pattern = pattern;
+        this.path = path;
     }
 
     public static ContentType of (String path){
