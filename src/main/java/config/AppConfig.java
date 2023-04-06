@@ -5,15 +5,11 @@ import service.UserJoinService;
 
 public class AppConfig {
 
-    public AppConfig() {
-    }
-
-    public UserController userController() {
+    public static UserController userController() {
         return new UserController(userJoinService());
     }
 
-    public UserJoinService userJoinService() {
+    public static UserJoinService userJoinService() {
         return new UserJoinService();
     }
-
 }

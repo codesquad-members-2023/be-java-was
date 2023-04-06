@@ -10,7 +10,6 @@ public class UserJoinService {
     private final int VALUE = 1;
 
     public void addUser(String userInformation) {
-
         String[] allInformation = userInformation.split("&");
 
         String[] userId = allInformation[0].split("=");
@@ -21,6 +20,5 @@ public class UserJoinService {
         User user = new User(userId[VALUE], password[VALUE], name[VALUE], email[VALUE]);
 
         Database.addUser(user);
-        log.info("user = {}", user);
     }
 }
