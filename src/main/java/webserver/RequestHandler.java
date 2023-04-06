@@ -24,6 +24,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            String contentType = "text/html";
+            String pathName = "src/main/resources/templates";
 
             // 모든 리퀘스트 출력 & 첫 라인 리턴
             String line = HttpRequestUtils.getStartLine(br);
@@ -34,24 +36,38 @@ public class RequestHandler implements Runnable {
             // path 설정
             String url = HttpRequestUtils.getUrl(line);
 
+            // GET: stylesheet
+            if (url.endsWith(".css")) {
+                contentType = "text/css";
+                pathName = "src/main/resources/static";
+            }
+            if (url.endsWith(".js")) {
+                contentType = "application/javascript";
+                pathName = "src/main/resources/static";
+            }
+            if (url.startsWith("/fonts")) {
+                contentType = "application/octet-stream";
+                pathName = "src/main/resources/static";
+            }
+
             // GET: join
             if (url.startsWith("/user/create?")) {
                 url = HttpRequestUtils.joinWithGET(url);
             }
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
-            response200Header(dos, body.length);
+            byte[] body = Files.readAllBytes(new File(pathName + url).toPath());
+            response200Header(dos, body.length, contentType);
             responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
+    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
+            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
             dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
             dos.writeBytes("\r\n");
         } catch (IOException e) {
