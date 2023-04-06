@@ -33,8 +33,7 @@ public class RequestHandler implements Runnable {
             logger.debug("request first line = {}", line);
 
             if (line != null) {
-                String[] parsedUrl = RequestParser.separateUrls(line);
-                String url = userController.mapToFunctions(parsedUrl);
+                String url = userController.mapToFunctions(line);
 
                 logger.debug("request: [{}], url: [{}]", line, url);
 

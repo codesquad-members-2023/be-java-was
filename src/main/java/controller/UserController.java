@@ -31,7 +31,9 @@ public class UserController {
             return instance;
         }
 
-        public String mapToFunctions(String[] parsedUrl) {
+        public String mapToFunctions(String requestLine) {
+
+            String[] parsedUrl = RequestParser.separateUrls(requestLine);
 
             String httpMethod = parsedUrl[0];
             String resourceUrl = parsedUrl[1];
