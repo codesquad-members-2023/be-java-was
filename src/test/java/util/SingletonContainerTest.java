@@ -13,10 +13,10 @@ class SingletonContainerTest {
 
     @Test
     @DisplayName("UserController 객체를 여러 번 가져와도 해당 객체는 항상 동일한 객체이다.")
-    void getUserController() {
+    void testGetUserControllerReturnAlwaysSameInstance() {
         // given, when
         UserController userControllerA = UserController.getInstance();
-        UserController userControllerB = UserController.getInstance();
+        UserController userControllerB = SingletonContainer.getUserController();
 
         // then
         assertThat(userControllerA).isSameAs(userControllerB);
