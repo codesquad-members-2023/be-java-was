@@ -14,13 +14,15 @@ public class HttpResponse {
 
     private Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
-    private final DataOutputStream dos;
-    private String responseLine;
-    private final Map<String, String> headers;
+    private final DataOutputStream DOS;
+    private final String HTTP_VERSION;
+    private StatusCode statusCode;
+    private final Map<String, String> HEADERS;
     private byte[] body;
 
-    public HttpResponse(DataOutputStream dos) {
-        this.dos = dos;
+    public HttpResponse(String version, DataOutputStream dos) {
+        this.DOS = dos;
+        this.HTTP_VERSION = version;
         this.body = new byte[0];
         this.headers = new HashMap<>();
     }
@@ -86,7 +88,7 @@ public class HttpResponse {
                 writeBody();
             }
 
-            dos.flush();
+            DOS.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
@@ -98,7 +100,7 @@ public class HttpResponse {
      * @param value
      */
     public HttpResponse setHeader(String key, String value) {
-        headers.put(key, value);
+        HEADERS.put(key, value);
         return this;
     }
 
@@ -107,7 +109,7 @@ public class HttpResponse {
      * @throws IOException
      */
     private void writeStatusCode() throws IOException {
-        dos.writeBytes(responseLine + " \r\n");
+        DOS.writeBytes(String.format("%s %s \r\n", HTTP_VERSION, statusCode.getResponseLine()));
     }
 
     /**
@@ -115,11 +117,11 @@ public class HttpResponse {
      * @throws IOException
      */
     private void writeHeader() throws IOException {
-        for (Map.Entry<String, String> entries : headers.entrySet()) {
-            dos.writeBytes(String.format("%s: %s\r\n", entries.getKey(), entries.getValue()));
+        for (Map.Entry<String, String> entries : HEADERS.entrySet()) {
+            DOS.writeBytes(String.format("%s: %s\r\n", entries.getKey(), entries.getValue()));
         }
 
-        dos.writeBytes("\r\n");
+        DOS.writeBytes("\r\n");
     }
 
     /**
@@ -127,8 +129,8 @@ public class HttpResponse {
      */
     private void writeBody() {
         try {
-            dos.write(body, 0, body.length);
-            dos.writeBytes("\r\n");
+            DOS.write(body, 0, body.length);
+            DOS.writeBytes("\r\n");
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
