@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import config.AppConfig;
-import controller.UserController;
+import controller.URLController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequest;
@@ -15,7 +15,7 @@ public class RequestHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
 
     private final Socket connection;
-    private final UserController userController = AppConfig.userController();
+    private final URLController urlController = AppConfig.urlController();
 
     public RequestHandler(Socket connection) {
         this.connection = connection;
@@ -35,15 +35,7 @@ public class RequestHandler implements Runnable {
             HttpResponse httpResponse = new HttpResponse();
 
             String path = httpRequest.getUrl();
-
-            if (path.equals("/")) {
-                path = "/index.html";
-            }
-
-            // user 컨트롤러로 전송
-            if (path.startsWith("/user")) {
-                path = userController.process(httpRequest, httpResponse);
-            }
+            path = urlController.mapUrl(path, httpRequest, httpResponse);
 
             httpResponse.processResponse(path, httpResponse, out);
         } catch (IOException e) {
