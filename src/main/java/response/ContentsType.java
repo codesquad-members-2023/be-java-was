@@ -19,11 +19,6 @@ public enum ContentsType {
         this.locatedPath = locatedPath;
     }
 
-    ContentsType(String contentType, String locatedPath) {
-        this.contentType = contentType;
-        this.locatedPath = locatedPath;
-    }
-
     public String getContentType() {
         return contentType;
     }

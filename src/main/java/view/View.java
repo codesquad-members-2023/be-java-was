@@ -25,6 +25,12 @@ public class View {
         this.httpResponse = httpResponse;
     }
 
+    /**
+     * httpResponse에서 header 정보를 읽어와 첫 줄과 header 메시지를 작성하고,
+     * viewName으로 파일 경로에 있는 파일의 Body와 합쳐 반환한다.
+     * @return httpResponseMessage
+     * @throws IOException
+     */
     public byte[] render() throws IOException {
         byte[] headers = writeHeaderBytes(httpResponse);
         byte[] body = Files.readAllBytes(

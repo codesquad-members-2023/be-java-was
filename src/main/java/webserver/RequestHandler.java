@@ -45,10 +45,8 @@ public class RequestHandler implements Runnable {
                 logger.debug("header : {}", requestHeader);
             }
 
-            UrlMapper urlMapper = new UrlMapper(new UserController());
-
             String viewName = urlMapper.requestMapping(httpRequest);
-            byte[] responseMessage = viewResolver.mapView(out, viewName);
+            byte[] responseMessage = viewResolver.mapView(viewName);
 
             DataOutputStream dos = new DataOutputStream(out);
             response(dos, responseMessage);
@@ -57,6 +55,11 @@ public class RequestHandler implements Runnable {
         }
     }
 
+    /**
+     * Response 메시지를 전송합니다.
+     * @param dos
+     * @param body
+     */
     private void response(DataOutputStream dos, byte[] body) {
         try {
             dos.write(body, 0, body.length);

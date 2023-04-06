@@ -12,37 +12,35 @@ import response.Status;
 public class ViewResolver {
 
     /**
-     * View의 위치에 있는 파일을 찾아 HTTP 응답으로 보냅니다.
+     * View 이름을 인자로 받아 Response를 작성합니다.
      *
      * @param out
      * @throws IOException
      */
 
-    public byte[] mapView(OutputStream out, String viewName) throws IOException {
-        View view;
+    public byte[] mapView(String viewName) throws IOException {
         //Redirect 키워드가 있는 경우 redirect 헤더로 작성
         if (viewName.startsWith("redirect:")) {
-            String redirectView = viewName.replace("redirect:", "");
+            String redirectViewName = viewName.replace("redirect:", "");
 
-            view = new View(redirectView, new HttpResponse("HTTP/1.1", Status.FOUND,
-                new HttpHeaders(Map.of("Location", redirectView))));
-            return view.render();
+            View redirectView = new View(redirectViewName, new HttpResponse("HTTP/1.1", Status.FOUND,
+                new HttpHeaders(Map.of("Location", redirectViewName))));
+            return redirectView.render();
         }
 
         //그 외의 경우 200 OK 응답을 반환
         ContentsType contentsType = mapTypeByIndentifier(viewName);
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", contentsType.getContentType());
-        view = new View(viewName, contentsType, new HttpResponse("HTTP/1.1", Status.OK,
+        View okView = new View(viewName, contentsType, new HttpResponse("HTTP/1.1", Status.OK,
             new HttpHeaders(header)));
 
-        return view.render();
+        return okView.render();
     }
 
 
     /**
-     * css, js, fonts는 static 폴더에서 파일을 탐색하여 반환합니다. (content header를 text/css로 변경해서 보냅니다.) 나머지(html
-     * 파일)는 templates 폴더에서 탐색합니다.
+     * viewName의 파일 확장자를 기준으로 일치하는 content-type을 반환합니다.
      *
      * @param view
      * @return
