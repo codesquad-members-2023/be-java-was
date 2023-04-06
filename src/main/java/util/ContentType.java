@@ -9,6 +9,7 @@ public enum ContentType {
     WOFF("font/woff", ".woff"),
     TFT("font/tft", "tft"),
     ICO("image/x-icon", ".ico"),
+    PNG("image/png", ".png"),
     HTML("text/html", ".html");
 
     String value;
