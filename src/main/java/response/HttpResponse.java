@@ -7,32 +7,19 @@ package response;
 public class HttpResponse {
 
     String httpVersion;
-    String status;
-    String statusMessage;
+    Status status;
     HttpHeaders httpHeaders;
 
-    public HttpResponse(String httpVersion, String status, String statusMessage, HttpHeaders httpHeaders) {
+    public HttpResponse(String httpVersion, Status status, HttpHeaders httpHeaders) {
         this.httpVersion = httpVersion;
         this.status = status;
-        this.statusMessage = statusMessage;
         this.httpHeaders = httpHeaders;
     }
 
-    /**
-     * Response의 첫 줄을 return합니다.
-     * @return responseHeadLine
-     */
-    public String getHeadLine() {
-        return String.join(" ", httpVersion, status, statusMessage);
-    }
-
-    public String getHeaders() {
-        return httpHeaders.toString();
-    }
 
     @Override
     public String toString() {
-        String headLine = String.join(" ", httpVersion, status, statusMessage);
+        String headLine = String.join(" ", httpVersion, status.getStatusCode(), status.getStatusMessage());
         return headLine + "\r\n" + httpHeaders;
     }
 }
