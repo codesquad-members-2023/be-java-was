@@ -33,9 +33,16 @@ public class RequestHandler implements Runnable {
             logger.debug("request first line = {}", line);
 
             if (line != null) {
-                String url = SingletonContainer.getUserController().mapToFunctions(line);
+                String[] parsedUrl = RequestParser.separateUrls(line);
+                String httpMethod = parsedUrl[0];
+                String resourceUrl = parsedUrl[1];
 
-                logger.debug("request: [{}], url: [{}]", line, url);
+                String returnUrl = "/index.html";
+                if (resourceUrl.startsWith("/user")) {
+                    returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
+                }
+
+                logger.debug("request: [{}], url: [{}]", line, returnUrl);
 
                 while (!line.equals("")) {
                     line = br.readLine();
@@ -43,7 +50,7 @@ public class RequestHandler implements Runnable {
                 }
 
                 DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
+                byte[] body = Files.readAllBytes(new File(commonPath + returnUrl).toPath());
                 response200Header(dos, body.length);
                 responseBody(dos, body);
             }

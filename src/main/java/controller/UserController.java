@@ -31,13 +31,8 @@ public class UserController {
             return instance;
         }
 
-        public String mapToFunctions(String requestLine) {
+        public String mapToFunctions(String httpMethod, String resourceUrl) {
 
-            String[] parsedUrl = RequestParser.separateUrls(requestLine);
-
-            String httpMethod = parsedUrl[0];
-            String resourceUrl = parsedUrl[1];
-            String httpVersion = parsedUrl[2];
             String data = null;
 
             if (resourceUrl.contains("?")) {
