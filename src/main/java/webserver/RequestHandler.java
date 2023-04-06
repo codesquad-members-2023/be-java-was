@@ -3,11 +3,14 @@ package webserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
+import util.HttpResponseUtils;
+import util.stylesheetUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -24,8 +27,6 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String contentType = "text/html";
-            String pathName = "src/main/resources/templates";
 
             // 모든 리퀘스트 출력 & 첫 라인 리턴
             String line = HttpRequestUtils.getStartLine(br);
@@ -33,22 +34,12 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
-            // path 설정
-            String url = HttpRequestUtils.getUrl(line);
+//            String method = HttpRequestUtils.getMethod(line); // method 설정
+            String url = HttpRequestUtils.getUrl(line); // path 설정
 
             // GET: stylesheet
-            if (url.endsWith(".css")) {
-                contentType = "text/css";
-                pathName = "src/main/resources/static";
-            }
-            if (url.endsWith(".js")) {
-                contentType = "application/javascript";
-                pathName = "src/main/resources/static";
-            }
-            if (url.startsWith("/fonts")) {
-                contentType = "application/octet-stream";
-                pathName = "src/main/resources/static";
-            }
+            String contentType = stylesheetUtils.getContentType(url);
+            String pathName = stylesheetUtils.getPathName(url);
 
             // GET: join
             if (url.startsWith("/user/create?")) {
@@ -57,28 +48,8 @@ public class RequestHandler implements Runnable {
 
             DataOutputStream dos = new DataOutputStream(out);
             byte[] body = Files.readAllBytes(new File(pathName + url).toPath());
-            response200Header(dos, body.length, contentType);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + contentType + ";charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
+            HttpResponseUtils.response200Header(dos, body.length, contentType);
+            HttpResponseUtils.responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

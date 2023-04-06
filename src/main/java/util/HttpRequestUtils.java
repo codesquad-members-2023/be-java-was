@@ -13,9 +13,14 @@ import java.util.Map;
 public class HttpRequestUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
 
-    public static String getUrl(String firstLine) {
-        String[] splitLine = firstLine.split(" ");
-        String path = splitLine[1];
+    public static String getMethod(String startLine) {
+        String method = getStatus(startLine, 0);
+        logger.debug("request method: {}", method);
+        return method;
+    }
+
+    public static String getUrl(String startLine) {
+        String path = getStatus(startLine, 1);
 
         // root 맵핑(index.html 으로)
         if (path.equals("/")) {
@@ -23,6 +28,11 @@ public class HttpRequestUtils {
         }
         logger.debug("request path: {}", path);
         return path;
+    }
+
+    private static String getStatus(String startLine, int num) {
+        String[] splitLine = startLine.split(" ");
+        return splitLine[num];
     }
 
     public static String getStartLine(BufferedReader br) {
