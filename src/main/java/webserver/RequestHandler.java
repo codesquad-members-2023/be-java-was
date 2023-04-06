@@ -26,7 +26,8 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
-            String line = HttpRequest.startLine(in);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line = br.readLine();
             logger.debug("line = {} ",line);
 
             if(line==null){
@@ -37,7 +38,8 @@ public class RequestHandler implements Runnable {
             String url = httpRequest.getUrl(line);
 
             HttpResponse httpResponse = new HttpResponse(out);
-            httpResponse.forward(url);
+
+
 
             logger.debug("url = {} ", url);
 

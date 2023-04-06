@@ -17,7 +17,7 @@ public class HttpRequest {
         this.params = new HashMap<>();
     }
 
-    public static String startLine(InputStream in) throws IOException {
+    public String startLine(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
         return br.readLine();
     }
