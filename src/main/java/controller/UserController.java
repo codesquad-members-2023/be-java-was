@@ -47,7 +47,7 @@ public class UserController {
                 log.debug("resourceUrl = [{}], data = [{}]", resourceUrl, data);
             }
 
-            if (httpMethod.equals("GET") && resourceUrl.equals("/create") && !Objects.isNull(data)) {
+            if (httpMethod.equals("GET") && resourceUrl.equals("/user/create") && !Objects.isNull(data)) {
                 return getSignUpUserFromQueryParameter(httpMethod, resourceUrl, data);
             }
 
