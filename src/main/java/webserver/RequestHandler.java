@@ -5,16 +5,15 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.util.Map;
 
-import controller.UserController;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequestUtils;
+
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
+
     private static final String PATH = "src/main/resources/templates";
 
     public RequestHandler(Socket connectionSocket) {
@@ -32,41 +31,32 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
-            String url = HttpRequestUtils.getUrl(line);
-            logger.debug("url = {} ",url);
+            HttpRequest httpRequest = new HttpRequest();
+
+            String url = httpRequest.getUrl(line);
+            HttpResponse httpResponse = new HttpResponse(out);
+            httpResponse.forward(url);
+            logger.debug("url = {} ", url);
 
             if (url.startsWith("/user/create")) {
-                Map<String, String> params = HttpRequestUtils.parseQueryString(url);
-                UserController.addUser(params);
-                url = "/index.html";
+                Map<String, String> params = httpRequest.parseQueryString(url);
+                httpRequest.addUser(params);
+                httpResponse.response302Header("/index.html");
             }
-                DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
-                response200Header(dos, body.length);
-                responseBody(dos, body);
+
+            byte[] body = Files.readAllBytes(new File(PATH + url).toPath());
+            httpResponse.response200Header(body.length);
+            httpResponse.responseBody(body);
 
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+    public String getDefaultPath(String path){
+        if(path.equals("/")){
+            return "/index.html";
         }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+        return path;
     }
 }
