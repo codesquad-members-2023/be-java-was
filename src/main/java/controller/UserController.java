@@ -56,11 +56,11 @@ public class UserController {
             return "/util/error";
         }
 
-        Map<String, String> map = Arrays.stream(data.split("&"))
+        Map<String, String> userInfo = Arrays.stream(data.split("&"))
                 .map(s -> s.split("="))
                 .collect(Collectors.toMap(key -> key[0], value -> value[1]));
 
-        Database.addUser(new User(map.get("userId"), map.get("password"), map.get("name"), map.get("email")));
+        Database.addUser(new User(userInfo));
         return "/index.html";
     }
 }
