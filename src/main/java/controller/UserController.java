@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserController {
 
@@ -55,17 +56,11 @@ public class UserController {
             return "/util/error";
         }
 
-        int numOfDataForSignUp = 4;
-        String[] userInfo = data.split("\\&");
-        String[] values = new String[numOfDataForSignUp];
+        Map<String, String> map = Arrays.stream(data.split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(key -> key[0], value -> value[1]));
 
-        for (int i = 0; i < numOfDataForSignUp; i++) {
-            String[] splited = userInfo[i].split("\\=");
-            String value = splited[1];
-            values[i] = value;
-        }
-
-        Database.addUser(new User(values[0], values[1], values[2], values[3]));
+        Database.addUser(new User(map.get("userId"), map.get("password"), map.get("name"), map.get("email")));
         return "/index.html";
     }
 }
