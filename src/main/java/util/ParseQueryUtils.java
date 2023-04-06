@@ -31,9 +31,6 @@ public class ParseQueryUtils {
         if (tokens.length != 2) {
             return null;
         }
-        if (tokens[1].contains(".com")) {
-            tokens[1] = tokens[1].replace("%", "@");
-        }
 
         return new Pair(tokens[0], tokens[1]);
     }

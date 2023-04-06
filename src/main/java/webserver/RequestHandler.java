@@ -25,7 +25,6 @@ public class RequestHandler implements Runnable {
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
-        logger.debug("-----------------------------------");
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
@@ -45,7 +44,7 @@ public class RequestHandler implements Runnable {
                 String queryString = url.substring(index + 1);
                 Map<String, String> params = ParseQueryUtils.parseQueryString(queryString);
                 User user = new User(params.get("userId"), params.get("password")
-                        , URLDecoder.decode(params.get("name"), StandardCharsets.UTF_8), params.get("email"));
+                        , URLDecoder.decode(params.get("name"), StandardCharsets.UTF_8), params.get("email").replace("%40", "@"));
                 logger.debug("User: {}", user);
 
                 url = "/user/list.html";
