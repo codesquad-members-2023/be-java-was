@@ -8,17 +8,16 @@ import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
+import util.SingletonContainer;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final String commonPath = "./src/main/resources/templates";
 
     private Socket connection;
-    private UserController userController;
 
-    public RequestHandler(Socket connectionSocket, UserController userController) {
+    public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        this.userController = userController;
     }
 
     public void run() {
@@ -30,10 +29,11 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
+
             logger.debug("request first line = {}", line);
 
             if (line != null) {
-                String url = userController.mapToFunctions(line);
+                String url = SingletonContainer.getUserController().mapToFunctions(line);
 
                 logger.debug("request: [{}], url: [{}]", line, url);
 
