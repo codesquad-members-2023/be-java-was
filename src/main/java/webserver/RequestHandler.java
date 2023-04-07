@@ -4,7 +4,9 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Map;
 
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import utility.HttpRequestUtility;
@@ -31,6 +33,16 @@ public class RequestHandler implements Runnable {
             logger.debug("request line: {}", line);
 
             String url = HttpRequestUtility.getUrl(line);
+            if (url.startsWith("/user/create")) {
+                int index = url.indexOf("?");
+//                String requestPath = url.substring(0, index);
+                String queryString = url.substring(index + 1);
+                Map<String, String> parsedKeyValue = HttpRequestUtility.parseQueryString(queryString);
+                User user = new User(parsedKeyValue.get("userId"),parsedKeyValue.get("password"),parsedKeyValue.get("name"),parsedKeyValue.get("email"));
+                logger.debug("User: {}", user);
+                url = "/index.html";
+            }
+
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
