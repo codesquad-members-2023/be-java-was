@@ -35,13 +35,17 @@ public class InputRequestParser {
 
     public RequestLine getRequestLine() {
         String[] splitRequestLine = entireRequest.get(FIRST_REQUEST_LINE).split(" ");
-        return new RequestLine(splitRequestLine[0], splitRequestLine[1], splitRequestLine[2]);
+        String[] queryStringSplit = splitRequestLine[1].split("[?]");
+        if(queryStringSplit.length > 1) {
+            return new RequestLine(splitRequestLine[0], queryStringSplit[0], queryStringSplit[1], splitRequestLine[2]);
+        }
+        return new RequestLine(splitRequestLine[0], splitRequestLine[1], "", splitRequestLine[2]);
     }
 
     public RequestHeader getRequestHeader() {
         StringBuilder sb = new StringBuilder();
         for (int i = START_REQUEST_HEADER; i < entireRequest.size(); i++) {
-            sb.append(entireRequest.get(i));
+            sb.append(entireRequest.get(i)).append("\n");
         }
         return new RequestHeader(sb.toString());
     }
