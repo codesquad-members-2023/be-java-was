@@ -6,7 +6,7 @@ public class RequestLine {
     private final String queryString;
     private final String HTTPVersion;
 
-    public RequestLine(String method, String URL, String queryString,String HTTPVersion) {
+    public RequestLine(String method, String URL, String queryString, String HTTPVersion) {
         this.method = method;
         this.URL = URL;
         this.queryString = queryString;

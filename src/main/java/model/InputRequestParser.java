@@ -36,7 +36,7 @@ public class InputRequestParser {
     public RequestLine getRequestLine() {
         String[] splitRequestLine = entireRequest.get(FIRST_REQUEST_LINE).split(" ");
         String[] queryStringSplit = splitRequestLine[1].split("[?]");
-        if(queryStringSplit.length > 1) {
+        if (queryStringSplit.length > 1) {
             return new RequestLine(splitRequestLine[0], queryStringSplit[0], queryStringSplit[1], splitRequestLine[2]);
         }
         return new RequestLine(splitRequestLine[0], splitRequestLine[1], "", splitRequestLine[2]);

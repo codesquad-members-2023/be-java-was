@@ -80,16 +80,19 @@ public class GetMappingProvider {
     public String mappingUserCreate(String queryString) {
         try {
             Class<?> loadClass = User.class;
-            Constructor<?> constructor = loadClass.getDeclaredConstructor(String.class, String.class, String.class, String.class);
+            Constructor<?> constructor = loadClass.getDeclaredConstructor(String.class, String.class, String.class,
+                    String.class);
             String[] queryParams = URLDecoder.decode(queryString, StandardCharsets.UTF_8).split("&");
             Map<String, String> params = new HashMap<>();
             for (String queryParam : queryParams) {
                 String[] pair = queryParam.split("=");
                 params.put(pair[0], pair[1]);
             }
-            User user = (User) constructor.newInstance(params.get("userId"), params.get("password"), params.get("name"), params.get("email"));
+            User user = (User) constructor.newInstance(params.get("userId"), params.get("password"), params.get("name"),
+                    params.get("email"));
             Database.addUser(user);
-        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
+                 InvocationTargetException e) {
             e.printStackTrace();
         }
         logger.info("DB 확인 : " + Database.findAll());
