@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Map;
 
+import controller.UserController;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,12 @@ import utility.HttpRequestUtility;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-
     private final Socket connection;
+    private final UserController userController;
 
-    public RequestHandler(Socket connectionSocket) {
+    public RequestHandler(Socket connectionSocket, UserController userController) {
         this.connection = connectionSocket;
+        this.userController = userController;
     }
 
     public void run() {
@@ -38,7 +40,8 @@ public class RequestHandler implements Runnable {
 //                String requestPath = url.substring(0, index);
                 String queryString = url.substring(index + 1);
                 Map<String, String> parsedKeyValue = HttpRequestUtility.parseQueryString(queryString);
-                User user = new User(parsedKeyValue.get("userId"),parsedKeyValue.get("password"),parsedKeyValue.get("name"),parsedKeyValue.get("email"));
+                User user = new User(parsedKeyValue.get("userId"), parsedKeyValue.get("password"), parsedKeyValue.get("name"), parsedKeyValue.get("email"));
+                userController.saveUser(user);
                 logger.debug("User: {}", user);
                 url = "/index.html";
             }
