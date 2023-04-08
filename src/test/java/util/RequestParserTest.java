@@ -59,4 +59,18 @@ class RequestParserTest {
         // then
         Assertions.assertThat(parsedData).containsExactly(expected);
     }
+
+    @Test
+    @DisplayName("쿼리 파라미터가 포함된 resource url이 ?를 기준으로 분리되는지 확인한다.")
+    void testParseQueryParameterSplitedByQuestionMark() {
+        // given
+        String resourceUrl = "/create?userId=testA&password=A&name=testerA&email=testA@test.com";
+
+        // when
+        String[] parsedData = RequestParser.parseQueryParameter(resourceUrl);
+        String[] expected = resourceUrl.split("\\?");
+
+        // then
+        Assertions.assertThat(parsedData).containsExactly(expected);
+    }
 }

@@ -8,17 +8,16 @@ import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
+import util.SingletonContainer;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private static final String commonPath = "./src/main/resources/templates";
 
     private Socket connection;
-    private UserController userController;
 
-    public RequestHandler(Socket connectionSocket, UserController userController) {
+    public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        this.userController = userController;
     }
 
     public void run() {
@@ -30,13 +29,20 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             String line = br.readLine();
+
             logger.debug("request first line = {}", line);
 
             if (line != null) {
                 String[] parsedUrl = RequestParser.separateUrls(line);
-                String url = userController.mapToFunctions(parsedUrl);
+                String httpMethod = parsedUrl[0];
+                String resourceUrl = parsedUrl[1];
 
-                logger.debug("request: [{}], url: [{}]", line, url);
+                String returnUrl = "/index.html";
+                if (resourceUrl.startsWith("/user")) {
+                    returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
+                }
+
+                logger.debug("request: [{}], url: [{}]", line, returnUrl);
 
                 while (!line.equals("")) {
                     line = br.readLine();
@@ -44,7 +50,7 @@ public class RequestHandler implements Runnable {
                 }
 
                 DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File(commonPath + url).toPath());
+                byte[] body = Files.readAllBytes(new File(commonPath + returnUrl).toPath());
                 response200Header(dos, body.length);
                 responseBody(dos, body);
             }

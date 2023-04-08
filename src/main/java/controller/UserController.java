@@ -6,7 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
 
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserController {
 
@@ -15,7 +16,7 @@ public class UserController {
         private static UserController instance;
 
         // private 생성자
-        public UserController() {
+        private UserController() {
 
         }
 
@@ -31,11 +32,8 @@ public class UserController {
             return instance;
         }
 
-        public String mapToFunctions(String[] parsedUrl) {
+        public String mapToFunctions(String httpMethod, String resourceUrl) {
 
-            String httpMethod = parsedUrl[0];
-            String resourceUrl = parsedUrl[1];
-            String httpVersion = parsedUrl[2];
             String data = null;
 
             if (resourceUrl.contains("?")) {
@@ -45,7 +43,7 @@ public class UserController {
                 log.debug("resourceUrl = [{}], data = [{}]", resourceUrl, data);
             }
 
-            if (httpMethod.equals("GET") && resourceUrl.equals("/create") && !Objects.isNull(data)) {
+            if (httpMethod.equals("GET") && resourceUrl.equals("/user/create") && !Objects.isNull(data)) {
                 return getSignUpUserFromQueryParameter(httpMethod, resourceUrl, data);
             }
 
@@ -58,17 +56,11 @@ public class UserController {
             return "/util/error";
         }
 
-        int numOfDataForSignUp = 4;
-        String[] userInfo = data.split("\\&");
-        String[] values = new String[numOfDataForSignUp];
+        Map<String, String> userInfo = Arrays.stream(data.split("&"))
+                .map(s -> s.split("="))
+                .collect(Collectors.toMap(key -> key[0], value -> value[1]));
 
-        for (int i = 0; i < numOfDataForSignUp; i++) {
-            String[] splited = userInfo[i].split("\\=");
-            String value = splited[1];
-            values[i] = value;
-        }
-
-        Database.addUser(new User(values[0], values[1], values[2], values[3]));
+        Database.addUser(new User(userInfo));
         return "/index.html";
     }
 }
