@@ -1,23 +1,24 @@
 package util;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import webserver.HttpRequest;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
 
-class HttpRequestUtilsTest {
+class HttpRequestTest {
+
+    HttpRequest httpRequest = new HttpRequest();
 
     @Test
-    @DisplayName("요청을 받아서 경로를 확인한다")
+    @DisplayName("RequestLine에서 경로를 찾아서 반환해준다")
     void getUrl() {
         // given
         String line = "GET /index.html HTTP/1.1";
         // when
-        String path = HttpRequestUtils.getUrl(line);
+        String path = httpRequest.getUrl(line);
         // then
         assertThat(path).isEqualTo("/index.html");
 
@@ -28,7 +29,7 @@ class HttpRequestUtilsTest {
     void getMethod(){
         String line = "GET /index.html HTTP/1.1";
 
-        String method = HttpRequestUtils.getMethod(line);
+        String method = httpRequest.getMethod(line);
         assertThat(method).isEqualTo("GET");
     }
 
@@ -39,7 +40,7 @@ class HttpRequestUtilsTest {
         String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         // when
-        Map<String, String> testMap = HttpRequestUtils.parseQueryString(request);
+        Map<String, String> testMap = httpRequest.parseQueryString(request);
 
         // then
         assertThat(testMap.get("userId")).isEqualTo("javajigi");
@@ -50,7 +51,7 @@ class HttpRequestUtilsTest {
     void querySize(){
         String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1";
 
-        Map<String, String> testMap = HttpRequestUtils.parseQueryString(request);
+        Map<String, String> testMap = httpRequest.parseQueryString(request);
 
         assertThat(testMap.size()).isEqualTo(3);
 
