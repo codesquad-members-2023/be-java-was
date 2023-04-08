@@ -19,7 +19,8 @@ class ParseQueryUtilsTest {
                 "userId", "test",
                 "password", "1234",
                 "name", "%EC%95%84%ED%97%B9%ED%97%B9",
-                "email", "1111%40gmail.com");
+                "email", "1111%40gmail.com"
+        );
 
         // when
         Map<String, String> params = ParseQueryUtils.parseQueryString(line);

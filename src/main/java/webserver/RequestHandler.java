@@ -1,13 +1,18 @@
 package webserver;
 
+import db.Database;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
+import util.HttpResponseUtils;
+import util.stylesheetUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -31,8 +36,12 @@ public class RequestHandler implements Runnable {
                 return;
             }
 
-            // path 설정
-            String url = HttpRequestUtils.getUrl(line);
+//            String method = HttpRequestUtils.getMethod(line); // method 설정
+            String url = HttpRequestUtils.getUrl(line); // path 설정
+
+            // GET: stylesheet
+            String contentType = stylesheetUtils.getContentType(url);
+            String pathName = stylesheetUtils.getPathName(url);
 
             // GET: join
             if (url.startsWith("/user/create?")) {
@@ -40,29 +49,9 @@ public class RequestHandler implements Runnable {
             }
 
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
-            response200Header(dos, body.length);
-            responseBody(dos, body);
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: text/html;charset=utf-8\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    private void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
+            byte[] body = Files.readAllBytes(new File(pathName + url).toPath());
+            HttpResponseUtils.response200Header(dos, body.length, contentType);
+            HttpResponseUtils.responseBody(dos, body);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
