@@ -98,28 +98,4 @@ public class GetMappingProvider {
         logger.info("DB 확인 : " + Database.findAll());
         return "redirect:src/main/resources/templates/index.html";
     }
-
-    public String mappingCssStyles() {
-        return "src/main/resources/static/css/styles.css";
-    }
-
-    public String mappingJsBootstrap() {
-        return "src/main/resources/static/js/bootstrap.min.js";
-    }
-
-    public String mappingCssBootstrap() {
-        return "src/main/resources/static/css/bootstrap.min.css";
-    }
-
-    public String mappingJsJquery() {
-        return "src/main/resources/static/js/jquery-2.2.0.min.js";
-    }
-
-    public String mappingJsScripts() {
-        return "src/main/resources/static/js/scripts.js";
-    }
-
-    public String mappingFontsGlyphicons() {
-        return "src/main/resources/static/fonts/glyphicons-halflings-regular.woff";
-    }
 }
