@@ -35,6 +35,10 @@ public class RequestHandler implements Runnable {
                 int bodyLength = Integer.parseInt(httpRequest.getHeader("Content-Length"));
                 httpRequest.setBody(readBody(br, bodyLength));
             }
+
+            AppConfig appConfig = new AppConfig();
+            Controller controller = appConfig.getController(httpRequest.getPath());
+            controller.service(httpRequest, httpResponse);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
