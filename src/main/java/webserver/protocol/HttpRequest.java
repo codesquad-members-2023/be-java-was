@@ -6,45 +6,46 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-    private final String METHOD;
-    private final String PATH;
-    private final String HTTP_VERSION;
-    private final Map<String, String> QUERY_PARAMETERS;
-    private final Map<String, String> HEADERS;
+    private final Method method;
+    private final String path;
+    private final String httpVersion;
+    private final Map<String, String> queryParameters;
+    private final Map<String, String> headers;
 
     public HttpRequest(String requestLine, String headerStr) {
-        this.METHOD = ProtocolParser.parseMethod(requestLine);
-        this.PATH = ProtocolParser.parsePath(requestLine);
-        this.HTTP_VERSION = ProtocolParser.parseVersion(requestLine);
-        this.QUERY_PARAMETERS = ProtocolParser.parseQueryParameter(requestLine);
-        this.HEADERS = ProtocolParser.parseHeaders(headerStr);
+        this.method = ProtocolParser.parseMethod(requestLine);
+        this.path = ProtocolParser.parsePath(requestLine);
+        this.httpVersion = ProtocolParser.parseVersion(requestLine);
+        this.queryParameters = ProtocolParser.parseQueryParameter(requestLine);
+        this.headers = ProtocolParser.parseHeaders(headerStr);
     }
 
     public HttpRequest(String requestLine) {
-        this.METHOD = ProtocolParser.parseMethod(requestLine);
-        this.PATH = ProtocolParser.parsePath(requestLine);
-        this.HTTP_VERSION = ProtocolParser.parseVersion(requestLine);
-        this.QUERY_PARAMETERS = ProtocolParser.parseQueryParameter(requestLine);
-        this.HEADERS = new HashMap<>();
+        this.method = ProtocolParser.parseMethod(requestLine);
+        this.path = ProtocolParser.parsePath(requestLine);
+        this.httpVersion = ProtocolParser.parseVersion(requestLine);
+        this.queryParameters = ProtocolParser.parseQueryParameter(requestLine);
+        this.headers = new HashMap<>();
     }
 
-    public String getMETHOD() {
-        return METHOD;
+    public Method getMethod() {
+        return method;
     }
 
-    public String getPATH() {
-        return PATH;
+    public String getPath() {
+        return path;
     }
 
     public String getParameter(String key) {
-        return QUERY_PARAMETERS.get(key);
+        return queryParameters.get(key);
+    }
     }
 
     public boolean isPath(String path) {
-        return this.PATH.equals(path);
+        return this.path.equals(path);
     }
 
     public String getVersion() {
-        return HTTP_VERSION;
+        return httpVersion;
     }
 }
