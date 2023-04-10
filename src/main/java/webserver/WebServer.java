@@ -3,7 +3,6 @@ package webserver;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserSignUpService;
@@ -26,10 +25,8 @@ public class WebServer {
 
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
-            UserSignUpService userSignUpService = new UserSignUpService();
-            UserController userController = new UserController(userSignUpService);
             while ((connection = listenSocket.accept()) != null) {
-                Thread thread = new Thread(new RequestHandler(connection, userController));
+                Thread thread = new Thread(new RequestHandler(connection));
                 thread.start();
             }
         }
