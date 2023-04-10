@@ -4,7 +4,6 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ContentType;
 import util.HttpRequestUtils;
 import util.HttpResponseUtils;
 import util.StylesheetUtils;
@@ -13,6 +12,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Map;
 
 
 public class RequestHandler implements Runnable {
@@ -32,25 +32,34 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             // 모든 리퀘스트 출력 & 첫 라인 리턴
-            String line = HttpRequestUtils.getStartLine(br);
-            if (line == null) {
+            String startLine = br.readLine();
+            if (startLine == null) {
                 return;
             }
 
-//            String method = HttpRequestUtils.getMethod(line); // method 설정
-            String url = HttpRequestUtils.getUrl(line); // path 설정
+            String method = HttpRequestUtils.getMethod(startLine); // method 설정
+            String url = HttpRequestUtils.getUrl(startLine); // path 설정
+            Map<String, String> headers = HttpRequestUtils.getRequestHeaders(br);
 
             // GET: stylesheet
             String contentType = StylesheetUtils.getContentType(url);
             String pathName = StylesheetUtils.getPathName(url);
 
             // GET: join
-            if (url.startsWith("/user/create?")) {
-                User user = HttpRequestUtils.joinWithGET(url);
+//            if (url.startsWith("/user/create?")) {
+//                User user = HttpRequestUtils.joinWithGET(url);
+//                Database.addUser(user);
+//                logger.debug("User: {}", user);
+//
+//                url = "/index.html";
+//            }
+
+            // POST: join
+            if (method.equals("POST") && url.startsWith("/user/create")) {
+                String requestBody = br.readLine();
+                User user = HttpRequestUtils.joinWithPOST(requestBody);
                 Database.addUser(user);
                 logger.debug("User: {}", user);
-
-                url = "/index.html";
             }
 
             DataOutputStream dos = new DataOutputStream(out);
