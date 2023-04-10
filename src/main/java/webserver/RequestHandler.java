@@ -4,7 +4,8 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import controller.FrontController;
+import config.AppConfig;
+import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
@@ -25,22 +26,24 @@ public class RequestHandler implements Runnable {
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
             String requestLine = br.readLine();
 
-            String header;
-            while (!((header = br.readLine()).equals(""))) {
-                sb.append(header).append("\n");
-            }
-
-            HttpRequest httpRequest = new HttpRequest(requestLine, sb.toString());
+            HttpRequest httpRequest = new HttpRequest(requestLine, readHeader(br));
             HttpResponse httpResponse = new HttpResponse(httpRequest.getVersion(), new DataOutputStream(out));
 
-            FrontController controller = new FrontController();
-            controller.run(httpRequest, httpResponse);
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+
+    private String readHeader(BufferedReader br) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        String header;
+        while (!((header = br.readLine()).equals(""))) {
+            sb.append(header).append("\n");
+        }
+        return sb.toString();
     }
 
 }
