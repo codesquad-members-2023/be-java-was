@@ -82,14 +82,15 @@ public class ProtocolParser {
 
     /**
      * 요청 header 파싱
-     * @param header string
+     * @param requestLine
      * @return request header
      */
     public static Map<String, String> parseHeaders(String headerStr) {
         Map<String, String> headers = new HashMap<>();
 
         for (String line : headerStr.split("\n")) {
-            headers.put(line.split(":")[0].trim(), line.split(":")[1].trim());
+            int spliteIndex = line.indexOf(":");
+            headers.put(line.substring(0, spliteIndex).trim(), line.substring(spliteIndex+1).trim());
         }
 
         return headers;
