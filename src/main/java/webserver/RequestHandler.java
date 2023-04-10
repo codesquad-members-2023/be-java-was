@@ -45,7 +45,11 @@ public class RequestHandler implements Runnable {
 
             // GET: join
             if (url.startsWith("/user/create?")) {
-                url = HttpRequestUtils.joinWithGET(url);
+                User user = HttpRequestUtils.joinWithGET(url);
+                Database.addUser(user);
+                logger.debug("User: {}", user);
+
+                url = "/index.html";
             }
 
             DataOutputStream dos = new DataOutputStream(out);

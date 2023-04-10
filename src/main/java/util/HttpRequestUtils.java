@@ -54,16 +54,12 @@ public class HttpRequestUtils {
         return null;
     }
 
-    public static String joinWithGET(String url) {
+    public static User joinWithGET(String url) {
         int index = url.indexOf("?");
         String queryString = url.substring(index + 1);
         Map<String, String> params = ParseQueryUtils.parseQueryString(queryString);
-        User user = new User(decoding(params.get("userId")), decoding(params.get("password"))
+        return new User(decoding(params.get("userId")), decoding(params.get("password"))
                 , decoding(params.get("name")), decoding(params.get("email")));
-        Database.addUser(user);
-        logger.debug("User: {}", user);
-
-        return "/index.html";
     }
 
     public static String decoding(String value) {
