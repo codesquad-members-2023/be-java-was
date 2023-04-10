@@ -6,9 +6,13 @@ import java.util.StringTokenizer;
 
 public class HttpHeaders {
 
-    private Map<String, String> headers;
-    public HttpHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    private Map<String, String> headers = new HashMap<>();
+
+    public HttpHeaders() {
+    }
+
+    public HttpHeaders(String key, String value) {
+        put(key, value);
     }
 
     public void put(String key, String value) {
@@ -28,13 +32,12 @@ public class HttpHeaders {
         return 0;
     }
 
-
     @Override
     public String toString() {
         StringBuffer headerString = new StringBuffer();
         headers.entrySet().stream()
-            .forEach(e -> headerString.append(e.getKey()).append(": ").append(e.getValue())
-                .append("\r\n"));
+                .forEach(e -> headerString.append(e.getKey()).append(": ").append(e.getValue())
+                        .append("\r\n"));
 
         return headerString.append("\r\n").toString();
     }
