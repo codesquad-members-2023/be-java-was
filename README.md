@@ -12,6 +12,14 @@ Java Web Application Server 2022
 - Java Optional 학습
 - Java 예외 처리 학습
 
+## 6주차 학습 계획
+- step3 구현
+  - 컨텐트 타입 지원
+  - MIME 타입 학습
+- POST 요청으로 온 데이터 처리하기
+- 쿠키를 이용한 로그인
+- 동적 HTML 응답 구현
+
 ## 학습한 내용
 
 
