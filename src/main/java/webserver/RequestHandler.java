@@ -6,8 +6,6 @@ import java.nio.file.Files;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.RequestParser;
-import util.SingletonContainer;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -15,11 +13,9 @@ public class RequestHandler implements Runnable {
     private static final String staticPath = "./src/main/resources/static";
 
     private Socket connection;
-    private HttpRequestHeader httpRequestHeader;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        httpRequestHeader = new HttpRequestHeader();
     }
 
     public void run() {
@@ -30,43 +26,17 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            String line = br.readLine();
+            HttpRequestHeader httpRequestHeader = new HttpRequestHeader(br);
 
-            logger.debug("request first line = {}", line);
+            String returnUrl = httpRequestHeader.getValueByName("returnUrl");
 
-            if (line != null) {
-                String[] parsedUrl = RequestParser.separateUrls(line);
-                String httpMethod = parsedUrl[0];
-                String resourceUrl = parsedUrl[1];
+            DataOutputStream dos = new DataOutputStream(out);
 
-                String returnUrl = "/index.html";
-                if (resourceUrl.startsWith("/user")) {
-                    returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
-                }
-
-                httpRequestHeader.saveHeaderNameAndValue("httpMethod", httpMethod);
-                httpRequestHeader.saveHeaderNameAndValue("resourceUrl", resourceUrl);
-                httpRequestHeader.saveHeaderNameAndValue("returnUrl", returnUrl);
-
-                logger.debug("request: [{}], url: [{}]", line, returnUrl);
-
-                while (!line.equals("")) {
-                    line = br.readLine();
-                    String[] nameAndValue = line.split(": ");
-                    if (nameAndValue.length == 2) {
-                        httpRequestHeader.saveHeaderNameAndValue(nameAndValue[0], nameAndValue[1]);
-                    }
-                    logger.debug("request: {}", line);
-                }
-
-                DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File(templatePath + returnUrl).toPath());
-                response200Header(dos, body.length);
-                responseBody(dos, body);
-            }
-
-        } catch (IOException e) {
-            logger.error(e.getMessage());
+            byte[] body = Files.readAllBytes(new File(templatePath + returnUrl).toPath());
+            response200Header(dos, body.length);
+            responseBody(dos, body);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
