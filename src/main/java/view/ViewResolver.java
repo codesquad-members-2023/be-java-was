@@ -32,7 +32,7 @@ public class ViewResolver {
         ContentsType contentsType = mapTypeByIndentifier(viewName);
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", contentsType.getContentType());
-        View okView = new View(viewName, contentsType, new HttpResponse("HTTP/1.1", Status.OK,
+        View okView = new View(viewName, contentsType, new HttpResponse("HTTP/1.1",Status.OK,
             new HttpHeaders(header)));
 
         return okView.render();
