@@ -59,6 +59,11 @@ public class ProtocolParser {
         return parseParameter(queryString[1]);
     }
 
+    /**
+     * 파라미터 파싱
+     * @param queryString
+     * @return parameters
+     */
     public static Map<String, String> parseParameter(String queryString) {
         if (queryString.equals("")) {
             return new HashMap<>();

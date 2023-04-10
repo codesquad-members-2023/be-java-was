@@ -12,7 +12,7 @@ public abstract class FrontController implements Controller {
     protected Logger logger = LoggerFactory.getLogger(FrontController.class);
 
     /**
-     * 작업을 처리할 컨트롤러를 호출한다.
+     * 작업을 처리할 메서드를 호출한다.
      * @param httpRequest
      * @param httpResponse
      */
