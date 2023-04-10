@@ -8,7 +8,7 @@ import webserver.protocol.HttpResponse;
 
 import java.io.IOException;
 
-public class FrontController implements Controller {
+public abstract class FrontController implements Controller {
     protected Logger logger = LoggerFactory.getLogger(FrontController.class);
 
     /**
@@ -25,13 +25,12 @@ public class FrontController implements Controller {
                 case POST:
                     doPost(httpRequest, httpResponse);
                     break;
-                default:
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
-    protected void doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {}
-    protected void doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {}
+    protected abstract void doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
+    protected abstract void doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
 }
