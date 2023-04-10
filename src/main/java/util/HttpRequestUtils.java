@@ -14,6 +14,16 @@ import java.util.Map;
 public class HttpRequestUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
 
+    public static String getStartLine(BufferedReader br) {
+        try {
+            return br.readLine();
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+
+        return null;
+    }
+
     public static String getMethod(String startLine) {
         String method = getStatus(startLine, 0);
         logger.debug("request method: {}", method);
@@ -36,37 +46,32 @@ public class HttpRequestUtils {
         return splitLine[num];
     }
 
-    //    public static String getStartLine(BufferedReader br) {
-//        try {
-//            logger.debug("----------RequestHeader-START------------");
-//            String headerLine = br.readLine();
-//            String firstLine = headerLine;
-//            while (headerLine != null && !headerLine.equals("")) {
-//                logger.debug("requestHeader: {}", headerLine);
-//                headerLine = br.readLine();
-//            }
-//            logger.debug("----------RequestHeader-END--------------");
-//            return firstLine;
-//        } catch (IOException e) {
-//            logger.error("error: occurred while reading the request header", e);
-//        }
-//
-//        return null;
-//    }
     public static Map<String, String> getRequestHeaders(BufferedReader br) {
         try {
             Map<String, String> headers = new HashMap<>();
             String line;
+            logger.debug("----------RequestHeader-START------------");
             while ((line = br.readLine()) != null && !line.equals("")) {
-                if (line.isEmpty()) {
-                    break;
-                }
                 logger.debug("requestHeader: {}", line);
                 String[] headerTokens = line.split(": ");
                 headers.put(headerTokens[0], headerTokens[1]);
             }
+            logger.debug("----------RequestHeader-END--------------");
 
             return headers;
+        } catch (IOException e) {
+            logger.error("error: occurred while reading the request header", e);
+        }
+
+        return null;
+    }
+
+    public static String getRequestBody(BufferedReader br, int contentLength) {
+        try{
+            char[] charBuffer = new char[contentLength];
+            br.read(charBuffer);
+
+            return new String(charBuffer);
         } catch (IOException e) {
             logger.error("error: occurred while reading the request header", e);
         }
