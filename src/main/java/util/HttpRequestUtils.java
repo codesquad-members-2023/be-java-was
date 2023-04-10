@@ -67,7 +67,7 @@ public class HttpRequestUtils {
     }
 
     public static String getRequestBody(BufferedReader br, int contentLength) {
-        try{
+        try {
             char[] charBuffer = new char[contentLength];
             br.read(charBuffer);
 
