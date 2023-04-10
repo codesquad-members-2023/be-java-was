@@ -32,7 +32,7 @@ class ProtocolParserTest {
         HttpRequest httpRequest = new HttpRequest(sampleRequest);
 
         //then
-        assertThat(httpRequest.getPATH()).isEqualTo("/");
+        assertThat(httpRequest.getPath()).isEqualTo("/");
     }
 
     @Test
@@ -45,7 +45,7 @@ class ProtocolParserTest {
         HttpRequest httpRequest = new HttpRequest(sampleRequest);
 
         //then
-        assertThat(httpRequest.getPATH()).isEqualTo("/user/create");
+        assertThat(httpRequest.getPath()).isEqualTo("/user/create");
     }
 
     @Test
