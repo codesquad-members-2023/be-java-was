@@ -14,12 +14,11 @@ import java.util.Map;
 
 public class HttpRequestHeader {
 
-    Logger logger = LoggerFactory.getLogger(HttpRequestHeader.class);
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Map<String, String> httpRequestHeader;
 
     public HttpRequestHeader(BufferedReader br) throws IOException {
         this.httpRequestHeader = new HashMap<>();
-
 
         String line = br.readLine();
 
@@ -31,6 +30,10 @@ public class HttpRequestHeader {
             String resourceUrl = parsedUrl[1];
 
             String returnUrl = resourceUrl.split("\\?")[0];
+            if (returnUrl.equals("/")) {
+                returnUrl = "/index.html";
+            }
+
             if (resourceUrl.startsWith("/user")) {
                 returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
             }
@@ -57,31 +60,9 @@ public class HttpRequestHeader {
         return httpRequestHeader.get(name);
     }
 
-    private String getExtension() {
+    public String getExtension() {
         String fileName = httpRequestHeader.get("returnUrl");
         int index = fileName.lastIndexOf(".");
         return fileName.substring(index + 1);
-    }
-
-    public void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
-        try {
-            String contentType = ContentTypeMapper.getContentTypeByExtension(getExtension());
-
-            dos.writeBytes("HTTP/1.1 200 OK \r\n");
-            dos.writeBytes("Content-Type: " + contentType + "\r\n");
-            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
-            dos.writeBytes("\r\n");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-    }
-
-    public void responseBody(DataOutputStream dos, byte[] body) {
-        try {
-            dos.write(body, 0, body.length);
-            dos.flush();
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
     }
 }
