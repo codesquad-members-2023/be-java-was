@@ -4,14 +4,16 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import config.AppConfig;
 import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import utility.HttpRequestUtility;
 
 public class RequestHandler implements Runnable {
+
+    private final String USER = "user";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
     private final AppConfig appConfig = new AppConfig();
@@ -44,7 +46,7 @@ public class RequestHandler implements Runnable {
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + url).toPath());
+            byte[] body = Files.readAllBytes(new File("src/main/resources/templates" + path).toPath());
             response200Header(dos, body.length);
             responseBody(dos, body);
         } catch (IOException e) {
