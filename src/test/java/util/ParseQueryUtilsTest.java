@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ParseQueryUtilsTest {
@@ -26,7 +27,7 @@ class ParseQueryUtilsTest {
         Map<String, String> params = ParseQueryUtils.parseQueryString(line);
 
         // then
-        assertEquals(expectedParams, params);
+        assertThat(params).isEqualTo(expectedParams);
     }
 
     @Test
@@ -40,6 +41,6 @@ class ParseQueryUtilsTest {
         Map<String, String> params = ParseQueryUtils.parseQueryString(line);
 
         // then
-        assertEquals(emptyMap, params);
+        assertThat(params).isEqualTo(emptyMap);
     }
 }
