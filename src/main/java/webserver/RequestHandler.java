@@ -5,6 +5,7 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
+import config.AppConfig;
 import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,11 +14,11 @@ import utility.HttpRequestUtility;
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
-    private final UserController userController;
+    private final AppConfig appConfig = new AppConfig();
+    private final UserController userController = appConfig.makeUserController();
 
-    public RequestHandler(Socket connectionSocket, UserController userController) {
+    public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
-        this.userController = userController;
     }
 
     public void run() {
@@ -40,7 +41,6 @@ public class RequestHandler implements Runnable {
                 userController.saveUser(queryString);
                 url = "/index.html";
             }
-
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             DataOutputStream dos = new DataOutputStream(out);
