@@ -2,6 +2,7 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContentTypeMapper;
 import util.RequestParser;
 import util.SingletonContainer;
 
@@ -15,16 +16,10 @@ public class HttpRequestHeader {
 
     Logger logger = LoggerFactory.getLogger(HttpRequestHeader.class);
     private Map<String, String> httpRequestHeader;
-    private Map<String, String> contentTypeMap;
 
     public HttpRequestHeader(BufferedReader br) throws IOException {
         this.httpRequestHeader = new HashMap<>();
-        this.contentTypeMap = new HashMap<>();
-        contentTypeMap.put("html", "text/html");
-        contentTypeMap.put("css", "text/css");
-        contentTypeMap.put("js", "application/javascript");
-        contentTypeMap.put("png", "image/png");
-        contentTypeMap.put("ico", "image/x-icon");
+
 
         String line = br.readLine();
 
@@ -70,7 +65,7 @@ public class HttpRequestHeader {
 
     public void response200Header(DataOutputStream dos, int lengthOfBodyContent) {
         try {
-            String contentType = contentTypeMap.get(getExtension());
+            String contentType = ContentTypeMapper.getContentTypeByExtension(getExtension());
 
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + contentType + "\r\n");
