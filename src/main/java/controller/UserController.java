@@ -23,10 +23,10 @@ public class UserController implements Controller{
     @Override
     public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
-            if (GET.equals(httpRequest.getMethod())) {
+            if (GET.equals(httpRequest.getMETHOD())) {
 
                 if (httpRequest.isPath(ROOT + "/form.html")) {
-                    httpResponse.forward(httpRequest.getPath())
+                    httpResponse.forward(httpRequest.getPATH())
                             .response();
                 }
 

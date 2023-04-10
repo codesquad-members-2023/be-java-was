@@ -34,7 +34,7 @@ public class RequestHandler implements Runnable {
             }
 
             HttpRequest httpRequest = new HttpRequest(requestLine, sb.toString());
-            HttpResponse httpResponse = new HttpResponse(new DataOutputStream(out));
+            HttpResponse httpResponse = new HttpResponse(httpRequest.getVersion(), new DataOutputStream(out));
 
             FrontController controller = new FrontController();
             controller.run(httpRequest, httpResponse);

@@ -6,17 +6,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-    private final String method;
+    private final Method method;
     private final String path;
     private final String httpVersion;
-    private final Map<String, String> queryParameter;
+    private final Map<String, String> queryParameters;
     private final Map<String, String> headers;
 
     public HttpRequest(String requestLine, String headerStr) {
         this.method = ProtocolParser.parseMethod(requestLine);
         this.path = ProtocolParser.parsePath(requestLine);
         this.httpVersion = ProtocolParser.parseVersion(requestLine);
-        this.queryParameter = ProtocolParser.parseQueryParameter(requestLine);
+        this.queryParameters = ProtocolParser.parseQueryParameter(requestLine);
         this.headers = ProtocolParser.parseHeaders(headerStr);
     }
 
@@ -24,11 +24,11 @@ public class HttpRequest {
         this.method = ProtocolParser.parseMethod(requestLine);
         this.path = ProtocolParser.parsePath(requestLine);
         this.httpVersion = ProtocolParser.parseVersion(requestLine);
-        this.queryParameter = ProtocolParser.parseQueryParameter(requestLine);
+        this.queryParameters = ProtocolParser.parseQueryParameter(requestLine);
         this.headers = new HashMap<>();
     }
 
-    public String getMethod() {
+    public Method getMethod() {
         return method;
     }
 
@@ -37,10 +37,15 @@ public class HttpRequest {
     }
 
     public String getParameter(String key) {
-        return queryParameter.get(key);
+        return queryParameters.get(key);
+    }
     }
 
     public boolean isPath(String path) {
         return this.path.equals(path);
+    }
+
+    public String getVersion() {
+        return httpVersion;
     }
 }

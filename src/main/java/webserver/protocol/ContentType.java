@@ -3,21 +3,31 @@ package webserver.protocol;
 import java.util.Arrays;
 
 public enum ContentType {
-    JS("application/javascript", ".js"),
-    CSS("text/css;charset=utf-8", ".css"),
-    FONT("font/woff", ".woff"),
-    HTML("text/html;charset=utf-8", ".html");
 
-    String value;
-    String pattern;
+    JS("application/javascript", ".js", "/static"),
+    CSS("text/css;charset=utf-8", ".css", "/static"),
+    FONT("font/woff", ".woff", "/static"),
+    PNG("image/png", ".png", "/static"),
+    ICO("image/avif", ".ico", "/templates"),
+    HTML("text/html;charset=utf-8", ".html", "/templates");
 
-    public String getValue() {
-        return value;
+    private String headValue;
+    private String pattern;
+    private String typePath;
+    private final String CLASS_PATH = "src/main/resources";
+
+    public String getHeadValue() {
+        return headValue;
     }
 
-    ContentType(String value, String pattern) {
-        this.value = value;
+    public String getTypeDirectory() {
+        return CLASS_PATH + typePath;
+    }
+
+    ContentType(String headValue, String pattern, String typePath) {
+        this.headValue = headValue;
         this.pattern = pattern;
+        this.typePath = typePath;
     }
 
     public static ContentType of(String path) {
@@ -25,5 +35,4 @@ public enum ContentType {
                 .filter(e->path.endsWith(e.pattern)).findAny()
                 .orElse(HTML);
     }
-
 }
