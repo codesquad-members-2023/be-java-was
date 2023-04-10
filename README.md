@@ -11,7 +11,10 @@ Java Web Application Server 2023
 
 ### 월요일
 - [ ] 미션 4단계 구현
-- [ ] POST 요청 추가
+- [ ] HTTP POST 동작방식 이해하기
+- [ ] HTTP redirection 기능 이해하기
+- [ ] form.html 태그 GET -> POST로 수정
+- [ ] 가입 완료 후 /index.html
 
 ### 화요일
 - [ ] 미션 4단계 리팩토링
