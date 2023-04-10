@@ -1,14 +1,10 @@
 package controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 import webserver.protocol.ContentType;
 
 import java.io.IOException;
-
-import static webserver.protocol.Method.GET;
 
 public class ViewController extends FrontController {
 
@@ -26,6 +22,6 @@ public class ViewController extends FrontController {
 
     @Override
     protected void doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        super.doPost(httpRequest, httpResponse);
+        /* TODO document why this method is empty */
     }
 }

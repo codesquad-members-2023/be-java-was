@@ -89,8 +89,8 @@ public class ProtocolParser {
         Map<String, String> headers = new HashMap<>();
 
         for (String line : headerStr.split("\n")) {
-            int spliteIndex = line.indexOf(":");
-            headers.put(line.substring(0, spliteIndex).trim(), line.substring(spliteIndex+1).trim());
+            int splitIndex = line.indexOf(":");
+            headers.put(line.substring(0, splitIndex).trim(), line.substring(splitIndex+1).trim());
         }
 
         return headers;
