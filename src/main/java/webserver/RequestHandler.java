@@ -4,7 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 
-import controller.UserController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
@@ -12,12 +11,15 @@ import util.SingletonContainer;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
-    private static final String commonPath = "./src/main/resources/templates";
+    private static final String templatePath = "./src/main/resources/templates";
+    private static final String staticPath = "./src/main/resources/static";
 
     private Socket connection;
+    private HttpRequestHeader httpRequestHeader;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
+        httpRequestHeader = new HttpRequestHeader();
     }
 
     public void run() {
@@ -42,15 +44,23 @@ public class RequestHandler implements Runnable {
                     returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
                 }
 
+                httpRequestHeader.saveHeaderNameAndValue("httpMethod", httpMethod);
+                httpRequestHeader.saveHeaderNameAndValue("resourceUrl", resourceUrl);
+                httpRequestHeader.saveHeaderNameAndValue("returnUrl", returnUrl);
+
                 logger.debug("request: [{}], url: [{}]", line, returnUrl);
 
                 while (!line.equals("")) {
                     line = br.readLine();
+                    String[] nameAndValue = line.split(": ");
+                    if (nameAndValue.length == 2) {
+                        httpRequestHeader.saveHeaderNameAndValue(nameAndValue[0], nameAndValue[1]);
+                    }
                     logger.debug("request: {}", line);
                 }
 
                 DataOutputStream dos = new DataOutputStream(out);
-                byte[] body = Files.readAllBytes(new File(commonPath + returnUrl).toPath());
+                byte[] body = Files.readAllBytes(new File(templatePath + returnUrl).toPath());
                 response200Header(dos, body.length);
                 responseBody(dos, body);
             }
