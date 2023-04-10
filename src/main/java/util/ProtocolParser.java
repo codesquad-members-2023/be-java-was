@@ -1,5 +1,7 @@
 package util;
 
+import webserver.protocol.Method;
+
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -11,8 +13,8 @@ public class ProtocolParser {
      * @param requestLine
      * @return httpRequest method(GET, POST 등)
      */
-    public static String parseMethod(String requestLine) {
-        return requestLine.split(" ")[0];
+    public static Method parseMethod(String requestLine) {
+        return Method.of(requestLine.split(" ")[0]);
     }
 
     /**
@@ -54,7 +56,14 @@ public class ProtocolParser {
             return new HashMap<>();
         }
 
-        String[] parammeterQuery = queryString[1].split("&");
+        return parseParameter(queryString[1]);
+    }
+
+    public static Map<String, String> parseParameter(String queryString) {
+        if (queryString.equals("")) {
+            return new HashMap<>();
+        }
+        String[] parammeterQuery = queryString.split("&");
 
         Map<String, String> parammeter = new HashMap<>();
 
