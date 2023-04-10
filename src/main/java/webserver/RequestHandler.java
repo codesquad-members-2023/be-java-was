@@ -45,11 +45,9 @@ public class RequestHandler implements Runnable {
     }
 
     private String readBody(BufferedReader br, int length) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i< length; i++) {
-            sb.append((char) br.read());
-        }
-        return sb.toString();
+        char[] body = new char[length];
+        br.read(body, 0, length);
+        return String.valueOf(body);
     }
 
     private String readHeader(BufferedReader br) throws IOException {
