@@ -4,14 +4,22 @@ import controller.Controller;
 import controller.UserController;
 import controller.ViewController;
 
-public class AppConfig {
+import java.util.HashMap;
+import java.util.Map;
 
-    public static Controller getUserController() {
-        return new UserController();
+public class AppConfig {
+    public static final String USER_URL = "/user/";
+    private Map<String, Controller> mapping;
+
+    public AppConfig() {
+        mapping = new HashMap<>();
+        mapping.put(USER_URL, new UserController());
     }
 
-    public static Controller getViewController() {
-        return new ViewController();
+    public Controller getController(String keyUrl) {
+        return mapping.keySet().stream().filter(keyUrl::startsWith).findAny()
+                .map(e -> mapping.get(e))
+                .orElse(new ViewController());
     }
 
 }
