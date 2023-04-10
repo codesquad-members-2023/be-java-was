@@ -33,13 +33,16 @@ public class View {
      */
     public byte[] render() throws IOException {
         byte[] headers = writeHeaderBytes(httpResponse);
-        byte[] body = Files.readAllBytes(
-            new File(contentsType.getLocatedPath() + viewName).toPath());
-        setContentLength(body.length);
-
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+        // Body가 있는 경우
         outputStream.write(headers);
-        outputStream.write(body);
+        if (contentsType != null) {
+            byte[] body = Files.readAllBytes(
+                    new File(contentsType.getLocatedPath() + viewName).toPath());
+            setContentLength(body.length);
+            outputStream.write(body);
+        }
 
         return outputStream.toByteArray();
     }
