@@ -35,13 +35,19 @@ public class RequestHandler implements Runnable {
             }
             logger.debug("request line: {}", line);
 
-            String url = HttpRequestUtility.getUrl(line);
-            if (url.startsWith("/user/create")) {
-                int index = url.indexOf("?");
-//                String requestPath = url.substring(0, index);
-                String queryString = url.substring(index + 1);
-                userController.saveUser(queryString);
-                url = "/index.html";
+            String[] splitRequestLine = line.split(" ");        // httpMethod / URI / httpVersion
+            logger.debug("splitRequestLine: {}", Arrays.toString(splitRequestLine));
+            String uri = getUri(splitRequestLine);
+            logger.debug("uri: {}", uri);
+            String path = getPath(uri);
+            logger.debug("path: {}", path);
+            String httpMethod = splitRequestLine[0];
+
+            String selectedController = findController(path);
+
+            if (selectedController.equals(USER)) {
+                path = userController.process(httpMethod, path, uri);
+                logger.debug("path: {}", path);
             }
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
@@ -72,5 +78,19 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    private String getUri(String[] splitRequestLine) {
+        return splitRequestLine[1];
+    }
+
+    private String getPath(String uriPath) {
+        String[] split = uriPath.split("\\?");
+        return split[0];
+    }
+
+    private String findController(String path) {
+        String[] split = path.split("/");
+        return split[1];
     }
 }
