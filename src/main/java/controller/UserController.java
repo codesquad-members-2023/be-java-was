@@ -28,11 +28,12 @@ public class UserController extends FrontController {
         }
     }
 
+    // TODO 테스트를 할 수가 없어...
     private void join(HttpRequest httpRequest, HttpResponse httpResponse) {
-        String userId = httpRequest.getParameter("userId");
-        String password = httpRequest.getParameter("password");
-        String name = httpRequest.getParameter("name");
-        String email = httpRequest.getParameter("email");
+        String userId = httpRequest.getBodyParameter("userId");
+        String password = httpRequest.getBodyParameter("password");
+        String name = httpRequest.getBodyParameter("name");
+        String email = httpRequest.getBodyParameter("email");
         User user = new User(userId, password, name, email);
 
         Database.addUser(user);
