@@ -26,13 +26,6 @@ public class WebServer {
             Socket connection;
             while ((connection = listenSocket.accept()) != null) {
                 Thread thread = new Thread(new RequestHandler(connection));
-                /**
-                 * run과 start의 차이
-                 * run은 메인에서 실행. 메인 스택 위에 쌓는다
-                 * start는 쓰레드 공간이 생성된다. (스택)
-                 * 차이점 공부하기
-                 */
-                // thread.run();
                 thread.start();
             }
         }
