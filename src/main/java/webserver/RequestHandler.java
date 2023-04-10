@@ -8,8 +8,8 @@ import config.AppConfig;
 import controller.URLController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequest;
-import util.HttpResponse;
+import request.HttpRequest;
+import response.HttpResponse;
 
 public class RequestHandler implements Runnable {
     private static final Logger log = LoggerFactory.getLogger(RequestHandler.class);
@@ -29,18 +29,17 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String line = br.readLine();
 
-            HttpRequest httpRequest = new HttpRequest(line);
+            HttpRequest httpRequest = new HttpRequest();
+            httpRequest.init(br.readLine());
             HttpResponse httpResponse = new HttpResponse();
 
             String path = httpRequest.getUrl();
-            path = urlController.mapUrl(path, httpRequest, httpResponse);
+            path = urlController.mapUrl(path, httpRequest, httpResponse, br);
 
             httpResponse.processResponse(path, httpResponse, out);
         } catch (IOException e) {
             log.error(e.getMessage());
         }
     }
-
 }

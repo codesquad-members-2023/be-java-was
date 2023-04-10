@@ -3,8 +3,11 @@ package controller;
 import config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpRequest;
-import util.HttpResponse;
+import request.HttpRequest;
+import response.HttpResponse;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class URLController {
 
@@ -12,7 +15,7 @@ public class URLController {
     private UserController userController = AppConfig.userController();
 
 
-    public String mapUrl(String path, HttpRequest httpRequest, HttpResponse httpResponse) {
+    public String mapUrl(String path, HttpRequest httpRequest, HttpResponse httpResponse, BufferedReader br) throws IOException {
         // localhost:8080 기본화면으로 이동
         if (path.equals("/")) {
             httpResponse.setStatus(200);
@@ -22,7 +25,7 @@ public class URLController {
         // userController 호출
         if (path.startsWith("/user")) {
             log.info("userController 호출 = {}", path);
-            return userController.process(httpRequest, httpResponse);
+            return userController.process(httpRequest, httpResponse, br);
         }
 
         // 기본 경로로 이동

@@ -3,11 +3,15 @@ package controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserJoinService;
-import util.HttpRequest;
-import util.HttpResponse;
+import request.HttpRequest;
+import response.HttpResponse;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 public class UserController {
     private final String HTTP_GET = "GET";
+    private final String HTTP_POST = "POST";
     private final String JOIN_FORM = "/user/form.html";
     private final String CREATE_USER_URL = "/user/create";
     private UserJoinService userJoinService;
@@ -18,16 +22,22 @@ public class UserController {
     }
 
     // TODO : 에러페이지 생성, 회원가입 검증
-    public String process(HttpRequest request, HttpResponse response) {
+    public String process(HttpRequest request, HttpResponse response, BufferedReader br) throws IOException {
+        log.info("user controller 내부에서의 url = {}", request.getUrl());
         // GET 요청인 경우 분리
         if (request.getMethod().equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
             if (request.getUrl().equals(JOIN_FORM)) {
                 return JOIN_FORM;
             }
+        }
+
+        if (request.getMethod().equals(HTTP_POST)) {
             // 회원가입일 경우
             if (request.getUrl().equals(CREATE_USER_URL)) {
-                return addUser(request.getQueryString(), response);
+                String requestBody = request.getRequestBody(br);
+                log.debug("회원가입 성공 = {}", requestBody);
+                return addUser(requestBody, response);
             }
         }
 
@@ -41,5 +51,4 @@ public class UserController {
         response.setHeader("Location", "/index.html");
         return response.getResponse();
     }
-
 }
