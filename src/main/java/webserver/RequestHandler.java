@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 public class RequestHandler implements Runnable {
 
     private final String USER = "user";
+    private final String INDEX = "/index.html";
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
     private final Socket connection;
     private final AppConfig appConfig = new AppConfig();
@@ -45,9 +46,13 @@ public class RequestHandler implements Runnable {
 
             String selectedController = findController(path);
 
+            if (selectedController.equals(INDEX)) {
+                path = INDEX;
+            }
+
             if (selectedController.equals(USER)) {
                 path = userController.process(httpMethod, path, uri);
-                logger.debug("path: {}", path);
+                logger.debug("User: {}", path);
             }
 
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
