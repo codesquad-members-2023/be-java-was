@@ -1,17 +1,13 @@
-package config;
-
-import controller.Controller;
-import controller.UserController;
-import controller.ViewController;
+package controller;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AppConfig {
+public class HandlerMapping {
     public static final String USER_URL = "/user/";
     private Map<String, Controller> mapping;
 
-    public AppConfig() {
+    public HandlerMapping() {
         mapping = new HashMap<>();
         mapping.put(USER_URL, new UserController());
     }
