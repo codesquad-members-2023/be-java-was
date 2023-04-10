@@ -4,9 +4,10 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContentType;
 import util.HttpRequestUtils;
 import util.HttpResponseUtils;
-import util.stylesheetUtils;
+import util.StylesheetUtils;
 
 import java.io.*;
 import java.net.Socket;
@@ -40,12 +41,16 @@ public class RequestHandler implements Runnable {
             String url = HttpRequestUtils.getUrl(line); // path 설정
 
             // GET: stylesheet
-            String contentType = stylesheetUtils.getContentType(url);
-            String pathName = stylesheetUtils.getPathName(url);
+            String contentType = StylesheetUtils.getContentType(url);
+            String pathName = StylesheetUtils.getPathName(url);
 
             // GET: join
             if (url.startsWith("/user/create?")) {
-                url = HttpRequestUtils.joinWithGET(url);
+                User user = HttpRequestUtils.joinWithGET(url);
+                Database.addUser(user);
+                logger.debug("User: {}", user);
+
+                url = "/index.html";
             }
 
             DataOutputStream dos = new DataOutputStream(out);
