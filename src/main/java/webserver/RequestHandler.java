@@ -31,11 +31,22 @@ public class RequestHandler implements Runnable {
             HttpRequest httpRequest = new HttpRequest(requestLine, readHeader(br));
             HttpResponse httpResponse = new HttpResponse(httpRequest.getVersion(), new DataOutputStream(out));
 
+            if (httpRequest.getHeader("Content-Length")!=null) {    // body 읽기
+                int bodyLength = Integer.parseInt(httpRequest.getHeader("Content-Length"));
+                httpRequest.setBody(readBody(br, bodyLength));
+            }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
 
+    private String readBody(BufferedReader br, int length) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i< length; i++) {
+            sb.append((char) br.read());
+        }
+        return sb.toString();
+    }
 
     private String readHeader(BufferedReader br) throws IOException {
         StringBuilder sb = new StringBuilder();
