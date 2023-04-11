@@ -1,7 +1,6 @@
 package util;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 public enum ContentType {
     JS("application/javascript", ".js"),
@@ -9,10 +8,11 @@ public enum ContentType {
     WOFF("font/woff", ".woff"),
     TFT("font/tft", "tft"),
     ICO("image/x-icon", ".ico"),
+    PNG("image/png", ".png"),
     HTML("text/html", ".html");
 
-    String value;
-    String pattern;
+    private final String value;
+    private final String pattern;
 
     public String getValue() {
         return value;

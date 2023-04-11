@@ -7,10 +7,12 @@ public enum ResponseBody {
     JS("application/javascript", "src/main/resources/static"),
     TTF("font/ttf", "src/main/resources/static"),
     WOF("font/woff", "src/main/resources/static"),
+    PNG("image/png", "src/main/resources/static"),
+    ICO("image/x-icon", "src/main/resources/templates"),
     BASIC("text/html", "src/main/resources/templates");
 
-    private String contentType;
-    private String path;
+    private final String contentType;
+    private final String path;
 
     ResponseBody(String contentType, String path) {
         this.contentType = contentType;
