@@ -47,11 +47,13 @@ public class HttpRequestHeader {
 
         while (!requestHeaders.equals("")) {
             requestHeaders = br.readLine();
-            String[] nameAndValue = requestHeaders.split(": ");
-            if (nameAndValue.length == 2) {
-                logger.info("headers name [{}], value [{}]", nameAndValue[0], nameAndValue[1]);
-                saveHeaderNameAndValue(nameAndValue[0], nameAndValue[1]);
-            }
+            String separator = ":";
+            int separatorIdx = requestHeaders.indexOf(separator);
+            String headersName = requestHeaders.substring(0, separatorIdx).trim();
+            String headersValue = requestHeaders.substring(separatorIdx + 1).trim();
+
+            logger.info("headers name [{}], value [{}]", headersName, headersValue);
+            saveHeaderNameAndValue(headersName, headersValue);
         }
     }
 
