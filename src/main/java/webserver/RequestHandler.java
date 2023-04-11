@@ -37,9 +37,18 @@ public class RequestHandler implements Runnable {
             if (!f.exists()) {
                 f = new File(staticPath + returnUrl);
             }
+            if (!f.exists()) {
+                returnUrl = "/util/error.html";
+                f = new File(templatePath + returnUrl);
+            }
 
             byte[] body = Files.readAllBytes(f.toPath());
-            httpResponseBuilder.response200Header(dos, body.length, httpRequest.getExtension());
+
+            if (returnUrl.startsWith("/util/error")) {
+                httpResponseBuilder.response404NotFoundHeader(dos, body.length, httpRequest.getExtension());
+            } else {
+                httpResponseBuilder.response200Header(dos, body.length, httpRequest.getExtension());
+            }
             httpResponseBuilder.responseBody(dos, body);
         } catch (IOException ex) {
             throw new RuntimeException(ex);

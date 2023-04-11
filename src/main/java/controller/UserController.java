@@ -51,7 +51,7 @@ public class UserController {
                 return getUserSignUpFormPage(httpMethod, resourceUrl);
             }
 
-            return "/index.html";
+            return "/util/error.html";
         }
 
     private String getSignUpUserFromQueryParameter(String httpMethod, String parsedUrl, String data) {

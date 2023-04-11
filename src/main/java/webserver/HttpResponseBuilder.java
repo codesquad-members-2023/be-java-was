@@ -25,6 +25,19 @@ public class HttpResponseBuilder {
         }
     }
 
+    public void response404NotFoundHeader(DataOutputStream dos, int lengthOfBodyContent, String extension) {
+        try {
+            String contentType = ContentTypeMapper.getContentTypeByExtension(extension);
+
+            dos.writeBytes("HTTP/1.1 404 NotFound \r\n");
+            dos.writeBytes("Content-Type: " + contentType + "\r\n");
+            dos.writeBytes("Content-Length: " + lengthOfBodyContent + "\r\n");
+            dos.writeBytes("\r\n");
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+    }
+
     public void responseBody(DataOutputStream dos, byte[] body) {
         try {
             dos.write(body, 0, body.length);
