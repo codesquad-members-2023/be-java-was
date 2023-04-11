@@ -1,8 +1,13 @@
 package controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import request.RequestParser;
 import service.UserSignUpService;
 
 public class UserController {
+
+    private static final Logger logger = LoggerFactory.getLogger(RequestParser.class);
 
     private final UserSignUpService userSignUpService;
 
@@ -10,26 +15,14 @@ public class UserController {
         this.userSignUpService = userSignUpService;
     }
 
-    public String process(String httpMethod, String path, String uri) {
-        if (httpMethod.equals("GET")) {
-            if (path.equals("/user/form.html")) {
-                return "/user/form.html";
-            }
-            if (path.equals("/user/create")) {
-                String queryString = getQueryString(uri);
-                return saveUser(queryString);
-            }
-        }
-
-        return "/error";
-    }
-
     private String getQueryString(String uri) {
         String[] splittedUri = uri.split("\\?");
         return splittedUri[1];
     }
 
-    public String saveUser(String queryString) {
+    public String saveUser(String uri) {
+        String queryString = getQueryString(uri);
+        logger.info(">> UserController -> queryString: {}", queryString);
         userSignUpService.userSignUp(queryString);
         return "/index.html";
     }
