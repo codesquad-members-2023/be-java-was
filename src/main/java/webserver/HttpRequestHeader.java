@@ -20,12 +20,12 @@ public class HttpRequestHeader {
     public HttpRequestHeader(BufferedReader br) throws IOException {
         this.httpRequestHeader = new HashMap<>();
 
-        String line = br.readLine();
+        String requestLine = br.readLine();
 
-        logger.debug("request first line = {}", line);
+        logger.debug("request first line = {}", requestLine);
 
-        if (line != null) {
-            String[] parsedUrl = RequestParser.separateUrls(line);
+        if (requestLine != null) {
+            String[] parsedUrl = RequestParser.separateUrls(requestLine);
             String httpMethod = parsedUrl[0];
             String resourceUrl = parsedUrl[1];
 
@@ -43,10 +43,13 @@ public class HttpRequestHeader {
             saveHeaderNameAndValue("returnUrl", returnUrl);
         }
 
-        while (!line.equals("")) {
-            line = br.readLine();
-            String[] nameAndValue = line.split(": ");
+        String requestHeaders = br.readLine();
+
+        while (!requestHeaders.equals("")) {
+            requestHeaders = br.readLine();
+            String[] nameAndValue = requestHeaders.split(": ");
             if (nameAndValue.length == 2) {
+                logger.info("headers name [{}], value [{}]", nameAndValue[0], nameAndValue[1]);
                 saveHeaderNameAndValue(nameAndValue[0], nameAndValue[1]);
             }
         }
