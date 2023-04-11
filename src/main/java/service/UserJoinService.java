@@ -11,7 +11,7 @@ public class UserJoinService {
     public void addUser(String userInformation) {
 
         User user = (User) ConstructorMapper.readValue(userInformation, User.class)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(IllegalArgumentException::new);
 
         Database.addUser(user);
     }

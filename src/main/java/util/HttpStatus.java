@@ -5,8 +5,8 @@ public enum HttpStatus {
     MOVED_TEMPORARILY(302, "Moved Temporarily");
 
 
-    private int value;
-    private String reason;
+    private final int value;
+    private final String reason;
 
     HttpStatus(int value, String reason) {
         this.value = value;

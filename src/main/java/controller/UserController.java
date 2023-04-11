@@ -14,8 +14,8 @@ public class UserController {
     private final String HTTP_POST = "POST";
     private final String JOIN_FORM = "/user/form.html";
     private final String CREATE_USER_URL = "/user/create";
-    private UserJoinService userJoinService;
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final UserJoinService userJoinService;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public UserController(UserJoinService userJoinService) {
         this.userJoinService = userJoinService;
