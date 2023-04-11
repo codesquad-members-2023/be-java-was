@@ -5,6 +5,7 @@ import model.User;
 import util.ProtocolParser;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
+import webserver.protocol.StatusCode;
 
 import java.io.IOException;
 import java.util.Map;
@@ -25,23 +26,27 @@ public class UserController extends FrontController {
 
     @Override
     protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-        if (httpRequest.isPath(USER_URL + "/create")) {
-            return join(httpRequest, httpResponse);
-        }
-        if (httpRequest.isPath(USER_URL + "/login")) {
-            return login(httpRequest, httpResponse);
+        try {
+            if (httpRequest.isPath(USER_URL + "/create")) {
+                return join(httpRequest, httpResponse);
+            }
+            if (httpRequest.isPath(USER_URL + "/login")) {
+                return login(httpRequest, httpResponse);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return httpRequest.getPath();
     }
 
-    private String login(HttpRequest httpRequest, HttpResponse httpResponse) {
+    private String login(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
         String userId = parameter.get("userId");
         String password = parameter.get("password");
 
         User user;
         if ((user=Database.findUserById(userId))==null || !user.isLogined(password)) {
-            httpResponse.redirect("/user/login_failed.html").response();
+            httpResponse.forward(StatusCode.UNAUTHORIZED, "/user/login_failed.html").response();
             return "/user/login_failed.html";
         }
 
