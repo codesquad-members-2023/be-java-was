@@ -79,13 +79,14 @@ Java Web Application Server 2022
 - 매일 조금씩 HTTP 프로토콜에 대해 더 공부하기
 
 ## 4월 10일 월요일
-- [ ]  미션4 구현하기
-- [ ]  HeadFirst Servlets&JSP 챕터 1읽고 정리
+- [x]  미션4 구현하기
+- [x]  HeadFirst Servlets&JSP 챕터 1읽기
 
 ## 4월 11일 화요일
 - [ ]  미션5 구현하기
 - [ ]  HeadFirst Servlets&JSP 챕터 2읽고 정리
-- [ ]  object ch4 읽기
+- [x]  object ch4 읽기
+- [ ]  리팩토링 --> 실패.. 5단계 후 다시 시도할 예정
 
 ## 4월 12일 수요일
 - [ ]  월-화에 공부하지 못한 것 추가 공부
