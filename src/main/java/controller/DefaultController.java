@@ -14,8 +14,8 @@ public class DefaultController extends FrontController {
             return "/index.html";
         }
 
-        httpResponse.forward(httpRequest.getUri()).response();
-        return httpRequest.getUri();
+        httpResponse.forward(httpRequest.getPath()).response();
+        return httpRequest.getPath();
     }
 
     @Override

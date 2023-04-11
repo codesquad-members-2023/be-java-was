@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class HandlerMappingTest {
     HandlerMapping handlerMapping;
@@ -35,6 +34,6 @@ class HandlerMappingTest {
         Controller controller = handlerMapping.getController(user_url);
 
         //then
-        assertThat(controller.getClass()).isEqualTo(ViewController.class);
+        assertThat(controller.getClass()).isEqualTo(DefaultController.class);
     }
 }

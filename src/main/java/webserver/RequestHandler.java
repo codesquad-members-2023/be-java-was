@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import config.AppConfig;
+import controller.HandlerMapping;
 import controller.Controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,16 +29,17 @@ public class RequestHandler implements Runnable {
             String requestLine = br.readLine();
 
             HttpRequest httpRequest = new HttpRequest(requestLine, readHeader(br));
-            HttpResponse httpResponse = new HttpResponse(httpRequest.getVersion(), new DataOutputStream(out));
+            HttpResponse httpResponse = new HttpResponse(new DataOutputStream(out));
 
             if (httpRequest.getHeader("Content-Length")!=null) {    // body 읽기
                 int bodyLength = Integer.parseInt(httpRequest.getHeader("Content-Length"));
                 httpRequest.setBody(readBody(br, bodyLength));
             }
 
-            AppConfig appConfig = new AppConfig();
-            Controller controller = appConfig.getController(httpRequest.getPath());
+            HandlerMapping handlerMapping = new HandlerMapping();
+            Controller controller = handlerMapping.getController(httpRequest.getPath());
             controller.service(httpRequest, httpResponse);
+
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
