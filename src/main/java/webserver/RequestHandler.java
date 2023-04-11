@@ -25,16 +25,9 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
-            String requestLine = br.readLine();
 
-            HttpRequest httpRequest = new HttpRequest(requestLine, readHeader(br));
+            HttpRequest httpRequest = HttpRequest.from(in);
             HttpResponse httpResponse = new HttpResponse(new DataOutputStream(out));
-
-            if (httpRequest.getHeader("Content-Length")!=null) {    // body 읽기
-                int bodyLength = Integer.parseInt(httpRequest.getHeader("Content-Length"));
-                httpRequest.setBody(readBody(br, bodyLength));
-            }
 
             HandlerMapping handlerMapping = new HandlerMapping();
             Controller controller = handlerMapping.getController(httpRequest.getPath());
@@ -45,19 +38,6 @@ public class RequestHandler implements Runnable {
         }
     }
 
-    private String readBody(BufferedReader br, int length) throws IOException {
-        char[] body = new char[length];
-        br.read(body, 0, length);
-        return String.valueOf(body);
-    }
 
-    private String readHeader(BufferedReader br) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        String header;
-        while (!((header = br.readLine()).equals(""))) {
-            sb.append(header).append("\n");
-        }
-        return sb.toString();
-    }
 
 }
