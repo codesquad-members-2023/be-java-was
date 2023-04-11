@@ -47,14 +47,14 @@ public class UserController {
                 return getSignUpUserFromQueryParameter(httpMethod, resourceUrl, data);
             }
 
+            if (httpMethod.equals("GET") && resourceUrl.equals("/user/form.html")) {
+                return getUserSignUpFormPage(httpMethod, resourceUrl);
+            }
+
             return "/index.html";
         }
 
     private String getSignUpUserFromQueryParameter(String httpMethod, String parsedUrl, String data) {
-
-        if (!httpMethod.equals("GET")) {
-            return "/util/error";
-        }
 
         Map<String, String> userInfo = Arrays.stream(data.split("&"))
                 .map(s -> s.split("="))
@@ -62,5 +62,9 @@ public class UserController {
 
         Database.addUser(new User(userInfo));
         return "/index.html";
+    }
+
+    private String getUserSignUpFormPage(String httpMethod, String parsedUrl) {
+        return "/" + parsedUrl;
     }
 }

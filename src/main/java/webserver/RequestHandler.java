@@ -26,10 +26,10 @@ public class RequestHandler implements Runnable {
             // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            HttpRequestHeader httpRequestHeader = new HttpRequestHeader(br);
+            HttpRequest httpRequest = new HttpRequest(br);
             HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder();
 
-            String returnUrl = httpRequestHeader.getValueByName("returnUrl");
+            String returnUrl = httpRequest.getValueByName("returnUrl");
 
             DataOutputStream dos = new DataOutputStream(out);
 
@@ -39,7 +39,7 @@ public class RequestHandler implements Runnable {
             }
 
             byte[] body = Files.readAllBytes(f.toPath());
-            httpResponseBuilder.response200Header(dos, body.length, httpRequestHeader.getExtension());
+            httpResponseBuilder.response200Header(dos, body.length, httpRequest.getExtension());
             httpResponseBuilder.responseBody(dos, body);
         } catch (IOException ex) {
             throw new RuntimeException(ex);

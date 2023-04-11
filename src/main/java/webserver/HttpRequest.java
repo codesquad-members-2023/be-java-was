@@ -2,22 +2,20 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ContentTypeMapper;
 import util.RequestParser;
 import util.SingletonContainer;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpRequestHeader {
+public class HttpRequest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
     private Map<String, String> httpRequestHeader;
 
-    public HttpRequestHeader(BufferedReader br) throws IOException {
+    public HttpRequest(BufferedReader br) throws IOException {
         this.httpRequestHeader = new HashMap<>();
 
         String requestLine = br.readLine();
@@ -38,6 +36,8 @@ public class HttpRequestHeader {
                 returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
             }
 
+            logger.info("here is returnUrl !!!!!!!!!! {}", returnUrl);
+
             saveHeaderNameAndValue("httpMethod", httpMethod);
             saveHeaderNameAndValue("resourceUrl", resourceUrl);
             saveHeaderNameAndValue("returnUrl", returnUrl);
@@ -46,7 +46,6 @@ public class HttpRequestHeader {
         String requestHeaders = br.readLine();
 
         while (!requestHeaders.equals("")) {
-            requestHeaders = br.readLine();
             String separator = ":";
             int separatorIdx = requestHeaders.indexOf(separator);
             String headersName = requestHeaders.substring(0, separatorIdx).trim();
@@ -54,6 +53,7 @@ public class HttpRequestHeader {
 
             logger.info("headers name [{}], value [{}]", headersName, headersValue);
             saveHeaderNameAndValue(headersName, headersValue);
+            requestHeaders = br.readLine();
         }
     }
 
