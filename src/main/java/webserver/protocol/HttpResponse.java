@@ -28,6 +28,7 @@ public class HttpResponse {
 
     /**
      * forward responseLine, 반환할 body를 준비한다.
+     *
      * @param path
      * @return
      * @throws IOException
@@ -94,6 +95,7 @@ public class HttpResponse {
 
     /**
      * header에 키와 값을 추가한다. 외부에서 수동으로 넣을 수도 있을까 싶어 public으로 공개해두었다.
+     *
      * @param key
      * @param value
      */
@@ -104,6 +106,7 @@ public class HttpResponse {
 
     /**
      * responseLine에 저장된 값을 DataOutputStream에 작성한다.
+     *
      * @throws IOException
      */
     private void writeStatusCode() throws IOException {
@@ -112,6 +115,7 @@ public class HttpResponse {
 
     /**
      * header에 저장된 키와 값을 DataOutputStream에 작성한다.
+     *
      * @throws IOException
      */
     private void writeHeader() throws IOException {
@@ -132,5 +136,15 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public HttpResponse setCookie(String key, String value) {
+        String cookie;
+        if ((cookie = headers.get("Set-Cookie")) == null) {
+            headers.put("Set-Cookie", String.format("%s=%s;", key, value));
+            return this;
+        }
+        cookie += String.format(" %s=%s;", key, value);
+        return this;
     }
 }
