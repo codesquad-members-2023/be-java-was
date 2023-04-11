@@ -47,8 +47,24 @@ public class HttpResponse {
         return this;
     }
 
+    public HttpResponse forward(StatusCode statusCode, String path) throws IOException {
+        try {
+            ContentType type = ContentType.of(path);
+
+            this.statusCode = statusCode;
+            this.body = Files.readAllBytes(new File(type.getTypeDirectory() + path).toPath());
+
+            setHeader("Content-Type", type.getHeadValue());
+            setHeader("Content-Length", String.valueOf(body.length));
+        } catch (IOException e) {
+            logger.error(e.getMessage());
+        }
+        return this;
+    }
+
     /**
      * redirect responseLine을 준비하고, header에 Location을 매개변수로 받은 경로로 추가한다.
+     *
      * @param path
      * @return
      */
