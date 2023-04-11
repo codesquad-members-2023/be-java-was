@@ -30,10 +30,8 @@ class UserControllerTest {
 
         given(httpRequest.getMethod()).willReturn(Method.POST);
         given(httpRequest.isPath("/user/create")).willReturn(true);
-        given(httpRequest.getBodyParameter("userId")).willReturn("member");
-        given(httpRequest.getBodyParameter("password")).willReturn("1234");
-        given(httpRequest.getBodyParameter("name")).willReturn("이린");
-        given(httpRequest.getBodyParameter("email")).willReturn("iirin@naver.com");
+        given(httpRequest.getBody()).willReturn("userId=member&password=1234&name=이린&email=iirin@naver.com");
+        given(httpResponse.redirect("/")).willCallRealMethod();
 
         userController = new UserController();
     }
@@ -55,6 +53,8 @@ class UserControllerTest {
     @Test
     @DisplayName("회원 가입 후, 데이터베이스 findAll 시 사이즈가 1 늘어나있다.")
     void joinAndGetSizeTest() throws Exception{
+        given(httpRequest.getBody()).willReturn("userId=Othermember&password=1234&name=이린&email=iirin@naver.com");
+
         int beforeSize = Database.findAll().size();
         userController.doPost(httpRequest, httpResponse);
         assertThat(Database.findAll()).hasSize(beforeSize + 1);
