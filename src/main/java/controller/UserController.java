@@ -2,10 +2,12 @@ package controller;
 
 import db.Database;
 import model.User;
+import util.ProtocolParser;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static controller.HandlerMapping.USER_URL;
 
@@ -30,10 +32,11 @@ public class UserController extends FrontController {
     }
 
     private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
-        String userId = httpRequest.getBodyParameter("userId");
-        String password = httpRequest.getBodyParameter("password");
-        String name = httpRequest.getBodyParameter("name");
-        String email = httpRequest.getBodyParameter("email");
+        Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
+        String userId = parameter.get("userId");
+        String password = parameter.get("password");
+        String name = parameter.get("name");
+        String email = parameter.get("email");
         User user = new User(userId, password, name, email);
 
         Database.addUser(user);
