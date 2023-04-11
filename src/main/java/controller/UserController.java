@@ -28,7 +28,26 @@ public class UserController extends FrontController {
         if (httpRequest.isPath(USER_URL + "/create")) {
             return join(httpRequest, httpResponse);
         }
+        if (httpRequest.isPath(USER_URL + "/login")) {
+            return login(httpRequest, httpResponse);
+        }
         return httpRequest.getPath();
+    }
+
+    private String login(HttpRequest httpRequest, HttpResponse httpResponse) {
+        Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
+        String userId = parameter.get("userId");
+        String password = parameter.get("password");
+
+        User user;
+        if ((user=Database.findUserById(userId))==null || !user.isLogined(password)) {
+            httpResponse.redirect("/user/login_failed.html").response();
+            return "/user/login_failed.html";
+        }
+
+        logger.info("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
+        httpResponse.redirect("/").response();
+        return "redirect:/";
     }
 
     private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
