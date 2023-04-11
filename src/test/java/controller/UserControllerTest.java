@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import request.HttpRequest;
 
 class UserControllerTest {
-    private UserController userController;
+    private UserJoinController userJoinController;
 
     @BeforeEach
     void setup() {
-        userController = new UserController();
+        userJoinController = new UserJoinController();
     }
 
     @Test
@@ -32,7 +32,7 @@ class UserControllerTest {
         httpRequest.init("GET /user/create?userId=poro&password=123&name=pororo&email=ngw7617%40naver.com HTTP/1.1");
 
         //TODO : 유저를 저장하지 않으므로 유저에 대한 테스트가 없음.
-        assertThat(userController.requestMapping(httpRequest)).isEqualTo("redirect:/");
+        assertThat(userJoinController.userJoin(httpRequest)).isEqualTo("redirect:/");
     }
 
     @Test
