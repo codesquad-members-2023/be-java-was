@@ -1,6 +1,5 @@
 package controller;
 
-import config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
@@ -16,21 +15,21 @@ public abstract class FrontController implements Controller {
      * @param httpRequest
      * @param httpResponse
      */
-    public void service(HttpRequest httpRequest, HttpResponse httpResponse) {
+    public String service(HttpRequest httpRequest, HttpResponse httpResponse) {
+        String returnPage = "";
         try {
             switch (httpRequest.getMethod()) {
                 case GET:
-                    doGet(httpRequest, httpResponse);
-                    break;
+                    returnPage = doGet(httpRequest, httpResponse);
                 case POST:
-                    doPost(httpRequest, httpResponse);
-                    break;
+                    returnPage = doPost(httpRequest, httpResponse);
             }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+        return returnPage;
     }
 
-    protected abstract void doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
-    protected abstract void doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
+    protected abstract String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
+    protected abstract String doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
 }

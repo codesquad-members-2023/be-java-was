@@ -7,6 +7,8 @@ import webserver.protocol.HttpResponse;
 
 import java.io.IOException;
 
+import static controller.HandlerMapping.USER_URL;
+
 public class UserController extends FrontController {
     /**
      * 작업을 처리할 메서드를 호출한다.
@@ -14,21 +16,20 @@ public class UserController extends FrontController {
      * @param httpResponse
      */
     @Override
-    protected void doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        if (httpRequest.finalPath("/form.html")) {
-            httpResponse.forward(httpRequest.getPath())
-                    .response();
-        }
+    protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        httpResponse.forward(httpRequest.getPath()).response();
+        return httpRequest.getPath();
     }
 
     @Override
-    protected void doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-        if (httpRequest.finalPath("/create")) {
-            join(httpRequest, httpResponse);
+    protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
+        if (httpRequest.isPath(USER_URL + "/create")) {
+            return join(httpRequest, httpResponse);
         }
+        return httpRequest.getPath();
     }
 
-    private String join(HttpRequest httpRequest) {
+    private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
         String userId = httpRequest.getBodyParameter("userId");
         String password = httpRequest.getBodyParameter("password");
         String name = httpRequest.getBodyParameter("name");
@@ -39,8 +40,9 @@ public class UserController extends FrontController {
 
         logger.info("[WELCOME] NEW USER = {}", user);
 
-        httpResponse.redirect("/")
-                .response();
+        httpResponse.redirect("/").response();
+
+        return "redirect:/";
     }
 
 

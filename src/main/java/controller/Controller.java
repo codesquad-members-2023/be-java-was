@@ -4,5 +4,5 @@ import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
 public interface Controller {
-    void service(HttpRequest httpRequest, HttpResponse httpResponse);
+    String service(HttpRequest httpRequest, HttpResponse httpResponse);
 }
