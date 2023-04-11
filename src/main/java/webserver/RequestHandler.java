@@ -1,7 +1,5 @@
 package webserver;
 
-import controller.UrlMapper;
-import controller.UserController;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,9 +7,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import controller.UrlMapper;
 import request.HttpRequest;
+import response.HttpHeaders;
 import view.ViewResolver;
 
 public class RequestHandler implements Runnable {
@@ -30,29 +32,50 @@ public class RequestHandler implements Runnable {
 
     public void run() {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}",
-            connection.getInetAddress(),
-            connection.getPort());
+                connection.getInetAddress(),
+                connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            HttpRequest httpRequest = new HttpRequest();
-            httpRequest.init(br.readLine());
-            logger.debug("http Request : {}", httpRequest);
-
-            String requestHeader;
-            while (!(requestHeader = br.readLine()).equals("")) {
-                logger.debug("header : {}", requestHeader);
-            }
+            HttpRequest httpRequest = setupHttpRequest(br);
 
             String viewName = urlMapper.requestMapping(httpRequest);
+
             byte[] responseMessage = viewResolver.mapView(viewName);
 
             DataOutputStream dos = new DataOutputStream(out);
             response(dos, responseMessage);
+
         } catch (IOException e) {
-            logger.error(e.getMessage());
+            throw new RuntimeException(e);
         }
+    }
+
+    private HttpRequest setupHttpRequest(BufferedReader br) throws IOException {
+        //HTTP Request Line을 읽어옵니다.
+        HttpRequest httpRequest = new HttpRequest();
+        httpRequest.initRequestLine(br.readLine());
+
+        //HTTP Request Header를 읽어옵니다.
+        String requestHeader;
+        HttpHeaders httpRequestHeaders = new HttpHeaders();
+        while (!(requestHeader = br.readLine()).equals("")) {
+            //Request Header 객체에 삽입
+            httpRequestHeaders.parse(requestHeader);
+        }
+        httpRequest.setHttpHeaders(httpRequestHeaders);
+
+        //HTTP Request Body를 읽어옵니다.
+        if (httpRequestHeaders.getContentLength() > 0) {
+            char[] buffer = new char[httpRequestHeaders.getContentLength()];
+
+            int byteRead = br.read(buffer, 0, httpRequestHeaders.getContentLength());
+            //HttpRequest 객체에 Request Body 추가
+            httpRequest.setBody(new String(buffer, 0, byteRead));
+        }
+
+        return httpRequest;
     }
 
     /**

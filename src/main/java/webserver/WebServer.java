@@ -1,14 +1,13 @@
 package webserver;
 
-import controller.UrlMapper;
-import controller.UserController;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import controller.UrlMapper;
+import controller.UserController;
 import util.SocketStatusChecker;
 import view.ViewResolver;
 

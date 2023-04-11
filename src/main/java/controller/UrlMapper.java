@@ -20,7 +20,7 @@ public class UrlMapper {
             return httpRequest.getUrl();
         }
 
-        if (httpRequest.getUrl().equals("/user/create")) {
+        if (httpRequest.getUrl().equals("/users/create")) {
             return userController.userJoin(httpRequest);
         }
 
