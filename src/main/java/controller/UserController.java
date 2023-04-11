@@ -28,8 +28,7 @@ public class UserController extends FrontController {
         }
     }
 
-    // TODO 테스트를 할 수가 없어...
-    private void join(HttpRequest httpRequest, HttpResponse httpResponse) {
+    private String join(HttpRequest httpRequest) {
         String userId = httpRequest.getBodyParameter("userId");
         String password = httpRequest.getBodyParameter("password");
         String name = httpRequest.getBodyParameter("name");
