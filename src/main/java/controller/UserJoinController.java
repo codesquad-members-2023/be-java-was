@@ -1,11 +1,13 @@
 package controller;
 
+import annotation.RequestMapping;
 import java.util.Map;
 
 import model.User;
 import request.HttpRequest;
 import request.HttpRequestUtils;
 
+@RequestMapping(url = "/users/create")
 public class UserJoinController implements Controller {
     /**
      * httpRequest의 쿼리 파라미터 map을 넘겨받아 User 객체를 생성합니다.

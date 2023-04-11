@@ -1,11 +1,9 @@
 package controller;
 
+import annotation.RequestMapping;
 import request.HttpRequest;
 
-/**
- * 1안. Controller의 Function Map으로 실행할 함수를 가지고 있음 -> 단점, 가독성이 별로.
- * 2안. Annotation으로 Mapping해주도록하기
- */
+@RequestMapping(url = "/")
 public class ArticleController implements Controller {
 
 
