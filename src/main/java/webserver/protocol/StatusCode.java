@@ -3,7 +3,8 @@ package webserver.protocol;
 public enum StatusCode {
     OK(200, "200 OK"),
     FOUND(302, "302 Found"),
-    NOT_FOUND(404, "404 Not Found");
+    NOT_FOUND(404, "404 Not Found"),
+    UNAUTHORIZED(401, "401 Unauthorized");
 
     private int code;
     private String responseLine;
