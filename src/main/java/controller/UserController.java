@@ -14,6 +14,8 @@ public class UserController {
     private final String HTTP_POST = "POST";
     private final String JOIN_FORM = "/user/form.html";
     private final String CREATE_USER_URL = "/user/create";
+    private final String LOGIN_FORM = "/user/login.html";
+    private final String LOGIN_USER = "/user/login";
     private final UserJoinService userJoinService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -30,25 +32,28 @@ public class UserController {
             if (request.getUrl().equals(JOIN_FORM)) {
                 return JOIN_FORM;
             }
+
+            // 로그인 폼 보여주기
+            if (request.getUrl().equals(LOGIN_FORM)) {
+                return LOGIN_FORM;
+            }
         }
 
         if (request.getMethod().equals(HTTP_POST)) {
-            // 회원가입일 경우
+            // 회원가입
             if (request.getUrl().equals(CREATE_USER_URL)) {
                 String requestBody = request.getRequestBody(br);
                 log.debug("회원가입 성공 = {}", requestBody);
-                return addUser(requestBody, response);
+                return userJoinService.addUser(requestBody, response);
+            }
+
+            // 로그인
+            if (request.getUrl().equals(LOGIN_USER)) {
+                String requestBody = request.getRequestBody(br);
+                return userJoinService.login(requestBody, response);
             }
         }
 
         return "/error";
-    }
-
-    private String addUser(String queryParameters, HttpResponse response) {
-        userJoinService.addUser(queryParameters);
-
-        response.setStatus(302);
-        response.setHeader("Location", "/index.html");
-        return response.getResponse();
     }
 }
