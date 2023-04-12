@@ -17,7 +17,8 @@ public class FrontController {
     private Map<String, Controller> mapper;
 
     public FrontController() {
-        mapper = HandlerMapper.doMap();
+        mapper = HandlerMapper.doMapController();
+        HandlerMapper.doMapMethods(mapper);
     }
 
     /**

@@ -13,7 +13,7 @@ public class HandlerMapper {
      * Reflection을 이용해 controller 패키지에서 Controller 인터페이스를 제외한 구현체 class를 읽어옵니다.
      * class의 Annotation URL 값을 가져와 매핑을 등록해줍니다.
      */
-    public static Map<String, Controller> doMap() {
+    public static Map<String, Controller> doMapController() {
         Map<String, Controller> mapper = new HashMap<>();
         try {
             ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -49,5 +49,11 @@ public class HandlerMapper {
             throw new RuntimeException(e);
         }
         return mapper;
+    }
+
+    public static void doMapMethods(Map<String, Controller> mapper) {
+        for (Controller controller : mapper.values()) {
+            controller.initMethodMapping();
+        }
     }
 }
