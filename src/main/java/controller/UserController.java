@@ -51,7 +51,11 @@ public class UserController extends FrontController {
         }
 
         logger.info("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
-        httpResponse.redirect("/").response();
+        httpResponse.setCookie("SID", "logined")   // SID cookie 세팅
+                .setCookie("Max-Age", "14400")  // 만료시간 4시간
+                .setCookie("Path", "/")         // 유효 범위
+                .redirect("/")            // 완료 후 index로 리다이렉트
+                .response();
         return "redirect:/";
     }
 
