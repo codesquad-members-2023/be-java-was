@@ -1,5 +1,7 @@
 package controller;
 
+import service.UserService;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +11,7 @@ public class HandlerMapping {
 
     public HandlerMapping() {
         mapping = new HashMap<>();
-        mapping.put(USER_URL, new UserController());
+        mapping.put(USER_URL, new UserController(new UserService()));
     }
 
     public Controller getController(String keyUrl) {

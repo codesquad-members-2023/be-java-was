@@ -5,9 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-import webserver.protocol.HttpRequest;
-import webserver.protocol.HttpResponse;
-import webserver.protocol.Method;
+import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.Method;
+import service.UserService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.*;
@@ -33,7 +34,7 @@ class UserControllerTest {
         given(httpRequestJoin.getBody()).willReturn("userId=member&password=1234&name=이린&email=iirin@naver.com");
         given(httpResponse.redirect("/")).willCallRealMethod();
 
-        userController = new UserController();
+        userController = new UserController(new UserService());
     }
 
     @Test
