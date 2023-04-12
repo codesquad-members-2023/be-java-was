@@ -44,13 +44,17 @@ public class UserController {
             if (request.getUrl().equals(CREATE_USER_URL)) {
                 String requestBody = request.getRequestBody(br);
                 log.debug("회원가입 성공 = {}", requestBody);
-                return userJoinService.addUser(requestBody, response);
+                userJoinService.addUser(requestBody);
+                return response.redirectHome();
             }
 
             // 로그인
             if (request.getUrl().equals(LOGIN_USER)) {
                 String requestBody = request.getRequestBody(br);
-                return userJoinService.login(requestBody, response);
+                if (userJoinService.login(requestBody)) {
+                    return response.redirectHome();
+                }
+                return response.returnToLoginFailed();
             }
         }
 

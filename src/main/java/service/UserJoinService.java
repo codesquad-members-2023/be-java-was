@@ -10,33 +10,22 @@ import response.HttpResponse;
 public class UserJoinService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public String addUser(String userInformation, HttpResponse response) {
+    public void addUser(String userInformation) {
 
         User user = (User) ConstructorMapper.makeConstructor(userInformation, User.class)
                 .orElseThrow(IllegalArgumentException::new);
-
         Database.addUser(user);
-
-        response.setStatus(302);
-        response.setHeader("Location", "/index.html");
-        return response.getResponse();
     }
 
-    public String login(String loginInformation, HttpResponse response) {
+    public boolean login(String loginInformation) {
         UserLoginDTO loginUser = (UserLoginDTO) ConstructorMapper.makeConstructor(loginInformation, UserLoginDTO.class)
                 .orElseThrow(IllegalArgumentException::new);
         User findUser = Database.findUserById(loginUser.getUserId());
 
         if (findUser.getPassword().equals(loginUser.getPassword()) && findUser.getUserId().equals(loginUser.getUserId())) {
-            response.setStatus(302);
-            response.setHeader("Location", "/index.html");
-            log.debug("로그인 성공");
-            return response.getResponse();
+            // TODO : 로그인 처리 로직 추가하기
+            return true;
         }
-
-        response.setStatus(200);
-        response.setHeader("Location", "/user/login_failed.html");
-        log.debug("로그인 실패");
-        return response.getResponse();
+        return false;
     }
 }
