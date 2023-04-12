@@ -78,10 +78,12 @@ public class UserController extends FrontController {
             // TODO modelAndview 만들어서 리팩토링하기
             httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_empty.html")
                     .response();
+            return "/user/form_failed_empty.html";
         } catch (IllegalStateException e) {
             // TODO modelAndview 만들어서 리팩토링하기
-            httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_duplicateUser.html")
+            httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_duplicateUserId.html")
                     .response();
+            return "/user/form_failed_duplicateUserId.html";
         }
         return "redirect:/";
     }
