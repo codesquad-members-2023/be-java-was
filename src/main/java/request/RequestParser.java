@@ -27,8 +27,8 @@ public class RequestParser {
         String[] splitRequestHeader = requestHeader.split("\n");
         logger.info("RequestParser -> splitRequestHeader: {}", Arrays.toString(splitRequestHeader));
         Map<String, String> requestHeaderMap = new HashMap<>();
-        for (int i = 0; i < splitRequestHeader.length; i++) {
-            String[] headerKeyValue = splitRequestHeader[i].split(":", 2);
+        for (String string : splitRequestHeader) {
+            String[] headerKeyValue = string.split(":", 2);
             requestHeaderMap.put(headerKeyValue[0], headerKeyValue[1].trim());
         }
         return requestHeaderMap;
