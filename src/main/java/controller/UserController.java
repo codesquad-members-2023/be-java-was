@@ -2,56 +2,50 @@ package controller;
 
 import db.Database;
 import model.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import util.ProtocolParser;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
 import java.io.IOException;
+import java.util.Map;
 
-import static webserver.protocol.Method.GET;
+import static controller.HandlerMapping.USER_URL;
 
-public class UserController implements Controller{
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
-    private final String ROOT = "/user";
-
+public class UserController extends FrontController {
     /**
      * 작업을 처리할 메서드를 호출한다.
      * @param httpRequest
      * @param httpResponse
      */
     @Override
-    public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
-        try {
-            if (GET.equals(httpRequest.getMETHOD())) {
-
-                if (httpRequest.isPath(ROOT + "/form.html")) {
-                    httpResponse.forward(httpRequest.getPATH())
-                            .response();
-                }
-
-                if (httpRequest.isPath(ROOT + "/create")) {
-                    join(httpRequest, httpResponse);
-                }
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
+    protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        httpResponse.forward(httpRequest.getPath()).response();
+        return httpRequest.getPath();
     }
 
-    private void join(HttpRequest httpRequest, HttpResponse httpResponse) {
-        String userId = httpRequest.getParameter("userId");
-        String password = httpRequest.getParameter("password");
-        String name = httpRequest.getParameter("name");
-        String email = httpRequest.getParameter("email");
+    @Override
+    protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
+        if (httpRequest.isPath(USER_URL + "/create")) {
+            return join(httpRequest, httpResponse);
+        }
+        return httpRequest.getPath();
+    }
+
+    private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
+        Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
+        String userId = parameter.get("userId");
+        String password = parameter.get("password");
+        String name = parameter.get("name");
+        String email = parameter.get("email");
         User user = new User(userId, password, name, email);
 
         Database.addUser(user);
 
         logger.info("[WELCOME] NEW USER = {}", user);
 
-        httpResponse.redirect("/")
-                .response();
+        httpResponse.redirect("/").response();
+
+        return "redirect:/";
     }
 
 

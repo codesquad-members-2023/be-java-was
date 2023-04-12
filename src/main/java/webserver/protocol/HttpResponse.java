@@ -15,14 +15,13 @@ public class HttpResponse {
     private Logger logger = LoggerFactory.getLogger(HttpResponse.class);
 
     private final DataOutputStream dos;
-    private final String httpVersion;
+    private final String httpVersion = "HTTP/1.1";
     private StatusCode statusCode;
     private final Map<String, String> headers;
     private byte[] body;
 
-    public HttpResponse(String version, DataOutputStream dos) {
+    public HttpResponse(DataOutputStream dos) {
         this.dos = dos;
-        this.httpVersion = version;
         this.body = new byte[0];
         this.headers = new HashMap<>();
     }

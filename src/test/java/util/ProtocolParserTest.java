@@ -75,6 +75,14 @@ class ProtocolParserTest {
     }
 
     @Test
+    @DisplayName("parseHeader : 헤더 문자열이 주어졌을 때 키, 값으로 헤더를 파싱할 수 있다.")
+    void parseHeaderLocalHost() {
+        String example = "Host: localhost:8080";
+        Map<String, String> parameter = ProtocolParser.parseHeaders(example);
+        assertThat(parameter.get("Host")).isEqualTo("localhost:8080");
+    }
+
+    @Test
     @DisplayName("parseHeader : 헤더가 6개인 헤더 문자열이 주어졌을 때 6개의 헤더를 모두 파싱할 수 있다.")
     void parseHeaderCheckParseAll() {
         String example = "Host: www.example.com\n" +

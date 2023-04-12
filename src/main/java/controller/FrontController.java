@@ -1,30 +1,35 @@
 package controller;
 
-import config.AppConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import webserver.protocol.HttpRequest;
 import webserver.protocol.HttpResponse;
 
-public class FrontController {
-    private Controller controller;
-    private final String USER_URL = "/user/";
+import java.io.IOException;
+
+public abstract class FrontController implements Controller {
+    protected Logger logger = LoggerFactory.getLogger(FrontController.class);
 
     /**
-     * 작업을 처리할 컨트롤러를 호출한다.
+     * 작업을 처리할 메서드를 호출한다.
      * @param httpRequest
      * @param httpResponse
      */
-    public void run(HttpRequest httpRequest, HttpResponse httpResponse) {
-        String path = httpRequest.getPath();
-
-        if (path.startsWith(USER_URL)) {     // user 관련 요청을 받는 경우
-            controller = AppConfig.getUserController();  // 의존성을 낮추기 위해 추상 타입에 의존하는 것이 좋다.
-            controller.run(httpRequest, httpResponse);
-            return;
+    public String service(HttpRequest httpRequest, HttpResponse httpResponse) {
+        String returnPage = "";
+        try {
+            switch (httpRequest.getMethod()) {
+                case GET:
+                    returnPage = doGet(httpRequest, httpResponse);
+                case POST:
+                    returnPage = doPost(httpRequest, httpResponse);
+            }
+        } catch (IOException e) {
+            logger.error(e.getMessage());
         }
-
-        controller = AppConfig.getViewController();  // 기본 컨트롤러
-        controller.run(httpRequest, httpResponse);
+        return returnPage;
     }
+
+    protected abstract String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
+    protected abstract String doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
 }

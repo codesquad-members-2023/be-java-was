@@ -1,5 +1,7 @@
 package util;
 
+import webserver.protocol.Method;
+
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -11,8 +13,8 @@ public class ProtocolParser {
      * @param requestLine
      * @return httpRequest method(GET, POST 등)
      */
-    public static String parseMethod(String requestLine) {
-        return requestLine.split(" ")[0];
+    public static Method parseMethod(String requestLine) {
+        return Method.of(requestLine.split(" ")[0]);
     }
 
     /**
@@ -54,7 +56,19 @@ public class ProtocolParser {
             return new HashMap<>();
         }
 
-        String[] parammeterQuery = queryString[1].split("&");
+        return parseParameter(queryString[1]);
+    }
+
+    /**
+     * 파라미터 파싱
+     * @param queryString
+     * @return parameters
+     */
+    public static Map<String, String> parseParameter(String queryString) {
+        if (queryString.equals("")) {
+            return new HashMap<>();
+        }
+        String[] parammeterQuery = queryString.split("&");
 
         Map<String, String> parammeter = new HashMap<>();
 
@@ -73,14 +87,15 @@ public class ProtocolParser {
 
     /**
      * 요청 header 파싱
-     * @param header string
+     * @param requestLine
      * @return request header
      */
     public static Map<String, String> parseHeaders(String headerStr) {
         Map<String, String> headers = new HashMap<>();
 
         for (String line : headerStr.split("\n")) {
-            headers.put(line.split(":")[0].trim(), line.split(":")[1].trim());
+            int splitIndex = line.indexOf(":");
+            headers.put(line.substring(0, splitIndex).trim(), line.substring(splitIndex+1).trim());
         }
 
         return headers;
