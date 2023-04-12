@@ -4,7 +4,9 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ObjectMapper;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 public class UserService {
@@ -16,20 +18,14 @@ public class UserService {
      * @throws IllegalArgumentException 빈 값이 있을 경우
      * @throws IllegalStateException 중복된 다른 아이디가 있을 경우
      */
-    public void join(Map<String, String> parameter) throws IllegalArgumentException, IllegalStateException{
+    public void join(Map<String, String> parameter) throws IllegalArgumentException, IllegalStateException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String userId = parameter.get("userId");
-        String password = parameter.get("password");
-        String name = parameter.get("name");
-        String email = parameter.get("email");
 
-        if (userId==null || password==null || name==null || email==null) {
-            //TODO exception 처리로 바꾸기
-            throw new IllegalArgumentException("입력값을 모두 처리해 주세요.");
-        }
         if (Database.findUserById(userId)!=null) {
             throw new IllegalStateException("중복된 아이디가 있습니다.");
         }
-        User user = new User(userId, password, name, email);
+
+        User user = (User) new ObjectMapper(User.class, parameter).mapObject();
 
         Database.addUser(user);
 
