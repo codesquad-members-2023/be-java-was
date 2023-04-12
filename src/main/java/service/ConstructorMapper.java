@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +40,7 @@ public class ConstructorMapper {
         String[] information = requestParam.split("&");
 
         for (String param : information) {
-            String decodeParam = URLDecoder.decode(param.split("=")[1], StandardCharsets.UTF_8);
-            params.add(decodeParam);
+            params.add(param);
         }
 
         return params;
