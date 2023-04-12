@@ -1,5 +1,7 @@
 package controller;
 
+import cookie.Cookie;
+import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.UserJoinService;
@@ -8,6 +10,7 @@ import response.HttpResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.UUID;
 
 public class UserController {
     private final String HTTP_GET = "GET";
@@ -24,7 +27,7 @@ public class UserController {
     }
 
     // TODO : 에러페이지 생성, 회원가입 검증
-    public String process(HttpRequest request, HttpResponse response, BufferedReader br) throws IOException {
+    public String process(HttpRequest request, HttpResponse response, BufferedReader br, Cookie cookie) throws IOException {
         log.info("user controller 내부에서의 url = {}", request.getUrl());
         // GET 요청인 경우 분리
         if (request.getMethod().equals(HTTP_GET)) {
@@ -51,7 +54,8 @@ public class UserController {
             // 로그인
             if (request.getUrl().equals(LOGIN_USER)) {
                 String requestBody = request.getRequestBody(br);
-                if (userJoinService.login(requestBody)) {
+                if (userJoinService.login(requestBody, cookie)) {
+                    response.setHeader("Set-Cookie", "sid=" + cookie.getUuid());
                     return response.redirectHome();
                 }
                 return response.returnToLoginFailed();
