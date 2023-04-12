@@ -1,44 +1,39 @@
 package util;
 
-import annotation.Param;
 import model.User;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ObjectMapperTest {
     private Logger logger = LoggerFactory.getLogger(ObjectMapperTest.class);
     ObjectMapper objectMapper;
+    Map<String, String> joinParams;
 
     @BeforeEach
     void init() {
-
+        joinParams = Map.of("userId", "member", "password", "1234", "name", "이린", "email", "iirin@naver.com");
     }
 
     @Test
-    @DisplayName("클래스의 필드 정보를 파싱할 수 있다.")
+    @DisplayName("objectMapper로 회원 객체를 생성할 수 있다.")
     public void fieldParseTest() throws Exception{
         //given
-        objectMapper = new ObjectMapper(User.class, new HashMap<>());
+        objectMapper = new ObjectMapper(User.class, joinParams);
         //when
-        Field[] fields = objectMapper.parseFields();
-
-        for (Field f : fields) {
-            logger.info("fieldName = {}", f.getName());
-        }
+        User user = (User) objectMapper.mapObject();
         //then
-        assertThat(fields).hasSize(4);
+        assertThat(user.getUserId()).isEqualTo("member");
+        logger.info(user.toString());
     }
     
 }
