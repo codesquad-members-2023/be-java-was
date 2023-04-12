@@ -15,7 +15,6 @@ import response.HttpResponse;
 public class FrontController {
 
     private Map<String, Controller> mapper = new HashMap<>();
-    private Controller controller;
 
     public FrontController() {
         initMapping();
