@@ -3,9 +3,11 @@ package controller;
 import annotation.RequestMapping;
 import java.util.Map;
 
+import db.Database;
 import model.User;
 import request.HttpRequest;
 import request.HttpRequestUtils;
+import response.HttpResponse;
 
 @RequestMapping(url = "/users/create")
 public class UserJoinController implements Controller {
@@ -18,11 +20,12 @@ public class UserJoinController implements Controller {
      */
 
     @Override
-    public String doPost(HttpRequest httpRequest) {
+    public String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest.getBody());
 
         User user = new User(params.get("userId"), params.get("password"), params.get("name"),
                 params.get("email"));
+        Database.addUser(user);
 
         return "redirect:/";
     }
