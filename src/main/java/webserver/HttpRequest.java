@@ -55,6 +55,10 @@ public class HttpRequest {
             saveHeaderNameAndValue(headersName, headersValue);
             requestHeaders = br.readLine();
         }
+
+        ContentTypeParser contentTypeParser = new ContentTypeParser();
+        String returnType = contentTypeParser.getPriorityContentType(httpRequestHeader.get("Accept"));
+        logger.info("return Type = {}", returnType);
     }
 
     private void saveHeaderNameAndValue(String name, String value) {

@@ -27,7 +27,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             HttpRequest httpRequest = new HttpRequest(br);
-            HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder();
+            HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder(httpRequest);
 
             String returnUrl = httpRequest.getValueByName("returnUrl");
 

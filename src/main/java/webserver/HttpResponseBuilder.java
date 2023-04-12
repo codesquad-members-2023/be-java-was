@@ -10,11 +10,20 @@ import java.io.IOException;
 public class HttpResponseBuilder {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+    private HttpRequest httpRequest;
+    private ContentTypeParser contentTypeParser = new ContentTypeParser();
 
+    public HttpResponseBuilder(HttpRequest httpRequest) {
+        this.httpRequest = httpRequest;
+    }
 
     public void response200Header(DataOutputStream dos, int lengthOfBodyContent, String extension) {
         try {
-            String contentType = ContentTypeMapper.getContentTypeByExtension(extension);
+
+            String contentType = contentTypeParser.getPriorityContentType(httpRequest.getValueByName("Accept"));
+            if (contentType == null) {
+                contentType = ContentTypeMapper.getContentTypeByExtension(extension);
+            }
 
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + contentType + "\r\n");
