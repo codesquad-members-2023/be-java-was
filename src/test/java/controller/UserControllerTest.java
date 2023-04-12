@@ -25,7 +25,7 @@ class UserControllerTest {
         HttpRequest httpRequest = new HttpRequest();
         httpRequest.initRequestLine("POST /users/create HTTP/1.1");
         httpRequest.setBody("userId=poro&password=123&name=pororo&email=ngw7617%40naver.com");
-        userJoinController.doPost(httpRequest, new HttpResponse());
+        userJoinController.join(httpRequest, new HttpResponse());
 
         User user = Database.findUserById("poro").get();
 
@@ -40,6 +40,6 @@ class UserControllerTest {
         httpRequest.setBody("GET /user/create?userId=poro&password=123&name=pororo&email=ngw7617%40naver.com HTTP/1.1");
 
         //TODO : 유저를 저장하지 않으므로 유저에 대한 테스트가 없음.
-        assertThat(userJoinController.doPost(httpRequest, new HttpResponse())).isEqualTo("redirect:/");
+        assertThat(userJoinController.join(httpRequest, new HttpResponse())).isEqualTo("redirect:/");
     }
 }
