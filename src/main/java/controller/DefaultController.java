@@ -1,8 +1,8 @@
 package controller;
 
-import protocol.HttpRequest;
-import protocol.HttpResponse;
-import protocol.StatusCode;
+import webserver.protocol.HttpRequest;
+import webserver.protocol.HttpResponse;
+import webserver.protocol.StatusCode;
 
 import java.io.IOException;
 

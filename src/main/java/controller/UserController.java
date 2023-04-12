@@ -1,14 +1,13 @@
 package controller;
 
-import db.Database;
 import model.User;
 import service.UserService;
 import session.Session;
 import session.SessionStore;
 import util.ProtocolParser;
-import protocol.HttpRequest;
-import protocol.HttpResponse;
-import protocol.StatusCode;
+import webserver.protocol.HttpRequest;
+import webserver.protocol.HttpResponse;
+import webserver.protocol.StatusCode;
 
 import java.io.IOException;
 import java.util.Map;
@@ -62,7 +61,6 @@ public class UserController extends FrontController {
 
             httpResponse.setCookie("SID", loginSession.getId())   // SID cookie 세팅 // 만료가 없으면 session 쿠키가 된다.
                     .setCookie("Path", "/");         // 유효 범위
-
 
             return "redirect:/";
         } catch (IllegalArgumentException e) {

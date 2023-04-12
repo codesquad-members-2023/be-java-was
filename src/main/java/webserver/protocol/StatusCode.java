@@ -1,4 +1,4 @@
-package protocol;
+package webserver.protocol;
 
 public enum StatusCode {
     OK(200, "200 OK"),

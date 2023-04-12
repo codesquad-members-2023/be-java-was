@@ -1,6 +1,6 @@
 package util;
 
-import protocol.Method;
+import webserver.protocol.Method;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
