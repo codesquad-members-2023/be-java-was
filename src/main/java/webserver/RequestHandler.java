@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import controller.FrontController;
 import request.HttpRequest;
 import response.HttpHeaders;
+import response.HttpResponse;
 import view.ViewResolver;
 
 public class RequestHandler implements Runnable {
@@ -38,9 +39,10 @@ public class RequestHandler implements Runnable {
 
             HttpRequest httpRequest = setupHttpRequest(br);
 
-            String viewName = frontController.dispatch(httpRequest);
+            HttpResponse httpResponse = new HttpResponse();
+            String viewName = frontController.dispatch(httpRequest, httpResponse);
 
-            byte[] responseMessage = viewResolver.mapView(viewName);
+            byte[] responseMessage = viewResolver.mapView(viewName, httpResponse);
 
             DataOutputStream dos = new DataOutputStream(out);
             response(dos, responseMessage);

@@ -10,10 +10,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import request.HttpRequest;
+import response.HttpResponse;
 
 public class FrontController {
 
     private Map<String, Controller> mapper = new HashMap<>();
+    private Controller controller;
 
     public FrontController() {
         initMapping();
@@ -77,14 +79,15 @@ public class FrontController {
      * @param httpRequest
      * @return
      */
-    public String dispatch(HttpRequest httpRequest) {
+    public String dispatch(HttpRequest httpRequest, HttpResponse httpResponse) {
         if (!hasMapping(httpRequest)) {
             return httpRequest.getUrl();
         }
+
         Controller controller = getHandler(httpRequest);
         String viewName;
         try {
-            viewName = controller.process(httpRequest);
+            viewName = controller.process(httpRequest, httpResponse);
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException |
                  InstantiationException e) {
             e.printStackTrace();
