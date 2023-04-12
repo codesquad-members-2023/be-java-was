@@ -37,7 +37,7 @@ public class HttpResponse {
             setHeader("Content-Length", String.valueOf(body.length));
         } catch (IOException e) {
             logger.error(e.getMessage());
-            forward(StatusCode.NOT_FOUND, "/error/400.html");
+            forward(StatusCode.NOT_FOUND, "/error/404.html");
         }
         return this;
     }
