@@ -17,7 +17,7 @@ public class HttpRequest {
     private Map<String, String> params = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public void init(String requestLine) {
+    public void setRequestLine(String requestLine) {
         StringTokenizer requestTokens = new StringTokenizer(requestLine, " ");
         method = requestTokens.nextToken();
         String urlWithParams = requestTokens.nextToken();
