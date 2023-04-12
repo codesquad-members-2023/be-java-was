@@ -1,5 +1,6 @@
 package controller;
 
+import annotation.MethodType;
 import annotation.RequestMapping;
 import java.util.Map;
 
@@ -19,8 +20,9 @@ public class UserJoinController implements Controller {
      * @return view
      */
 
-    @Override
-    public String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
+
+    @MethodType(value = "POST")
+    public String join(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest.getBody());
 
         User user = new User(params.get("userId"), params.get("password"), params.get("name"),

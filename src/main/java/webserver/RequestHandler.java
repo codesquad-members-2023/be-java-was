@@ -19,8 +19,8 @@ import view.ViewResolver;
 
 public class RequestHandler implements Runnable {
 
-    private FrontController frontController = new FrontController();
-    private ViewResolver viewResolver = new ViewResolver();
+    private static FrontController frontController = new FrontController();
+    private static ViewResolver viewResolver = new ViewResolver();
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
