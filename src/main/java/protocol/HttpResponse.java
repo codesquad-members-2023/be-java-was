@@ -116,4 +116,22 @@ public class HttpResponse {
             logger.error(e.getMessage());
         }
     }
+
+    public HttpResponse setCookie(String key, String value) {
+        String cookie;
+        if ((cookie = headers.get("Set-Cookie")) == null) {
+            headers.put("Set-Cookie", String.format("%s=%s", key, value));
+            logger.info("cookie = {}", headers.get("Set-Cookie"));
+            return this;
+        }
+
+        cookie += String.format("; %s=%s", key, value);
+        headers.put("Set-Cookie", cookie);
+        logger.info("cookie = {}", headers.get("Set-Cookie"));
+        return this;
+    }
+
+    public String getCookie(){
+        return headers.get("Set-Cookie");
+    }
 }
