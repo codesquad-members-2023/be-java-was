@@ -20,7 +20,7 @@ public class ConstructorMapper {
     private static final Logger log = LoggerFactory.getLogger(ConstructorMapper.class);
 
     // TODO : Optional.empty 개선방법 생각하기, getObject() throw 처리 방법 생각해보기
-    public static Optional<?> readValue(String requestParam, Class<?> inputClass) {
+    public static Optional<?> makeConstructor(String requestParam, Class<?> inputClass) {
 
         List<String> params = parseRequestParams(requestParam);
 
