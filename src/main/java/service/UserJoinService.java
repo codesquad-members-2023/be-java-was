@@ -5,7 +5,6 @@ import dto.user.UserLoginDTO;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import response.HttpResponse;
 
 public class UserJoinService {
     private final Logger log = LoggerFactory.getLogger(getClass());
