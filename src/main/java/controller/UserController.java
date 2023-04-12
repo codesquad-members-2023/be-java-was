@@ -20,7 +20,7 @@ public class UserController extends FrontController {
      */
     @Override
     protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        httpResponse.forward(httpRequest.getPath()).response();
+        httpResponse.forward(StatusCode.OK, httpRequest.getPath()).response();
         return httpRequest.getPath();
     }
 

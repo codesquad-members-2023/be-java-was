@@ -11,11 +11,11 @@ public class DefaultController extends FrontController {
     @Override
     protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         if (httpRequest.isPath("/")) {
-            httpResponse.forward("/index.html").response();
+            httpResponse.forward(StatusCode.OK, "/index.html").response();
             return "/index.html";
         }
 
-        httpResponse.forward(httpRequest.getPath()).response();
+        httpResponse.forward(StatusCode.OK, httpRequest.getPath()).response();
         return httpRequest.getPath();
     }
 
