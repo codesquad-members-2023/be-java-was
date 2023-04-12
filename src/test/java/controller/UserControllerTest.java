@@ -1,6 +1,7 @@
 package controller;
 
 import db.Database;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -42,6 +43,11 @@ class UserControllerTest {
         doNothing().when(httpResponse).response();
 
         userController = new UserController(new UserService());
+    }
+
+    @AfterEach
+    void reset() {
+        Database.clear();
     }
 
     @Test
