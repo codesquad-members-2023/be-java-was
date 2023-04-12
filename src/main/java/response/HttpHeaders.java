@@ -8,13 +8,6 @@ public class HttpHeaders {
 
     private Map<String, String> headers = new HashMap<>();
 
-    public HttpHeaders() {
-    }
-
-    public HttpHeaders(String key, String value) {
-        put(key, value);
-    }
-
     public void put(String key, String value) {
         headers.put(key, value);
     }
