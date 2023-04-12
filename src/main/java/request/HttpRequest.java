@@ -69,9 +69,9 @@ public class HttpRequest {
         String requestHeader;
         while (!(requestHeader = br.readLine()).equals("")) {
             log.debug("header : {}", requestHeader);
-            String[] headerToken = requestHeader.split(": ");
+            String[] headerToken = requestHeader.split(":");
             if (headerToken.length == 2) {
-                headers.put(headerToken[0], headerToken[1]);
+                headers.put(headerToken[0], headerToken[1].trim());
             }
         }
         return headers;
