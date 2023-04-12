@@ -2,6 +2,9 @@ package controller;
 
 import db.Database;
 import model.User;
+import service.UserService;
+import session.Session;
+import session.SessionStore;
 import util.ProtocolParser;
 import protocol.HttpRequest;
 import protocol.HttpResponse;
@@ -13,6 +16,13 @@ import java.util.Map;
 import static controller.HandlerMapping.USER_URL;
 
 public class UserController extends FrontController {
+
+    UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     /**
      * 작업을 처리할 메서드를 호출한다.
      * @param httpRequest
@@ -25,54 +35,56 @@ public class UserController extends FrontController {
     }
 
     @Override
-    protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) {
-        try {
-            if (httpRequest.isPath(USER_URL + "/create")) {
-                return join(httpRequest, httpResponse);
-            }
-            if (httpRequest.isPath(USER_URL + "/login")) {
-                return login(httpRequest, httpResponse);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+    protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        String returnPage;
+        if (httpRequest.isPath(USER_URL + "/create")) {
+            returnPage = join(httpRequest, httpResponse);
+            httpResponse.redirect("/").response();
+            return returnPage;
+        }
+        
+        if (httpRequest.isPath(USER_URL + "/login")) {
+            returnPage = login(httpRequest, httpResponse);
+            httpResponse.redirect("/")            // 완료 후 index로 리다이렉트
+                    .response();
+            return returnPage;
         }
         return httpRequest.getPath();
     }
 
     private String login(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
-        String userId = parameter.get("userId");
-        String password = parameter.get("password");
+        try {
+            Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
+            User loginedUser = userService.login(parameter);
 
-        User user;
-        if ((user=Database.findUserById(userId))==null || !user.isLogined(password)) {
+            Session loginSession = new Session(loginedUser.getUserId());
+            SessionStore.addSession(loginSession);
+
+            httpResponse.setCookie("SID", loginSession.getId())   // SID cookie 세팅 // 만료가 없으면 session 쿠키가 된다.
+                    .setCookie("Path", "/");         // 유효 범위
+
+
+            return "redirect:/";
+        } catch (IllegalArgumentException e) {
+            // TODO modelAndview 만들어서 리팩토링하기
             httpResponse.forward(StatusCode.UNAUTHORIZED, "/user/login_failed.html").response();
             return "/user/login_failed.html";
         }
-
-        logger.info("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
-        httpResponse.setCookie("SID", "logined")   // SID cookie 세팅
-                .setCookie("Max-Age", "14400")  // 만료시간 4시간
-                .setCookie("Path", "/")         // 유효 범위
-                .redirect("/")            // 완료 후 index로 리다이렉트
-                .response();
-        return "redirect:/";
     }
 
-    private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
-        Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
-        String userId = parameter.get("userId");
-        String password = parameter.get("password");
-        String name = parameter.get("name");
-        String email = parameter.get("email");
-        User user = new User(userId, password, name, email);
-
-        Database.addUser(user);
-
-        logger.info("[WELCOME] NEW USER = {}", user);
-
-        httpResponse.redirect("/").response();
-
+    private String join(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
+        try {
+            Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
+            userService.join(parameter);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            // TODO modelAndview 만들어서 리팩토링하기
+            httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_empty.html")
+                    .response();
+        } catch (IllegalStateException e) {
+            // TODO modelAndview 만들어서 리팩토링하기
+            httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_duplicateUser.html")
+                    .response();
+        }
         return "redirect:/";
     }
 
