@@ -22,7 +22,7 @@ public class RequestHandler implements Runnable {
     private final Socket connection;
     private final AppConfig appConfig = new AppConfig();
     private final UserController userController = appConfig.makeUserController();
-    private RequestParser requestParser = new RequestParser();
+    private final RequestParser requestParser = new RequestParser();
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
