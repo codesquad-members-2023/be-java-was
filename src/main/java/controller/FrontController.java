@@ -2,8 +2,9 @@ package controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import webserver.protocol.HttpRequest;
-import webserver.protocol.HttpResponse;
+import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.StatusCode;
 
 import java.io.IOException;
 

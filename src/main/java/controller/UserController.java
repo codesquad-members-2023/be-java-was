@@ -3,9 +3,9 @@ package controller;
 import db.Database;
 import model.User;
 import util.ProtocolParser;
-import webserver.protocol.HttpRequest;
-import webserver.protocol.HttpResponse;
-import webserver.protocol.StatusCode;
+import protocol.HttpRequest;
+import protocol.HttpResponse;
+import protocol.StatusCode;
 
 import java.io.IOException;
 import java.util.Map;

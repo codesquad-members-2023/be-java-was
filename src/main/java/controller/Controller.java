@@ -1,7 +1,7 @@
 package controller;
 
-import webserver.protocol.HttpRequest;
-import webserver.protocol.HttpResponse;
+import protocol.HttpRequest;
+import protocol.HttpResponse;
 
 public interface Controller {
     String service(HttpRequest httpRequest, HttpResponse httpResponse);
