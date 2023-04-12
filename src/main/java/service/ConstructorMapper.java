@@ -40,7 +40,8 @@ public class ConstructorMapper {
         String[] information = requestParam.split("&");
 
         for (String param : information) {
-            params.add(param);
+            String[] split = param.split("=");
+            params.add(split[1]);
         }
 
         return params;
