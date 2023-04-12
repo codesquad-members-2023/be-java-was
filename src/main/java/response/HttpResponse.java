@@ -18,11 +18,32 @@ public class HttpResponse {
     HttpHeaders httpHeaders;
     View view;
 
-    public HttpResponse(String httpVersion, Status status, HttpHeaders httpHeaders, View view) {
+    public HttpResponse() {
+        httpHeaders = new HttpHeaders();
+    }
+
+    public static HttpResponse builder() {
+        return new HttpResponse();
+    }
+
+    public HttpResponse addHeader(String key, String value) {
+        this.httpHeaders.put(key, value);
+        return this;
+    }
+
+    public HttpResponse setHttpVersion(String httpVersion) {
         this.httpVersion = httpVersion;
+        return this;
+    }
+
+    public HttpResponse setStatus(Status status) {
         this.status = status;
-        this.httpHeaders = httpHeaders;
+        return this;
+    }
+
+    public HttpResponse setView(View view) {
         this.view = view;
+        return this;
     }
 
     public void setContentLength(int contentLength) {

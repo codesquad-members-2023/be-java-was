@@ -11,23 +11,22 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controller.UrlMapper;
+import controller.FrontController;
 import request.HttpRequest;
 import response.HttpHeaders;
+import response.HttpResponse;
 import view.ViewResolver;
 
 public class RequestHandler implements Runnable {
 
-    private UrlMapper urlMapper;
-    private ViewResolver viewResolver;
+    private static FrontController frontController = new FrontController();
+    private static ViewResolver viewResolver = new ViewResolver();
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
     private Socket connection;
 
-    public RequestHandler(UrlMapper urlMapper, ViewResolver viewResolver, Socket connection) {
-        this.urlMapper = urlMapper;
+    public RequestHandler(Socket connection) {
         this.connection = connection;
-        this.viewResolver = viewResolver;
     }
 
     public void run() {
@@ -40,9 +39,10 @@ public class RequestHandler implements Runnable {
 
             HttpRequest httpRequest = setupHttpRequest(br);
 
-            String viewName = urlMapper.requestMapping(httpRequest);
+            HttpResponse httpResponse = new HttpResponse();
+            String viewName = frontController.dispatch(httpRequest, httpResponse);
 
-            byte[] responseMessage = viewResolver.mapView(viewName);
+            byte[] responseMessage = viewResolver.mapView(viewName, httpResponse);
 
             DataOutputStream dos = new DataOutputStream(out);
             response(dos, responseMessage);

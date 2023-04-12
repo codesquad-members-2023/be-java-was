@@ -6,8 +6,7 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import controller.UrlMapper;
-import controller.UserController;
+import controller.UserJoinController;
 import util.SocketStatusChecker;
 import view.ViewResolver;
 
@@ -28,14 +27,9 @@ public class WebServer {
             // 클라이언트가 연결될때까지 대기한다.
             Socket connection;
 
-            //객체 생성 후 주입
-            UserController userController = new UserController();
-            UrlMapper urlMapper = new UrlMapper(userController);
-            ViewResolver viewResolver = new ViewResolver();
-
             while ((connection = listenSocket.accept()) != null) {
                 connection.setSoTimeout(5000);
-                Thread thread = new Thread(new RequestHandler(urlMapper, viewResolver, connection));
+                Thread thread = new Thread(new RequestHandler(connection));
                 thread.start();
                 SocketStatusChecker.ping(connection, logger);
             }
