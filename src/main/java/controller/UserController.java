@@ -10,6 +10,7 @@ import webserver.protocol.HttpResponse;
 import webserver.protocol.StatusCode;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import static controller.HandlerMapping.USER_URL;
@@ -38,7 +39,8 @@ public class UserController extends FrontController {
         String returnPage;
         if (httpRequest.isPath(USER_URL + "/create")) {
             returnPage = join(httpRequest, httpResponse);
-            httpResponse.redirect("/").response();
+            httpResponse.redirect("/")
+                    .response();
             return returnPage;
         }
         
@@ -84,6 +86,8 @@ public class UserController extends FrontController {
             httpResponse.forward(StatusCode.BAD_REQUEST, "/user/form_failed_duplicateUserId.html")
                     .response();
             return "/user/form_failed_duplicateUserId.html";
+        } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
         return "redirect:/";
     }
