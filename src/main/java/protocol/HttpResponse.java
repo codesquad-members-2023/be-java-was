@@ -1,4 +1,4 @@
-package webserver.protocol;
+package protocol;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,28 +26,6 @@ public class HttpResponse {
         this.headers = new HashMap<>();
     }
 
-    /**
-     * forward responseLine, 반환할 body를 준비한다.
-     *
-     * @param path
-     * @return
-     * @throws IOException
-     */
-    public HttpResponse forward(String path) throws IOException {
-        try {
-            ContentType type = ContentType.of(path);
-
-            statusCode = StatusCode.OK;
-            body = Files.readAllBytes(new File(type.getTypeDirectory() + path).toPath());
-
-            setHeader("Content-Type", type.getHeadValue());
-            setHeader("Content-Length", String.valueOf(body.length));
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-        }
-        return this;
-    }
-
     public HttpResponse forward(StatusCode statusCode, String path) throws IOException {
         try {
             ContentType type = ContentType.of(path);
@@ -59,6 +37,7 @@ public class HttpResponse {
             setHeader("Content-Length", String.valueOf(body.length));
         } catch (IOException e) {
             logger.error(e.getMessage());
+            forward(StatusCode.NOT_FOUND, "/error/400.html");
         }
         return this;
     }
@@ -136,23 +115,5 @@ public class HttpResponse {
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
-    }
-
-    public HttpResponse setCookie(String key, String value) {
-        String cookie;
-        if ((cookie = headers.get("Set-Cookie")) == null) {
-            headers.put("Set-Cookie", String.format("%s=%s", key, value));
-            logger.info("cookie = {}", headers.get("Set-Cookie"));
-            return this;
-        }
-
-        cookie += String.format("; %s=%s", key, value);
-        headers.put("Set-Cookie", cookie);
-        logger.info("cookie = {}", headers.get("Set-Cookie"));
-        return this;
-    }
-
-    public String getCookie(){
-        return headers.get("Set-Cookie");
     }
 }

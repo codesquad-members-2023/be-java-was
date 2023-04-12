@@ -1,4 +1,4 @@
-package webserver.protocol;
+package protocol;
 
 import util.ProtocolParser;
 
