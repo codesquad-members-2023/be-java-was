@@ -27,7 +27,7 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             HttpRequest httpRequest = new HttpRequest(br);
-            HttpResponseBuilder httpResponseBuilder = new HttpResponseBuilder(httpRequest);
+
 
             String returnUrl = httpRequest.getValueByName("returnUrl");
 
@@ -45,11 +45,14 @@ public class RequestHandler implements Runnable {
             byte[] body = Files.readAllBytes(f.toPath());
 
             if (returnUrl.startsWith("/util/error")) {
-                httpResponseBuilder.response404NotFoundHeader(dos, body.length, httpRequest.getExtension());
+                HttpResponseBuilderV1 httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
+                httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
+                httpResponseBuilder.responseBody(dos, body);
             } else {
-                httpResponseBuilder.response200Header(dos, body.length, httpRequest.getExtension());
+                HttpResponseBuilderV1 httpResponseBuilder = new RightResponseBuilder(httpRequest);
+                httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
+                httpResponseBuilder.responseBody(dos, body);
             }
-            httpResponseBuilder.responseBody(dos, body);
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
