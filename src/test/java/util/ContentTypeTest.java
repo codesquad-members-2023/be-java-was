@@ -13,7 +13,7 @@ class ContentTypeTest {
     void of() {
         String url = "test.js";
         ContentType type = ContentType.of(url);
-        Assertions.assertThat(type.getValue()).isEqualTo("application/javascript");
+        Assertions.assertThat(type.getType()).isEqualTo("application/javascript");
     }
 
     @Test
@@ -21,6 +21,6 @@ class ContentTypeTest {
     void ofCSS() {
         String url = "text.css";
         ContentType type = ContentType.of(url);
-        Assertions.assertThat(type.getValue()).isEqualTo("text/css");
+        Assertions.assertThat(type.getType()).isEqualTo("text/css");
     }
 }
