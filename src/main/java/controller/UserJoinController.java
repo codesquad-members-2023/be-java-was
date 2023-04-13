@@ -1,10 +1,12 @@
 package controller;
 
+import annotation.ExceptionHandler;
 import annotation.MethodType;
 import annotation.RequestMapping;
 import java.util.Map;
 
 import db.Database;
+import exception.UserInfoException;
 import model.User;
 import request.HttpRequest;
 import request.HttpRequestUtils;
@@ -20,7 +22,6 @@ public class UserJoinController extends Controller {
      * @return view
      */
 
-
     @MethodType(value = "POST")
     public String join(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest.getBody());
@@ -30,5 +31,10 @@ public class UserJoinController extends Controller {
         Database.addUser(user);
 
         return "redirect:/";
+    }
+
+    @ExceptionHandler(exception = "UserInfoException.class")
+    public void handle() {
+        //TODO : 예외 핸들링 로직 구현
     }
 }
