@@ -1,12 +1,6 @@
 package controller;
 
-import annotation.RequestMapping;
-import java.io.File;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.HashMap;
 import java.util.Map;
 
 import request.HttpRequest;
@@ -14,11 +8,11 @@ import response.HttpResponse;
 
 public class FrontController {
 
-    private Map<String, Controller> mapper;
+    private Map<String, Controller> handlerControllerMap;
 
     public FrontController() {
-        mapper = HandlerMapper.doMapController();
-        HandlerMapper.doMapMethods(mapper);
+        handlerControllerMap = HandlerMapper.doMapController();
+        HandlerMapper.doMapMethods(handlerControllerMap);
     }
 
     /**
@@ -27,11 +21,11 @@ public class FrontController {
      * @return
      */
     public Controller getHandler(HttpRequest httpRequest) {
-        return mapper.get(httpRequest.getUrl());
+        return handlerControllerMap.get(httpRequest.getUrl());
     }
 
     public boolean hasMapping(HttpRequest httpRequest) {
-        return mapper.containsKey(httpRequest.getUrl());
+        return handlerControllerMap.containsKey(httpRequest.getUrl());
     }
 
     /**

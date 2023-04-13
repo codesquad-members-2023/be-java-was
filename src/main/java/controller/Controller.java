@@ -10,27 +10,28 @@ import annotation.MethodType;
 import request.HttpRequest;
 import response.HttpResponse;
 
-public interface Controller {
-    Map<String, Method> map = new HashMap<>();
+public abstract class Controller {
+    Map<String, Method> handlerMethodMap;
 
-    default void initMethodMapping() {
+    public void initMethodMapping() {
+        handlerMethodMap = new HashMap<>();
         //어노테이션 메소드 목록을 Reflection으로 불러와서 map에 추가
         for (Method method : this.getClass().getDeclaredMethods()) {
             Annotation annotation = method.getDeclaredAnnotation(MethodType.class);
             if (annotation instanceof MethodType) {
                 MethodType methodType = (MethodType)annotation;
-                map.put(methodType.value(), method);
+                handlerMethodMap.put(methodType.value(), method);
             }
         }
     }
-    default String process(HttpRequest httpRequest, HttpResponse httpResponse) throws
+    public String process(HttpRequest httpRequest, HttpResponse httpResponse) throws
             NoSuchMethodException,
             InvocationTargetException,
             IllegalAccessException, InstantiationException {
 
 
 
-        Method method = map.get(httpRequest.getMethod());
+        Method method = handlerMethodMap.get(httpRequest.getMethod());
 
         String viewName = (String)method.invoke(this.getClass().newInstance(), httpRequest, httpResponse);
 

@@ -11,7 +11,7 @@ import request.HttpRequestUtils;
 import response.HttpResponse;
 
 @RequestMapping(url = "/users/create")
-public class UserJoinController implements Controller {
+public class UserJoinController extends Controller {
     /**
      * httpRequest의 쿼리 파라미터 map을 넘겨받아 User 객체를 생성합니다.
      * DB와의 연결은 아직 구현되지 않았습니다.

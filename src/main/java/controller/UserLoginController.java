@@ -11,14 +11,16 @@ import request.HttpRequestUtils;
 import response.HttpResponse;
 
 @RequestMapping(url = "/users/login")
-public class UserLoginController implements Controller{
+public class UserLoginController extends Controller{
 
     @MethodType(value = "POST")
     public String login(HttpRequest httpRequest, HttpResponse httpResponse) {
         Map<String, String> params = HttpRequestUtils.parseQueryParams(httpRequest.getBody());
+        String userInputPassword = params.get("password");
 
-        User user = Database.findUserById(params.get("userId")).get();
-
-        return "redirect:/";
+        if (Database.findUserById(params.get("userId")).get().validate(userInputPassword)) {
+            return "redirect:/";
+        }
+        return "/user/login_failed.html";
     }
 }
