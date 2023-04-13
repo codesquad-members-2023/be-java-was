@@ -1,8 +1,8 @@
 package dto.user;
 
 public class UserLoginDTO {
-    private String userId;
-    private String password;
+    private final String userId;
+    private final String password;
 
     public UserLoginDTO(String userId, String password) {
         this.userId = userId;
