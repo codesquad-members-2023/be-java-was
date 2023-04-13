@@ -10,28 +10,28 @@ public enum ContentType {
     PNG("image/png", ".png", "/static"),
     HTML("text/html;charset=utf-8", ".html","/templates");
 
-    private String value;
-    private String pattern;
+    private String type;
+    private String extension;
     private String path;
     private String defaultPath = "src/main/resources";
 
-    public String getValue(){
-        return value;
+    public String getType(){
+        return type;
     }
 
     public String getPath(){
         return defaultPath + path;
     }
 
-    ContentType(String value, String pattern,String path) {
-        this.value = value;
-        this.pattern = pattern;
+    ContentType(String type, String extension,String path) {
+        this.type = type;
+        this.extension = extension;
         this.path = path;
     }
 
     public static ContentType of (String path){
         return Arrays.stream(values())
-                .filter(e -> path.endsWith(e.pattern))
+                .filter(e -> path.endsWith(e.extension))
                 .findAny()
                 .orElse(HTML);
     }
