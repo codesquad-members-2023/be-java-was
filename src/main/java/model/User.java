@@ -14,7 +14,7 @@ public class User {
     }
 
     public boolean validate(String inputPassword) {
-        return inputPassword == password;
+        return inputPassword.equals(password);
     }
 
     public String getUserId() {
