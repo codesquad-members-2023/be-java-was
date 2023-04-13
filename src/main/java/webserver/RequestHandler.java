@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import controller.FrontController;
 import request.HttpRequest;
-import response.HttpHeaders;
+import request.HttpRequestBuilder;
 import response.HttpResponse;
 import view.ViewResolver;
 
@@ -37,7 +37,7 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
-            HttpRequest httpRequest = setupHttpRequest(br);
+            HttpRequest httpRequest = HttpRequestBuilder.setup(br);
 
             HttpResponse httpResponse = new HttpResponse();
             String viewName = frontController.dispatch(httpRequest, httpResponse);
@@ -50,32 +50,6 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private HttpRequest setupHttpRequest(BufferedReader br) throws IOException {
-        //HTTP Request Line을 읽어옵니다.
-        HttpRequest httpRequest = new HttpRequest();
-        httpRequest.initRequestLine(br.readLine());
-
-        //HTTP Request Header를 읽어옵니다.
-        String requestHeader;
-        HttpHeaders httpRequestHeaders = new HttpHeaders();
-        while (!(requestHeader = br.readLine()).equals("")) {
-            //Request Header 객체에 삽입
-            httpRequestHeaders.parse(requestHeader);
-        }
-        httpRequest.setHttpHeaders(httpRequestHeaders);
-
-        //HTTP Request Body를 읽어옵니다.
-        if (httpRequestHeaders.getContentLength() > 0) {
-            char[] buffer = new char[httpRequestHeaders.getContentLength()];
-
-            int byteRead = br.read(buffer, 0, httpRequestHeaders.getContentLength());
-            //HttpRequest 객체에 Request Body 추가
-            httpRequest.setBody(new String(buffer, 0, byteRead));
-        }
-
-        return httpRequest;
     }
 
     /**
