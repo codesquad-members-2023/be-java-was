@@ -1,6 +1,8 @@
 package webserver;
 
 import db.Database;
+import model.RequestInfo;
+import model.Stylesheet;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +14,6 @@ import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Map;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -24,48 +25,39 @@ public class RequestHandler implements Runnable {
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
-                connection.getPort());
+        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            HttpRequestUtils reqUtils = new HttpRequestUtils();
 
-            // 모든 리퀘스트 출력 & 첫 라인 리턴
-            String startLine = HttpRequestUtils.getStartLine(br);
+            // 첫 라인 리턴
+            String startLine = reqUtils.getStartLine(br);
             logger.debug("startLine: {}", startLine);
 
-            String method = HttpRequestUtils.getMethod(startLine); // method 설정
-            String url = HttpRequestUtils.getUrl(startLine); // path 설정
-            Map<String, String> headers = HttpRequestUtils.getRequestHeaders(br);
+            RequestInfo reInfo = new RequestInfo(reqUtils.getMethod(startLine), // method 설정
+                    reqUtils.getUrl(startLine), // path 설정
+                    reqUtils.getRequestHeaders(br)); // header 정보 => Map<String, String>
 
             // GET: stylesheet
-            String contentType = StylesheetUtils.getContentType(url);
-            String pathName = StylesheetUtils.getPathName(url);
-
-            // GET: join
-            if (method.equals("GET") && url.startsWith("/user/create?")) {
-                User user = HttpRequestUtils.joinWithGET(url);
-                Database.addUser(user);
-                logger.debug("User: {}", user);
-
-                url = "/index.html";
-            }
+            Stylesheet stylesheet = new Stylesheet(StylesheetUtils.getContentType(reInfo.getUrl()),
+                    StylesheetUtils.getPathName(reInfo.getUrl()) + reInfo.getUrl());
 
             // POST: join
             DataOutputStream dos = new DataOutputStream(out);
-            if (method.equals("POST") && url.startsWith("/user/create")) {
-                int contentLength = Integer.parseInt(headers.get("Content-Length"));
-                String requestBody = HttpRequestUtils.getRequestBody(br, contentLength);
+            if (reInfo.comparingMethodUrl("POST", "/user/create")) {
+                int contentLength = Integer.parseInt(reInfo.getHeaderData("Content-Length"));
+                String requestBody = reqUtils.getRequestBody(br, contentLength);
                 logger.debug("requestBody: {}", requestBody);
 
-                User user = HttpRequestUtils.joinWithPOST(requestBody);
+                User user = reqUtils.joinWithPOST(requestBody);
                 Database.addUser(user);
                 logger.debug("User: {}", user);
 
                 HttpResponseUtils.response302Header(dos);
             } else {
-                byte[] body = Files.readAllBytes(new File(pathName + url).toPath());
-                HttpResponseUtils.response200Header(dos, body.length, contentType);
+                byte[] body = Files.readAllBytes(new File(stylesheet.getPathName()).toPath());
+                HttpResponseUtils.response200Header(dos, body.length, stylesheet.getContentType());
                 HttpResponseUtils.responseBody(dos, body);
             }
         } catch (IOException e) {

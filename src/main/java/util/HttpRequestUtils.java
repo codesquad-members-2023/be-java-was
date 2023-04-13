@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequestUtils {
-    private static final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
+    private final Logger logger = LoggerFactory.getLogger(HttpRequestUtils.class);
 
-    public static String getStartLine(BufferedReader br) {
+    public String getStartLine(BufferedReader br) {
         try {
             return br.readLine();
         } catch (IOException e) {
@@ -24,13 +24,13 @@ public class HttpRequestUtils {
         return null;
     }
 
-    public static String getMethod(String startLine) {
+    public String getMethod(String startLine) {
         String method = getStatus(startLine, 0);
         logger.debug("request method: {}", method);
         return method;
     }
 
-    public static String getUrl(String startLine) {
+    public String getUrl(String startLine) {
         String path = getStatus(startLine, 1);
 
         // root 맵핑(index.html 으로)
@@ -41,22 +41,22 @@ public class HttpRequestUtils {
         return path;
     }
 
-    private static String getStatus(String startLine, int num) {
+    private String getStatus(String startLine, int num) {
         String[] splitLine = startLine.split(" ");
         return splitLine[num];
     }
 
-    public static Map<String, String> getRequestHeaders(BufferedReader br) {
+    public Map<String, String> getRequestHeaders(BufferedReader br) {
         try {
             Map<String, String> headers = new HashMap<>();
             String line;
-            logger.debug("----------RequestHeader-START------------");
+            logger.debug("----------RequestHeaders-START------------");
             while ((line = br.readLine()) != null && !line.equals("")) {
                 logger.debug("requestHeader: {}", line);
                 String[] headerTokens = line.split(": ");
                 headers.put(headerTokens[0], headerTokens[1]);
             }
-            logger.debug("----------RequestHeader-END--------------");
+            logger.debug("----------RequestHeaders-END--------------");
 
             return headers;
         } catch (IOException e) {
@@ -66,7 +66,7 @@ public class HttpRequestUtils {
         return null;
     }
 
-    public static String getRequestBody(BufferedReader br, int contentLength) {
+    public String getRequestBody(BufferedReader br, int contentLength) {
         try {
             char[] charBuffer = new char[contentLength];
             br.read(charBuffer);
@@ -79,21 +79,13 @@ public class HttpRequestUtils {
         return null;
     }
 
-    public static User joinWithGET(String url) {
-        int index = url.indexOf("?");
-        String queryString = url.substring(index + 1);
-        Map<String, String> params = ParseQueryUtils.parseQueryString(queryString);
-        return new User(decoding(params.get("userId")), decoding(params.get("password"))
-                , decoding(params.get("name")), decoding(params.get("email")));
-    }
-
-    public static User joinWithPOST(String requestBody) {
+    public User joinWithPOST(String requestBody) {
         Map<String, String> params = ParseQueryUtils.parseQueryString(requestBody);
         return new User(decoding(params.get("userId")), decoding(params.get("password"))
                 , decoding(params.get("name")), decoding(params.get("email")));
     }
 
-    public static String decoding(String value) {
+    public String decoding(String value) {
         return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
 }
