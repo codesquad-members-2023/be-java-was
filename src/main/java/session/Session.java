@@ -2,21 +2,20 @@ package session;
 
 import java.util.Random;
 
-public class Session {
-    private final int ID_SIZE = 32;
+public class Session<T> {
 
     private String id;
-    private Object value;
+    private T value;
 
     public String getId() {
         return id;
     }
 
-    public Object getValue() {
+    public T getValue() {
         return value;
     }
 
-    public Session(Object value) {
+    public Session(T value) {
         this.id = setSessionId();
         this.value = value;
     }
