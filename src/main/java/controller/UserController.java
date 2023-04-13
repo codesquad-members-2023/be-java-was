@@ -14,13 +14,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.UUID;
 
+import static util.HttpMethod.*;
+import static util.UserURL.*;
+
 public class UserController {
-    private final String HTTP_GET = "GET";
-    private final String HTTP_POST = "POST";
-    private final String JOIN_FORM = "/user/form.html";
-    private final String CREATE_USER_URL = "/user/create";
-    private final String LOGIN_FORM = "/user/login.html";
-    private final String LOGIN_USER = "/user/login";
     private final UserJoinService userJoinService;
     private final UserLoginService userLoginService;
     private final CookieStore cookieStore;
