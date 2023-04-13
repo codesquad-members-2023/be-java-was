@@ -1,4 +1,4 @@
-package util;
+package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,8 @@ import org.slf4j.LoggerFactory;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class HttpResponseUtils {
-    private static final Logger logger = LoggerFactory.getLogger(HttpResponseUtils.class);
+public class ResponseHandler {
+    private static final Logger logger = LoggerFactory.getLogger(ResponseHandler.class);
 
     public static void response200Header(DataOutputStream dos, int lengthOfBodyContent, String contentType) {
         try {

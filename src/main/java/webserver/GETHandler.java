@@ -3,7 +3,6 @@ package webserver;
 import model.Stylesheet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpResponseUtils;
 import util.StylesheetUtils;
 
 import java.io.DataOutputStream;
@@ -21,7 +20,7 @@ public class GETHandler {
         logger.debug("stylesheet: {}, {}", stylesheet.getContentType(), stylesheet.getPathName());
 
         byte[] body = Files.readAllBytes(new File(stylesheet.getPathName()).toPath());
-        HttpResponseUtils.response200Header(dos, body.length, stylesheet.getContentType());
-        HttpResponseUtils.responseBody(dos, body);
+        ResponseHandler.response200Header(dos, body.length, stylesheet.getContentType());
+        ResponseHandler.responseBody(dos, body);
     }
 }

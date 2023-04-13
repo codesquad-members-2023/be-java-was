@@ -4,7 +4,6 @@ import db.Database;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.HttpResponseUtils;
 import util.ParseQueryUtils;
 
 import java.io.DataOutputStream;
@@ -24,7 +23,7 @@ public class POSTHandler {
         if (url.startsWith("/user/create")) {
             userPost();
 
-            HttpResponseUtils.response302Header(dos);
+            ResponseHandler.response302Header(dos);
         }
     }
 
