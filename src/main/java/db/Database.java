@@ -10,7 +10,7 @@ import java.util.Map;
 public class Database {
     private static Map<String, User> users = Maps.newHashMap();
 
-    public static void addUser(User user) {
+    public static synchronized void addUser(User user) {
         users.put(user.getUserId(), user);
     }
 
@@ -20,5 +20,9 @@ public class Database {
 
     public static Collection<User> findAll() {
         return users.values();
+    }
+
+    public static void clear() {
+        users.clear();
     }
 }

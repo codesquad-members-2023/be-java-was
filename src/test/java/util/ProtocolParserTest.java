@@ -9,7 +9,6 @@ import webserver.protocol.HttpRequest;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class ProtocolParserTest {
 
