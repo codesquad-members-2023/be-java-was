@@ -1,6 +1,7 @@
 package controller;
 
 import cookie.Cookie;
+import cookie.CookieStore;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +23,17 @@ public class UserController {
     private final String LOGIN_USER = "/user/login";
     private final UserJoinService userJoinService;
     private final UserLoginService userLoginService;
+    private final CookieStore cookieStore;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public UserController(UserJoinService userJoinService, UserLoginService userLoginService) {
+    public UserController(UserJoinService userJoinService, UserLoginService userLoginService, CookieStore cookieStore) {
         this.userJoinService = userJoinService;
         this.userLoginService = userLoginService;
+        this.cookieStore = cookieStore;
     }
 
     // TODO : 에러페이지 생성, 회원가입 검증
     public String process(HttpRequest request, HttpResponse response, BufferedReader br, Cookie cookie) throws IOException {
-        log.info("user controller 내부에서의 url = {}", request.getUrl());
         // GET 요청인 경우 분리
         if (request.getMethod().equals(HTTP_GET)) {
             // 회원 가입 폼 보여주기
@@ -64,6 +66,8 @@ public class UserController {
                 }
                 cookie.setUuid(UUID.randomUUID().toString());
                 cookie.setUser(loginUser);
+                response.setHeader("Set-cookie", String.format("sid=%s; Path=/", cookie.getUuid()));
+                cookieStore.saveCookie(cookie);
                 return response.redirectHome();
             }
         }
