@@ -32,9 +32,7 @@ public class RequestHandler implements Runnable {
 
             // 모든 리퀘스트 출력 & 첫 라인 리턴
             String startLine = HttpRequestUtils.getStartLine(br);
-            if (startLine == null) {
-                return;
-            }
+            logger.debug("startLine: {}", startLine);
 
             String method = HttpRequestUtils.getMethod(startLine); // method 설정
             String url = HttpRequestUtils.getUrl(startLine); // path 설정
