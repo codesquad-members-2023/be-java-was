@@ -1,12 +1,10 @@
-package db;
+package session;
 
 import java.util.Map;
-import java.util.UUID;
 
 import com.google.common.collect.Maps;
 
-import model.Session;
-import model.User;
+import session.Session;
 
 public class SessionDb {
     private static Map<String, Session> sessionMap = Maps.newHashMap();

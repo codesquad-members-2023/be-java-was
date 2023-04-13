@@ -1,13 +1,11 @@
 package controller;
 
 import java.util.Map;
-import java.util.UUID;
 
 import annotation.MethodType;
 import annotation.RequestMapping;
 import db.Database;
-import db.SessionDb;
-import model.User;
+import session.SessionDb;
 import request.HttpRequest;
 import request.HttpRequestUtils;
 import response.HttpResponse;
