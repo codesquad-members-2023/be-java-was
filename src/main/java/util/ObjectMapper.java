@@ -18,9 +18,9 @@ public class ObjectMapper {
      * @param object 만들 클래스
      * @param params 쿼리 파라미터
      */
-    public ObjectMapper(Class<?> object, Map<String, String> params) {
-        this.object = object;
+    public ObjectMapper(Map<String, String> params, Class object) {
         this.params = params;
+        this.object = object;
     }
 
     public Object mapObject() throws InvocationTargetException, InstantiationException, IllegalAccessException {
@@ -39,7 +39,7 @@ public class ObjectMapper {
     }
 
     /**
-     * Object에서 생성자 가져혼다.
+     * Object에서 생성자를 반환한다.
      * 파라미터 숫자와 같은 생성자를 필터링하고 모든 파라미터가 다 있는지 확인 후 반환한다.
      * @return 생성자
      */

@@ -25,7 +25,7 @@ public class UserService {
             throw new IllegalStateException("중복된 아이디가 있습니다.");
         }
 
-        User user = (User) new ObjectMapper(User.class, parameter).mapObject();
+        User user = (User) new ObjectMapper(parameter, User.class).mapObject();
 
         Database.addUser(user);
 

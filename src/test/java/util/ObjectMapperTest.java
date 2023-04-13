@@ -28,7 +28,7 @@ class ObjectMapperTest {
     @DisplayName("objectMapper로 회원 객체를 생성할 수 있다.")
     public void fieldParseTest() throws Exception{
         //given
-        objectMapper = new ObjectMapper(User.class, joinParams);
+        objectMapper = new ObjectMapper(joinParams, User.class);
         //when
         User user = (User) objectMapper.mapObject();
         //then
