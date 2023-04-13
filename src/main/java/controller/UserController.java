@@ -58,7 +58,7 @@ public class UserController extends FrontController {
             Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
             User loginedUser = userService.login(parameter);
 
-            Session loginSession = new Session(loginedUser.getUserId());
+            Session<User> loginSession = new Session<>(loginedUser);
             SessionStore.addSession(loginSession);
 
             httpResponse.setCookie("SID", loginSession.getId())   // SID cookie 세팅 // 만료가 없으면 session 쿠키가 된다.
