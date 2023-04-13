@@ -3,6 +3,7 @@ package response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.ContentType;
+import util.ResponseStatus;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -15,10 +16,11 @@ import java.util.Map;
 public class HttpResponse {
     private static final Logger logger = LoggerFactory.getLogger(HttpResponse.class);
     private DataOutputStream dos;
-    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> headers;
 
     public HttpResponse(OutputStream out) {
         this.dos = new DataOutputStream(out);
+        this.headers = new HashMap<>();
     }
 
     public void forward(String url) {
@@ -45,13 +47,18 @@ public class HttpResponse {
     public void redirect(String url) {
         try {
             dos.writeBytes("HTTP/1.1 302 FOUND \r\n");
+            response302Header(url);
             getKey();
-            setHeader("Location: ",url);
             dos.writeBytes("\r\n");
+            dos.flush();
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
     }
+    public void response302Header(String location) {
+        setHeader("Location", location);
+    }
+
 
     public void responseBody(byte[] body) {
         try {
@@ -65,6 +72,7 @@ public class HttpResponse {
     public void getKey() {
         try {
             for (Map.Entry<String, String> key : headers.entrySet()) {
+                logger.debug("string format : {}", String.format("%s: %s\r\n", key.getKey(), key.getValue()));
                 dos.writeBytes(String.format("%s: %s\r\n", key.getKey(), key.getValue()));
             }
         } catch (IOException e) {
