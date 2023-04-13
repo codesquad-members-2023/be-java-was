@@ -20,17 +20,14 @@ public class URLController {
         // localhost:8080 기본화면으로 이동
         if (path.equals("/")) {
             httpResponse.setStatus(200);
-            log.info("기본 화면으로 이동 ={}", path);
             return "/index.html";
         }
         // userController 호출
         if (path.startsWith("/user")) {
-            log.info("userController 호출 = {}", path);
             return userController.process(httpRequest, httpResponse, br, cookie);
         }
 
         // 기본 경로로 이동
-        log.info("들어온 경로 그대로 이동 = {}", path);
         httpResponse.setStatus(200);
         return path;
     }
