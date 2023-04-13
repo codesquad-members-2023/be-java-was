@@ -1,8 +1,5 @@
-package session;
+package webserver.protocol.session;
 
-import model.User;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 

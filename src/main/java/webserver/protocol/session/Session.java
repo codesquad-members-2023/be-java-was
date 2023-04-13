@@ -1,4 +1,4 @@
-package session;
+package webserver.protocol.session;
 
 import java.util.UUID;
 
