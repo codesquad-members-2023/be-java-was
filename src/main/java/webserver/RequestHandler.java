@@ -2,11 +2,12 @@ package webserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.nio.file.Files;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import request.HttpRequest;
+import response.HttpResponse;
 
 
 public class RequestHandler implements Runnable {
@@ -25,29 +26,36 @@ public class RequestHandler implements Runnable {
                 connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            String line = HttpRequest.startLine(in);
 
-            if (line == null) { // line이 null일때 무시
-                return;
+            BufferedReader br = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+            String line = br.readLine();
+            logger.debug("line = {} ",line);
+            HttpRequest httpRequest = new HttpRequest(line);
+
+            String header = br.readLine();
+
+            while(!header.equals("")){
+                httpRequest.addHeader(header);
+                header = br.readLine();
             }
 
-            HttpRequest httpRequest = new HttpRequest();
-            String url = httpRequest.getUrl(line);
+            if (httpRequest.getHeader("Content-Length") != null) { // line이 null일때 무시
+                int bodyLength = httpRequest.getBody("Content-Length").length();
+                httpRequest.addParam(readBody(br,bodyLength));
+            }
+
 
             HttpResponse httpResponse = new HttpResponse(out);
-            httpResponse.forward(url);
-
-            logger.debug("url = {} ", url);
-
-            if (url.startsWith("/user/create")) {
-                Map<String, String> params = httpRequest.parseQueryString(url);
-                httpRequest.addUser(params);
-                httpResponse.redirect("/index.html");
-            }
 
         } catch (IOException e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public String readBody(BufferedReader br, int bodyLength) throws IOException {
+        char[] body = new char[bodyLength];
+        br.read(body,0,bodyLength);
+        return String.valueOf(body);
     }
 
 }
