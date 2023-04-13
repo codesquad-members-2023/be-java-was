@@ -22,4 +22,8 @@ public class Database {
     public static List<User> findAll() {
         return new ArrayList<>(users.values());
     }
+
+    public static void clear() {
+        users.clear();
+    }
 }
