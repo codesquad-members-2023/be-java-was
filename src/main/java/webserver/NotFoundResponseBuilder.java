@@ -2,12 +2,11 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ContentTypeMapper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class NotFoundResponseBuilder implements HttpResponseBuilderV1 {
+public class NotFoundResponseBuilder implements HttpResponseBuilder {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     HttpRequest httpRequest;

@@ -7,7 +7,7 @@ import util.ContentTypeMapper;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class RightResponseBuilder implements HttpResponseBuilderV1 {
+public class RightResponseBuilder implements HttpResponseBuilder {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     HttpRequest httpRequest;
