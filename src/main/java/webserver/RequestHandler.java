@@ -38,13 +38,13 @@ public class RequestHandler implements Runnable {
                 f = new File(staticPath + returnUrl);
             }
             if (!f.exists()) {
-                returnUrl = "/util/error.html";
+                returnUrl = "/error.html";
                 f = new File(templatePath + returnUrl);
             }
 
             byte[] body = Files.readAllBytes(f.toPath());
 
-            if (returnUrl.startsWith("/util/error")) {
+            if (returnUrl.startsWith("/error")) {
                 HttpResponseBuilderV1 httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
                 httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
                 httpResponseBuilder.responseBody(dos, body);
