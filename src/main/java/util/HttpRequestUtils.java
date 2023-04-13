@@ -1,13 +1,10 @@
 package util;
 
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -77,15 +74,5 @@ public class HttpRequestUtils {
         }
 
         return null;
-    }
-
-    public User joinWithPOST(String requestBody) {
-        Map<String, String> params = ParseQueryUtils.parseQueryString(requestBody);
-        return new User(decoding(params.get("userId")), decoding(params.get("password"))
-                , decoding(params.get("name")), decoding(params.get("email")));
-    }
-
-    public String decoding(String value) {
-        return URLDecoder.decode(value, StandardCharsets.UTF_8);
     }
 }

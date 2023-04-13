@@ -1,19 +1,13 @@
 package webserver;
 
-import db.Database;
 import model.RequestInfo;
-import model.Stylesheet;
-import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.HttpRequestUtils;
-import util.HttpResponseUtils;
-import util.StylesheetUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -35,30 +29,23 @@ public class RequestHandler implements Runnable {
             String startLine = reqUtils.getStartLine(br);
             logger.debug("startLine: {}", startLine);
 
-            RequestInfo reInfo = new RequestInfo(reqUtils.getMethod(startLine), // method 설정
+            // RequestInfo
+            RequestInfo reqInfo = new RequestInfo(reqUtils.getMethod(startLine), // method 설정
                     reqUtils.getUrl(startLine), // path 설정
                     reqUtils.getRequestHeaders(br)); // header 정보 => Map<String, String>
-
-            // GET: stylesheet
-            Stylesheet stylesheet = new Stylesheet(StylesheetUtils.getContentType(reInfo.getUrl()),
-                    StylesheetUtils.getPathName(reInfo.getUrl()) + reInfo.getUrl());
-
-            // POST: join
             DataOutputStream dos = new DataOutputStream(out);
-            if (reInfo.comparingMethodUrl("POST", "/user/create")) {
-                int contentLength = Integer.parseInt(reInfo.getHeaderData("Content-Length"));
-                String requestBody = reqUtils.getRequestBody(br, contentLength);
-                logger.debug("requestBody: {}", requestBody);
 
-                User user = reqUtils.joinWithPOST(requestBody);
-                Database.addUser(user);
-                logger.debug("User: {}", user);
+            // GETHandler
+            if (reqInfo.comparingMethod("GET")) {
+                GETHandler.doGet(reqInfo.getUrl(), dos);
+            }
 
-                HttpResponseUtils.response302Header(dos);
-            } else {
-                byte[] body = Files.readAllBytes(new File(stylesheet.getPathName()).toPath());
-                HttpResponseUtils.response200Header(dos, body.length, stylesheet.getContentType());
-                HttpResponseUtils.responseBody(dos, body);
+            // POSTHandler
+            if (reqInfo.comparingMethod("POST")) {
+                int contentLength = Integer.parseInt(reqInfo.getHeaderData("Content-Length"));
+                POSTHandler postHandler = new POSTHandler(reqUtils.getRequestBody(br, contentLength));
+
+                postHandler.doPost(reqInfo.getUrl(), dos);
             }
         } catch (IOException e) {
             logger.error(e.getMessage());

@@ -13,8 +13,8 @@ public class RequestInfo {
         this.headers = headers;
     }
 
-    public boolean comparingMethodUrl(String method, String url) {
-        return this.method.equals(method) && this.url.startsWith(url);
+    public boolean comparingMethod(String method) {
+        return this.method.equals(method);
     }
 
     public String getHeaderData(String header) {
