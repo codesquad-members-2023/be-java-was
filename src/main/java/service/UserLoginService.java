@@ -1,6 +1,5 @@
 package service;
 
-import cookie.Cookie;
 import db.Database;
 import dto.user.UserLoginDTO;
 import model.User;
