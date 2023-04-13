@@ -47,28 +47,36 @@ public class UserController {
         if (request.getMethod().equals(HTTP_POST)) {
             // 회원가입
             if (request.getUrl().equals(CREATE_USER_URL)) {
-                String requestBody = request.getRequestBody(br);
-                log.debug("회원가입 성공 = {}", requestBody);
-                userJoinService.addUser(requestBody);
-                return response.redirectHome();
+                return saveUser(request, response, br);
             }
 
-            // 로그인
+            // 로그인, 로그인 실패 시 실패 페이지로 이동
             if (request.getUrl().equals(LOGIN_USER)) {
-                String requestBody = request.getRequestBody(br);
-                User loginUser = userLoginService.login(requestBody);
-
-                if (loginUser == null) {
-                    return response.returnToLoginFailed();
-                }
-                cookie.setUuid(UUID.randomUUID().toString());
-                cookie.setUser(loginUser);
-                response.setHeader("Set-cookie", String.format("sid=%s; Path=/", cookie.getUuid()));
-                cookieStore.saveCookie(cookie);
-                return response.redirectHome();
+                return loginUser(request, response, br, cookie);
             }
         }
 
         return "/error";
+    }
+
+    private String saveUser(HttpRequest request, HttpResponse response, BufferedReader br) throws IOException {
+        String requestBody = request.getRequestBody(br);
+        log.debug("회원가입 성공 = {}", requestBody);
+        userJoinService.addUser(requestBody);
+        return response.redirectHome();
+    }
+
+    private String loginUser(HttpRequest request, HttpResponse response, BufferedReader br, Cookie cookie) throws IOException {
+        String requestBody = request.getRequestBody(br);
+        User loginUser = userLoginService.login(requestBody);
+
+        if (loginUser == null) {
+            return response.returnToLoginFailed();
+        }
+        cookie.setUuid(UUID.randomUUID().toString());
+        cookie.setUser(loginUser);
+        response.setHeader("Set-cookie", String.format("sid=%s; Path=/", cookie.getUuid()));
+        cookieStore.saveCookie(cookie);
+        return response.redirectHome();
     }
 }
