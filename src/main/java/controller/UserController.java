@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import service.UserJoinService;
 import request.HttpRequest;
 import response.HttpResponse;
+import service.UserLoginService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,10 +21,12 @@ public class UserController {
     private final String LOGIN_FORM = "/user/login.html";
     private final String LOGIN_USER = "/user/login";
     private final UserJoinService userJoinService;
+    private final UserLoginService userLoginService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public UserController(UserJoinService userJoinService) {
+    public UserController(UserJoinService userJoinService, UserLoginService userLoginService) {
         this.userJoinService = userJoinService;
+        this.userLoginService = userLoginService;
     }
 
     // TODO : 에러페이지 생성, 회원가입 검증
@@ -54,11 +57,14 @@ public class UserController {
             // 로그인
             if (request.getUrl().equals(LOGIN_USER)) {
                 String requestBody = request.getRequestBody(br);
-                if (userJoinService.login(requestBody, cookie)) {
-                    response.setHeader("Set-Cookie", "sid=" + cookie.getUuid());
-                    return response.redirectHome();
+                User loginUser = userLoginService.login(requestBody);
+
+                if (loginUser == null) {
+                    return response.returnToLoginFailed();
                 }
-                return response.returnToLoginFailed();
+                cookie.setUuid(UUID.randomUUID().toString());
+                cookie.setUser(loginUser);
+                return response.redirectHome();
             }
         }
 

@@ -4,8 +4,7 @@ import com.google.common.collect.Maps;
 
 import model.User;
 
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 public class Database {
     private static Map<String, User> users = Maps.newHashMap();
@@ -14,11 +13,13 @@ public class Database {
         users.put(user.getUserId(), user);
     }
 
-    public static User findUserById(String userId) {
-        return users.get(userId);
+    public static Optional<User> findUserById(String userId) {
+       return findAll().stream()
+                .filter(m -> m.getUserId().equals(userId))
+                .findAny();
     }
 
-    public static Collection<User> findAll() {
-        return users.values();
+    public static List<User> findAll() {
+        return new ArrayList<>(users.values());
     }
 }

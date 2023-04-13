@@ -20,7 +20,7 @@ class UserJoinTest {
         userJoinService.addUser(userInformation);
 
         // then
-        User javajigi = Database.findUserById("javajigi");
+        User javajigi = Database.findUserById("javajigi").get();
         Assertions.assertThat(javajigi.getUserId()).isEqualTo("javajigi");
     }
 }

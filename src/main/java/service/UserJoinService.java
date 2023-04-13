@@ -18,17 +18,4 @@ public class UserJoinService {
                 .orElseThrow(IllegalArgumentException::new);
         Database.addUser(user);
     }
-
-    public boolean login(String loginInformation, Cookie cookie) {
-        UserLoginDTO loginUser = (UserLoginDTO) ConstructorMapper.makeConstructor(loginInformation, UserLoginDTO.class)
-                .orElseThrow(IllegalArgumentException::new);
-        User findUser = Database.findUserById(loginUser.getUserId());
-
-        if (findUser.getPassword().equals(loginUser.getPassword()) && findUser.getUserId().equals(loginUser.getUserId())) {
-            cookie.setUser(findUser);
-            cookie.setUuid(randomUUID().toString());
-            return true;
-        }
-        return false;
-    }
 }
