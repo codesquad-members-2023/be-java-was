@@ -1,4 +1,4 @@
-package controller;
+package mapper;
 
 import java.io.File;
 import java.net.URL;
@@ -9,6 +9,10 @@ import java.util.Map;
 import annotation.ExceptionHandler;
 import annotation.RequestMapping;
 
+/**
+ * exception 패키지의 customException 클래스를 <className, Class> 형태로 초기화 시 저장합니다.
+ * 이를 통해 예외 발생 시 controller가 어노테이션의 에외 이름으로 map에서 클래스 객체를 가져와서 인스턴스인지 점검할 수 있게 됩니다.
+ */
 public class ExceptionMapper {
     public static Map<String, Class<?>> doMapException() {
         Map<String, Class<?>> mapper = new HashMap<>();
@@ -27,17 +31,13 @@ public class ExceptionMapper {
             //package 디렉토리를 읽어온다.
             File packageDir = new File(packageUrl.getFile());
 
-            System.out.println(packageDir);
             //package 경로에서 class 파일을 읽어온다.
             File[] classFiles = packageDir.listFiles(file -> file.getName().endsWith(".class"));
 
             //모든 클래스의 Mapping 정보를 업데이트한다.
             for (File classFile : classFiles) {
-                System.out.println(classFile);
                 String className = packageName + "." + classFile.getName().replace(".class", "");
-                System.out.println(className);
                 Class<?> exception = urlClassLoader.loadClass(className);
-                System.out.println(exception);
 
                 // 예시 : (UserInfoException.class(String), userinfoexception 클래스)로 map에 저장
                 mapper.put(classFile.getName(), exception);
@@ -45,11 +45,6 @@ public class ExceptionMapper {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(mapper);
         return mapper;
-    }
-
-    public static Class<?> getException() {
-        return null;
     }
 }

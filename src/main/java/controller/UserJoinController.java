@@ -32,9 +32,4 @@ public class UserJoinController extends Controller {
 
         return "redirect:/";
     }
-
-    @ExceptionHandler(exception = "UserInfoException.class")
-    public void handle() {
-        //TODO : 예외 핸들링 로직 구현
-    }
 }

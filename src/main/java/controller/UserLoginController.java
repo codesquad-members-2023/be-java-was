@@ -1,5 +1,7 @@
 package controller;
 
+import annotation.ExceptionHandler;
+import exception.UserInfoException;
 import java.util.Map;
 
 import annotation.MethodType;
@@ -24,6 +26,12 @@ public class UserLoginController extends Controller{
             httpResponse.addHeader("Set-cookie", String.format("sid=%s; Path=/", session));
             return "redirect:/";
         }
+        throw new UserInfoException("로그인 실패");
+    }
+
+    @ExceptionHandler(exception = "UserInfoException.class")
+    public String failLogin() {
+        //TODO : 예외 핸들링 로직 구현
         return "/user/login_failed.html";
     }
 }
