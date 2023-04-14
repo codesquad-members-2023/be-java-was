@@ -16,8 +16,6 @@ public class RequestHandler implements Runnable {
 
     private Socket connection;
 
-    private static final String PATH = "src/main/resources/templates";
-
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
@@ -45,26 +43,34 @@ public class RequestHandler implements Runnable {
 
             if (httpRequest.getHeader("Content-Length") != null) { // line이 null일때 무시
                 int bodyLength = Integer.parseInt(httpRequest.getHeader("Content-Length"));
-                httpRequest.addParam(readBody(br, bodyLength));
+                httpRequest.addParameter(readBody(br, bodyLength));
             }
 
-            if(httpRequest.getMethod().equals("GET")) {
-                httpResponse.forward(httpRequest.getUrl());
-            }
-
-            UserController userController = new UserController();
-
-            logger.debug("getUrl = {}", httpRequest.getUrl());
-
-            if (httpRequest.getUrl().startsWith("/user/create")) {
-                String url = userController.addUser(httpRequest);
-                logger.debug("create url = {}", url);
-                httpResponse.redirect(url);
-            }
+            handleRequest(httpRequest, httpResponse);
 
 
         } catch (IOException e) {
             logger.error(e.getMessage());
+        }
+    }
+
+    private void handleRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
+        if (httpRequest.getMethod().equals("GET")) {
+            handleGetRequest(httpRequest, httpResponse);
+        } else if (httpRequest.getMethod().equals("POST")) {
+            handlePostRequest(httpRequest, httpResponse);
+        }
+    }
+
+    private void handleGetRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
+        httpResponse.forward(httpRequest.getUrl());
+    }
+
+    private void handlePostRequest(HttpRequest httpRequest, HttpResponse httpResponse) {
+        if (httpRequest.getUrl().startsWith("/user/create")) {
+            UserController userController = new UserController();
+            String url = userController.addUser(httpRequest);
+            httpResponse.redirect(url);
         }
     }
 
@@ -73,5 +79,4 @@ public class RequestHandler implements Runnable {
         br.read(body, 0, bodyLength);
         return String.valueOf(body);
     }
-
 }
