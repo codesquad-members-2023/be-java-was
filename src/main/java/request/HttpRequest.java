@@ -17,7 +17,7 @@ public class HttpRequest {
     private Map<String, String> params = new HashMap<>();
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    public void init(String requestLine) {
+    public void setRequestLine(String requestLine) {
         StringTokenizer requestTokens = new StringTokenizer(requestLine, " ");
         method = requestTokens.nextToken();
         String urlWithParams = requestTokens.nextToken();
@@ -69,9 +69,9 @@ public class HttpRequest {
         String requestHeader;
         while (!(requestHeader = br.readLine()).equals("")) {
             log.debug("header : {}", requestHeader);
-            String[] headerToken = requestHeader.split(": ");
+            String[] headerToken = requestHeader.split(":");
             if (headerToken.length == 2) {
-                headers.put(headerToken[0], headerToken[1]);
+                headers.put(headerToken[0], headerToken[1].trim());
             }
         }
         return headers;

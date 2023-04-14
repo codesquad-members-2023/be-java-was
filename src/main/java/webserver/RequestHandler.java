@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 import config.AppConfig;
 import controller.URLController;
+import cookie.Cookie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import request.HttpRequest;
@@ -31,11 +32,13 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
             HttpRequest httpRequest = new HttpRequest();
-            httpRequest.init(br.readLine());
+            httpRequest.setRequestLine(br.readLine());
             HttpResponse httpResponse = new HttpResponse();
+            Cookie cookie = new Cookie();
 
             String path = httpRequest.getUrl();
-            path = urlController.mapUrl(path, httpRequest, httpResponse, br);
+            path = urlController.mapUrl(path, httpRequest, httpResponse, br, cookie);
+
 
             httpResponse.processResponse(path, httpResponse, out);
         } catch (IOException e) {

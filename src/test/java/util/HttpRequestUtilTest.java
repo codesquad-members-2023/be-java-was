@@ -5,8 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import request.HttpRequest;
 
-import java.util.Map;
-
 public class HttpRequestUtilTest {
 
     @Test
@@ -15,7 +13,7 @@ public class HttpRequestUtilTest {
         String requestLine = "GET /index.html HTTP/1.1";
 
         HttpRequest request = new HttpRequest();
-        request.init(requestLine);
+        request.setRequestLine(requestLine);
 
         String method = request.getMethod();
 
@@ -29,7 +27,7 @@ public class HttpRequestUtilTest {
         String requestLine = "GET /index.html HTTP/1.1";
 
         HttpRequest request = new HttpRequest();
-        request.init(requestLine);
+        request.setRequestLine(requestLine);
 
         String url = request.getUrl();
 
@@ -42,7 +40,7 @@ public class HttpRequestUtilTest {
         String requestLine = "GET /user/create?userId=first&password=password%21&name=123&email=123%40123 HTTP/1.1";
 
         HttpRequest request = new HttpRequest();
-        request.init(requestLine);
+        request.setRequestLine(requestLine);
 
         String url = request.getUrl();
 

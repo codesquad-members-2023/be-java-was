@@ -81,4 +81,17 @@ public class HttpResponse {
     public String getResponse() {
         return headers.getOrDefault("Location", "");
     }
+
+    public String redirectHome() {
+        setStatus(302);
+        setHeader("Location", "/index.html");
+        return getResponse();
+    }
+
+    public String returnToLoginFailed() {
+        setStatus(200);
+        setHeader("Location", "/user/login_failed.html");
+        log.debug("로그인 실패");
+        return getResponse();
+    }
 }
