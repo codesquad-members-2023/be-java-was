@@ -1,5 +1,6 @@
 package util;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ class ParseQueryUtilsTest {
         Map<String, String> params = ParseQueryUtils.parseQueryString(line);
 
         // then
-        assertThat(params).isEqualTo(expectedParams);
+        Assertions.assertThat(params).isEqualTo(expectedParams);
     }
 
     @Test

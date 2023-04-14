@@ -107,7 +107,7 @@ class HttpRequestUtilsTest {
 
         BufferedReader br = new BufferedReader(new StringReader(requestBody));
         int contentLength = expectedBody.length();
-        
+
         // when
         String requestBodyParam = requestUtils.getRequestBody(br, contentLength);
 

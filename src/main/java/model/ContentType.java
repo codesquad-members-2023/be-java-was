@@ -1,4 +1,4 @@
-package util;
+package model;
 
 public enum ContentType {
     HTML("text/html", "templates", ".html"),
