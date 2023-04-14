@@ -13,6 +13,10 @@ public class User {
         this.email = email;
     }
 
+    public boolean validate(String inputPassword) {
+        return inputPassword.equals(password);
+    }
+
     public String getUserId() {
         return userId;
     }

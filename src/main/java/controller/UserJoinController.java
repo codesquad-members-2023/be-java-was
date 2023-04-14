@@ -1,17 +1,19 @@
 package controller;
 
+import annotation.ExceptionHandler;
 import annotation.MethodType;
 import annotation.RequestMapping;
 import java.util.Map;
 
 import db.Database;
+import exception.UserInfoException;
 import model.User;
 import request.HttpRequest;
 import request.HttpRequestUtils;
 import response.HttpResponse;
 
 @RequestMapping(url = "/users/create")
-public class UserJoinController implements Controller {
+public class UserJoinController extends Controller {
     /**
      * httpRequest의 쿼리 파라미터 map을 넘겨받아 User 객체를 생성합니다.
      * DB와의 연결은 아직 구현되지 않았습니다.
@@ -19,7 +21,6 @@ public class UserJoinController implements Controller {
      * @param httpRequest
      * @return view
      */
-
 
     @MethodType(value = "POST")
     public String join(HttpRequest httpRequest, HttpResponse httpResponse) {
