@@ -1,62 +1,52 @@
 package webserver;
 
-import db.Database;
-import model.User;
+import model.RequestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ContentType;
 import util.HttpRequestUtils;
-import util.HttpResponseUtils;
-import util.StylesheetUtils;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
 
-    private Socket connection;
+    private final Socket connection;
 
     public RequestHandler(Socket connectionSocket) {
         this.connection = connectionSocket;
     }
 
     public void run() {
-        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
-                connection.getPort());
+        logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(), connection.getPort());
 
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+            HttpRequestUtils reqUtils = new HttpRequestUtils();
 
-            // 모든 리퀘스트 출력 & 첫 라인 리턴
-            String line = HttpRequestUtils.getStartLine(br);
-            if (line == null) {
-                return;
-            }
+            // 첫 라인 리턴
+            String startLine = reqUtils.getStartLine(br);
+            logger.debug("startLine: {}", startLine);
 
-//            String method = HttpRequestUtils.getMethod(line); // method 설정
-            String url = HttpRequestUtils.getUrl(line); // path 설정
-
-            // GET: stylesheet
-            String contentType = StylesheetUtils.getContentType(url);
-            String pathName = StylesheetUtils.getPathName(url);
-
-            // GET: join
-            if (url.startsWith("/user/create?")) {
-                User user = HttpRequestUtils.joinWithGET(url);
-                Database.addUser(user);
-                logger.debug("User: {}", user);
-
-                url = "/index.html";
-            }
-
+            // RequestInfo
+            RequestInfo reqInfo = new RequestInfo(reqUtils.getMethod(startLine), // method 설정
+                    reqUtils.getUrl(startLine), // path 설정
+                    reqUtils.getRequestHeaders(br)); // header 정보 => Map<String, String>
             DataOutputStream dos = new DataOutputStream(out);
-            byte[] body = Files.readAllBytes(new File(pathName + url).toPath());
-            HttpResponseUtils.response200Header(dos, body.length, contentType);
-            HttpResponseUtils.responseBody(dos, body);
+
+            // GETHandler
+            if (reqInfo.comparingMethod("GET")) {
+                GETHandler.doGet(reqInfo.getUrl(), dos);
+            }
+
+            // POSTHandler
+            if (reqInfo.comparingMethod("POST")) {
+                int contentLength = Integer.parseInt(reqInfo.getHeaderData("Content-Length"));
+                POSTHandler postHandler = new POSTHandler(reqUtils.getRequestBody(br, contentLength));
+
+                postHandler.doPost(reqInfo.getUrl(), dos);
+            }
         } catch (IOException e) {
             logger.error(e.getMessage());
         }

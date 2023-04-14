@@ -1,42 +1,22 @@
 package util;
 
-import model.User;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class HttpRequestUtilsTest {
+    private HttpRequestUtils requestUtils;
 
-    @Test
-    @DisplayName("getMethod 메서드 테스트: HTTP 요청 라인에서 HTTP 메소드가 정확하게 추출되는지 검증")
-    void getMethod() {
-        // given
-        String line = "GET /index.html HTTP/1.1";
-        String expectedMethod = "GET";
-
-        // when
-        String param = HttpRequestUtils.getMethod(line);
-
-        // then
-        assertThat(param).isEqualTo(expectedMethod);
-    }
-
-    @Test
-    @DisplayName("getUrl 메서드 테스트: HTTP 요청 라인에서 URL이 정확하게 추출되는지 검증")
-    void getUrl() {
-        // given
-        String line = "GET /index.html HTTP/1.1";
-        String expectedUrl = "/index.html";
-
-        // when
-        String param = HttpRequestUtils.getUrl(line);
-
-        // then
-        assertThat(param).isEqualTo(expectedUrl);
+    @BeforeEach
+    void setup() {
+        requestUtils = new HttpRequestUtils();
     }
 
     @Test
@@ -65,44 +45,73 @@ class HttpRequestUtilsTest {
         String expectedStartLine = "GET /index.html HTTP/1.1";
 
         // when
-        String param = HttpRequestUtils.getStartLine(br);
+        String param = requestUtils.getStartLine(br);
 
         // then
         assertThat(param).isEqualTo(expectedStartLine);
     }
 
     @Test
-    @DisplayName("")
-    void joinWithGET() {
+    @DisplayName("getMethod 메서드 테스트: HTTP 요청 라인에서 HTTP 메소드가 정확하게 추출되는지 검증")
+    void getMethod() {
         // given
-        String joinUrl = "/user/create?userId=test&password=1234&name=테스터&email=test01%40naver.com";
-
-        User expectedUser = new User("test", "1234", "테스터", "test01@naver.com");
+        String line = "GET /index.html HTTP/1.1";
 
         // when
-        User userParam = HttpRequestUtils.joinWithGET(joinUrl);
+        String param = requestUtils.getMethod(line);
 
         // then
-        assertThat(userParam).usingRecursiveComparison().isEqualTo(expectedUser);
+        assertThat(param).isEqualTo("GET");
     }
 
     @Test
-    @DisplayName("")
-    void decoding() {
+    @DisplayName("getUrl 메서드 테스트: HTTP 요청 라인에서 URL이 정확하게 추출되는지 검증")
+    void getUrl() {
         // given
-        String encoding01 = "%40";
-        String encoding02 = "%EB%A7%8C%EC%A3%BC";
-
-        String expectedDecoding01 = "@";
-        String expectedDecoding02 = "만주";
+        String line = "GET /index.html HTTP/1.1";
+        String expectedUrl = "/index.html";
 
         // when
-        String decodingParam01 = HttpRequestUtils.decoding(encoding01);
-        String decodingParam02 = HttpRequestUtils.decoding(encoding02);
-        System.out.println(decodingParam02);
+        String param = requestUtils.getUrl(line);
 
         // then
-        assertThat(decodingParam01).isEqualTo(expectedDecoding01);
-        assertThat(decodingParam02).isEqualTo(expectedDecoding02);
+        assertThat(param).isEqualTo(expectedUrl);
+    }
+
+    @Test
+    @DisplayName("getRequestHeaders() 메소드에서 BufferedReader를 이용하여 요청 헤더 정보 추출하기")
+    public void getRequestHeaders() throws Exception {
+        // given
+        String requestHeaders = "Connection: keep-alive\n" +
+                "Content-Length: 81";
+        BufferedReader br = new BufferedReader(new StringReader(requestHeaders));
+
+        Map<String, String> expectedHeaders = Map.of("Connection", "keep-alive"
+                , "Content-Length", "81");
+
+        // when
+        Map<String, String> headersParam = requestUtils.getRequestHeaders(br);
+
+        // then
+        Assertions.assertThat(headersParam).isEqualTo(expectedHeaders);
+        // assertThat(headersParam).usingRecursiveComparison().isEqualTo(expectedHeaders);
+    }
+
+    @Test
+    @DisplayName("getRequestBody 메소드가 지정된 길이까지 요청 바디를 잘 반환하는지 테스트")
+    public void getRequestBody() throws Exception {
+        // given
+        String expectedBody = "userId=test&password=1234&name=%EC%95%84%ED%97%B9%ED%97%B9&email=1111%40gmail.com";
+        String dummy = " 이부분은 더미 데이터 부분 입니다. 지정된 숫자까지 읽을까요?";
+        String requestBody = expectedBody + dummy;
+
+        BufferedReader br = new BufferedReader(new StringReader(requestBody));
+        int contentLength = expectedBody.length();
+
+        // when
+        String requestBodyParam = requestUtils.getRequestBody(br, contentLength);
+
+        // then
+        assertThat(requestBodyParam).isEqualTo(expectedBody);
     }
 }
