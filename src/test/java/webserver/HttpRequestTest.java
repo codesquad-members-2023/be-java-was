@@ -1,4 +1,4 @@
-package util;
+package webserver;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,40 +39,19 @@ class HttpRequestTest {
         String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1&email=javajigi%40slipp.net";
 
         // when
-        Map<String, String> testMap = httpRequest.addParam(request);
+        httpRequest.addParameter(request);
+
 
         // then
-        assertThat(testMap.get("userId")).isEqualTo("javajigi");
-    }
-
-    @Test
-    @DisplayName("회원가입 쿼리가 들어왔을 때 맵에 모든 요소가 잘 저장이 되었는지 확인")
-    void querySize() {
-        String request = "userId=javajigi&password=password&name=%EB%B0%95%EC%9E%AC%EC%84%B1";
-
-        Map<String, String> testMap = httpRequest.addParam(request);
-
-        assertThat(testMap.size()).isEqualTo(3);
-
+        assertThat(httpRequest.getParameter("userId")).isEqualTo("javajigi");
     }
 
     @Test
     @DisplayName("입력받은 body를 \":\" 기준으로 분리되어 저장되었는지 확인")
     void getHeaders() {
-        String body = "Content-Type: application/x-www-form-urlencoded";
-        Map<String, String> testMap = httpRequest.addHeader(body);
-        assertThat(testMap.get("Content-Type")).isEqualTo("application/x-www-form-urlencoded");
+        String headers = "Content-Type: application/x-www-form-urlencoded";
+        httpRequest.addHeader(headers);
+        assertThat(httpRequest.getHeader("Content-Type")).isEqualTo("application/x-www-form-urlencoded");
     }
 
-    @Test
-    @DisplayName("입력받은 body의 사이즈 확인")
-    void getHeadersSize() {
-        String body = "Host: localhost:8080\n" +
-                "Connection: keep-alive\n" +
-                "Content-Length: 59\n" +
-                "Content-Type: application/x-www-form-urlencoded\n" +
-                "Accept: */*";
-        Map<String, String> testMap = httpRequest.addHeader(body);
-        assertThat(testMap.size()).isEqualTo(5);
-    }
 }
