@@ -45,15 +45,16 @@ public class RequestHandler implements Runnable {
 
             byte[] body = Files.readAllBytes(path);
 
+            HttpResponseBuilder httpResponseBuilder;
+
             if (returnUrl.startsWith("/error")) {
-                HttpResponseBuilder httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
-                httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
-                httpResponseBuilder.responseBody(dos, body);
+                httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
             } else {
-                HttpResponseBuilder httpResponseBuilder = new RightResponseBuilder(httpRequest);
-                httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
-                httpResponseBuilder.responseBody(dos, body);
+                httpResponseBuilder = new RightResponseBuilder(httpRequest);
             }
+
+            httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
+            httpResponseBuilder.responseBody(dos, body);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
