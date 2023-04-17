@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 
+import model.User;
 import templateEngine.PoroTouch;
 import view.ModelAndView;
 
@@ -50,6 +52,20 @@ public class HttpResponse {
     }
 
     public void setModelAttribute(String attributeName, Object attribute) {
+        //TODO : 현재는 유저 리스트만 호환됨
+        if (attribute instanceof List) {
+            List<User> userList = (List<User>)attribute;
+            int index = 0;
+            for (User user : userList) {
+                modelAndView.setModelAttribute("user.userId"+String.valueOf(index), user.getUserId());
+                modelAndView.setModelAttribute("user.password"+String.valueOf(index), user.getPassword());
+                modelAndView.setModelAttribute("user.name"+String.valueOf(index), user.getName());
+                modelAndView.setModelAttribute("user.email"+String.valueOf(index), user.getEmail());
+                modelAndView.setModelAttribute("user.index"+String.valueOf(index), String.valueOf(index));
+                index++;
+            }
+            modelAndView.setModelAttribute("maxCount", String.valueOf(index));
+        }
         modelAndView.setModelAttribute(attributeName, attribute);
     }
 
