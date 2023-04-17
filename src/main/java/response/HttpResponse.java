@@ -48,6 +48,10 @@ public class HttpResponse {
         return this;
     }
 
+    public void setModelAttribute(String attributeName, Object attribute) {
+        modelAndView.setModelAttribute(attributeName, attribute);
+    }
+
     public void setContentLength(int contentLength) {
         httpHeaders.put("Content-Length", String.valueOf(contentLength));
     }

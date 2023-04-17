@@ -7,12 +7,18 @@ import com.google.common.collect.Maps;
 import model.User;
 
 public class SessionDb {
-    private static Map<Session, User> sessionMap = Maps.newHashMap();
+    private static Map<String, User> sessionMap = Maps.newHashMap();
 
     public static String addSessionedUser(User user) {
-        Session userSession = new Session();
-        sessionMap.put(userSession, user);
-        return userSession.getSessionId();
+        String sessionId = SessionGenerator.generate();
+        sessionMap.put(sessionId, user);
+
+        return sessionId;
     }
+
+    public static User getUserBySessionId(String sessionId) {
+        return sessionMap.get(sessionId);
+    }
+
 
 }
