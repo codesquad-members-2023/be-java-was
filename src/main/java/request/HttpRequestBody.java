@@ -20,6 +20,7 @@ public class HttpRequestBody {
         br.read(bodyContents, 0, contentLength);
 
         String bodyOfHeader = URLDecoder.decode(String.valueOf(bodyContents), StandardCharsets.UTF_8);
+
         String[] bodyData = bodyOfHeader.split("&");
 
         for (String pair : bodyData) {
@@ -27,5 +28,9 @@ public class HttpRequestBody {
             body.put(keyAndValue[0], keyAndValue[1]);
             log.info("body data key = [{}], value = [{}]", keyAndValue[0], keyAndValue[1]);
         }
+    }
+
+    public HashMap<String, String> getBody() {
+        return body;
     }
 }

@@ -6,6 +6,7 @@ import util.SingletonContainer;
 import webserver.ContentTypeParser;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class HttpRequest {
@@ -43,5 +44,9 @@ public class HttpRequest {
 
     public String getExtension() {
         return httpRequestLine.getExtension();
+    }
+
+    public HashMap<String, String> getHttpRequestBody() {
+        return httpRequestBody.getBody();
     }
 }

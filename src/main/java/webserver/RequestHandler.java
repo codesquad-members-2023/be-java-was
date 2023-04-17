@@ -68,13 +68,10 @@ public class RequestHandler implements Runnable {
 
     private String orderToController(HttpRequest httpRequest) {
 
-        String httpMethod = httpRequest.getValueByNameInRequestLine("httpMethod");
         String resourceUrl = httpRequest.getValueByNameInRequestLine("resourceUrl");
 
-        logger.info("order To Controller httpMethod={} resourceUrl={}", httpMethod, resourceUrl);
-
         if (resourceUrl.startsWith("/user")) {
-            return SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
+            return SingletonContainer.getUserController().mapToFunctions(httpRequest);
         }
 
         return httpRequest.getValueByNameInRequestLine("resourceUrl");
