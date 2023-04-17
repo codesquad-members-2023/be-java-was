@@ -1,21 +1,25 @@
 package view;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import response.ContentsType;
 
-public class View {
+public class ModelAndView {
 
     private String viewName;
     private ContentsType contentsType;
+    private Map<String, String> model = new HashMap<>();
 
-    public View(String viewName, ContentsType contentsType) {
+    public ModelAndView setViewName(String viewName) {
         this.viewName = viewName;
-        this.contentsType = contentsType;
+        return this;
     }
 
-    public View(String viewName) {
-        this.viewName = viewName;
+    public ModelAndView setContentsType(ContentsType contentsType) {
+        this.contentsType = contentsType;
+        return this;
     }
 
     /**
@@ -24,6 +28,8 @@ public class View {
      * @return httpResponseMessage
      * @throws IOException
      */
+
+
 
     public String getPath() {
         return contentsType.getLocatedPath() + viewName;

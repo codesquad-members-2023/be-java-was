@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import view.View;
+import view.ModelAndView;
 
 /**
  * 이 클래스는 Response에 대한 메타 데이터를 저장합니다.
@@ -16,10 +16,11 @@ public class HttpResponse {
     String httpVersion;
     Status status;
     HttpHeaders httpHeaders;
-    View view;
+    ModelAndView modelAndView;
 
     public HttpResponse() {
         httpHeaders = new HttpHeaders();
+        modelAndView = new ModelAndView();
     }
 
     public static HttpResponse builder() {
@@ -41,14 +42,26 @@ public class HttpResponse {
         return this;
     }
 
-    public HttpResponse setView(View view) {
-        this.view = view;
+    public HttpResponse setView(ModelAndView modelAndView) {
+        this.modelAndView = modelAndView;
+        return this;
+    }
+
+    public HttpResponse setViewName(String viewName) {
+        modelAndView.setViewName(viewName);
+        return this;
+    }
+
+    public HttpResponse setContentsType(ContentsType contentsType) {
+        modelAndView.setContentsType(contentsType);
         return this;
     }
 
     public void setContentLength(int contentLength) {
         httpHeaders.put("Content-Length", String.valueOf(contentLength));
     }
+
+
 
     public byte[] getResponseLine() {
         String headLine = String.join(" ", httpVersion, status.getStatusCode(), status.getStatusMessage());
@@ -61,8 +74,10 @@ public class HttpResponse {
 
         // Body가 있는 경우
         outputStream.write(headers);
-        if (view.hasBody()) {
-            byte[] body = Files.readAllBytes(new File(view.getPath()).toPath());
+        if (modelAndView.hasBody()) {
+            byte[] body = Files.readAllBytes(new File(modelAndView.getPath()).toPath());
+
+            //ContentLength도 같이 바꿔줘야함
             setContentLength(body.length);
             outputStream.write(body);
         }
