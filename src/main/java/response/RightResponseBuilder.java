@@ -21,7 +21,7 @@ public class RightResponseBuilder implements HttpResponseBuilder {
     @Override
     public void buildResponse(DataOutputStream dos, int lengthOfBodyContent, String extension) {
         try {
-            String contentType = contentTypeParser.getPriorityContentType(httpRequest.getValueByName("Accept"), extension);
+            String contentType = contentTypeParser.getPriorityContentType(httpRequest.getValueByNameInHeader("Accept"), extension);
 
             dos.writeBytes("HTTP/1.1 200 OK \r\n");
             dos.writeBytes("Content-Type: " + contentType + "\r\n");

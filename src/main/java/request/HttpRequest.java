@@ -14,14 +14,15 @@ import java.util.Map;
 public class HttpRequest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
+
+    private Map<String, String> httpRequestLineMap;
     private Map<String, String> httpRequestHeader;
 
     public HttpRequest(BufferedReader br) throws IOException {
+        this.httpRequestLineMap = new HashMap<>();
         this.httpRequestHeader = new HashMap<>();
 
         String requestLine = br.readLine();
-
-        logger.debug("request first line = {}", requestLine);
 
         if (requestLine != null) {
             String[] parsedUrl = RequestParser.separateUrls(requestLine);
@@ -37,11 +38,9 @@ public class HttpRequest {
                 returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
             }
 
-            logger.info("here is returnUrl !!!!!!!!!! {}", returnUrl);
-
-            saveHeaderNameAndValue("httpMethod", httpMethod);
-            saveHeaderNameAndValue("resourceUrl", resourceUrl);
-            saveHeaderNameAndValue("returnUrl", returnUrl);
+            httpRequestLineMap.put("httpMethod", httpMethod);
+            httpRequestLineMap.put("resourceUrl", resourceUrl);
+            httpRequestLineMap.put("returnUrl", returnUrl);
         }
 
         String requestHeaders = br.readLine();
@@ -66,12 +65,16 @@ public class HttpRequest {
         httpRequestHeader.put(name, value);
     }
 
-    public String getValueByName(String name) {
+    public String getValueByNameInHeader(String name) {
         return httpRequestHeader.get(name);
     }
 
+    public String getValueByNameInRequestLine(String name) {
+        return httpRequestLineMap.get(name);
+    }
+
     public String getExtension() {
-        String fileName = httpRequestHeader.get("returnUrl");
+        String fileName = httpRequestLineMap.get("returnUrl");
         int index = fileName.lastIndexOf(".");
         return fileName.substring(index + 1);
     }

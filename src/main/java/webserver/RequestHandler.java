@@ -35,7 +35,7 @@ public class RequestHandler implements Runnable {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             HttpRequest httpRequest = new HttpRequest(br);
-            String returnUrl = httpRequest.getValueByName("returnUrl");
+            String returnUrl = httpRequest.getValueByNameInRequestLine("returnUrl");
             DataOutputStream dos = new DataOutputStream(out);
 
             path = Stream.of(Paths.get(templatePath, returnUrl), Paths.get(staticPath, returnUrl))
