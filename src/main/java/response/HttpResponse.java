@@ -23,10 +23,6 @@ public class HttpResponse {
         modelAndView = new ModelAndView();
     }
 
-    public static HttpResponse builder() {
-        return new HttpResponse();
-    }
-
     public HttpResponse addHeader(String key, String value) {
         this.httpHeaders.put(key, value);
         return this;
@@ -42,17 +38,12 @@ public class HttpResponse {
         return this;
     }
 
-    public HttpResponse setView(ModelAndView modelAndView) {
-        this.modelAndView = modelAndView;
-        return this;
-    }
-
     public HttpResponse setViewName(String viewName) {
         modelAndView.setViewName(viewName);
         return this;
     }
 
-    public HttpResponse setContentsType(ContentsType contentsType) {
+    public HttpResponse setContentsType(ContentsType contentsType){
         modelAndView.setContentsType(contentsType);
         return this;
     }

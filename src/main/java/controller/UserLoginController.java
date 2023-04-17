@@ -1,19 +1,17 @@
 package controller;
 
-import annotation.ExceptionHandler;
-import exception.UserInfoException;
-
 import java.util.Map;
-import java.util.Optional;
 
+import annotation.ExceptionHandler;
 import annotation.MethodType;
 import annotation.RequestMapping;
 import db.Database;
+import exception.UserInfoException;
 import model.User;
-import session.SessionDb;
 import request.HttpRequest;
 import request.HttpRequestUtils;
 import response.HttpResponse;
+import session.SessionDb;
 
 @RequestMapping(url = "/users/login")
 public class UserLoginController extends Controller {
