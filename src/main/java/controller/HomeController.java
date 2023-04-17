@@ -5,6 +5,7 @@ import java.util.Optional;
 import annotation.ExceptionHandler;
 import annotation.MethodType;
 import annotation.RequestMapping;
+import db.Database;
 import exception.UserInfoException;
 import model.User;
 import request.HttpRequest;
@@ -18,18 +19,18 @@ public class HomeController extends Controller {
     @MethodType(value = "GET")
     public String home(HttpRequest httpRequest, HttpResponse httpResponse) {
         Optional<String> sessionId = httpRequest.getSessionId();
+        httpResponse.setModelAttribute("loginedUserId", "비회원");
         if (!sessionId.isEmpty()) {
             String parsedSessionId = HttpRequestUtils.parseSessionId(sessionId.get());
 
-            User user = SessionDb.getUserBySessionId(parsedSessionId);
+            User loginedUser = SessionDb.getUserBySessionId(parsedSessionId);
 
-            // 유효한 세션이 아닌 경우 쿠키를 초기화하고(쿠키를 굳이 초기화 할 필요가 있나?) -> 쿠키 초기화 대신 다른 로직을 수행하도록.
-            if (user == null) {
+            // 유효한 세션이 아닌 경우 쿠키를 초기화
+            if (loginedUser == null) {
                 httpResponse.addHeader("Set-Cookie", String.format("sid=%s; Path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT;", parsedSessionId));
-                httpResponse.setModelAttribute("userId", "비회원");
                 throw new UserInfoException("세션이 만료되었습니다.");
             }
-            httpResponse.setModelAttribute("userId", user.getUserId());
+            httpResponse.setModelAttribute("loginedUserId", loginedUser.getUserId());
         }
 
         return "/index.html";
