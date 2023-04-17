@@ -22,7 +22,7 @@ public class HttpRequest {
     public HttpRequest(String line) {
         this.params = new HashMap<>();
         this.headers = new HashMap<>();
-        token = new StringTokenizer(line," ");
+        token = new StringTokenizer(line, " ");
         method = token.nextToken();
         url = token.nextToken();
         httpVersion = token.nextToken();
@@ -37,30 +37,26 @@ public class HttpRequest {
     }
 
     public Map<String, String> addHeader(String header) {
-        //String[] headerQuery = header.split("\n");
+        int parseIndex = header.indexOf(":");
+        headers.put(header.substring(0, parseIndex).trim(), header.substring(parseIndex + 1).trim());
 
-        //for(String line : headerQuery) {
-            int parseIndex = header.indexOf(":");
-            headers.put(header.substring(0,parseIndex).trim(), header.substring(parseIndex+1).trim());
-        //}
         return headers;
     }
 
-    public String getHeader(String key){
+    public String getHeader(String key) {
         return headers.get(key);
     }
 
     // body
-    public Map<String, String> addParam(String body) {
+    public void addParameter(String body) {
         String[] tokens = body.split("&");
         for (int i = 0; i < tokens.length; i++) {
             String[] token = tokens[i].split("=");
             params.put(token[0], token[1]);
         }
-        return params;
     }
 
-    public String getBody(String key){
+    public String getParameter(String key) {
         return params.get(key);
     }
 
