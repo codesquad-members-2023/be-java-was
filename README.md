@@ -1,31 +1,20 @@
 # 학습 계획
 
-# 소켓에 대해 학습하기
+## 스프링 공부
 
-## 자바의 Socket 학습하기
+스프링은 빈 관리를 어떻게 하는지 학습하고 싶습니다.
+싱글톤으로 빈을 관리하며, 어노테이션 기반으로 객체들간의 관계를 정의하는 기능을 특히 학습하고 싶습니다.
 
-저번 주에 공부를 못했다 다시 공부하자
+## JVM 공부
 
-## 자바의 ServerSocket 에 대해서 학습하기
+JVM 이 무엇인지, 이번 주에 공부할 필요성을 느꼈습니다.
 
-```text
-try (ServerSocket listenSocket = new ServerSocket(port)) {
-        Socket connection;
-        while ((connection = listenSocket.accept()) != null) { // 학습해야하는 코드
-        // 요청 응답 로직
-        }
-}
-```
-위의 코드의 `(connection = listenSocket.accept()) != null` 부분이 어떻게 동작하는지 궁금하다.
-listenSocket.accept() 이 어떤 동작으로 connection 에 할당을 해주고, 다음 요청이 들어올때까지, connection 에 null 을 반환해주는지 궁금하다.
+특히, 호눅스의 수업에서 다음과 같은 학습 키워드를 얻었습니다.
 
+- bootstrap, extention, Application 등등이 정확히 무엇인지
+- 클래스의 로딩시점
+- 유일성과 동등성이 무엇인지
+- String은 == 연사자가 아닌 equals() 메소드로 동등성을 비교해야 하는지
+- 상수 풀이 존재하는지 직접 눈으로 확인해보기
 
-## 표준 HTTP 헤더에 대해 학습하기
-
-표준을 공부하지 않으니, 이상한데서 실수를 많이 하는 것 같다.
-
-## 자바 공부를 위한 Reflection 학습
-
-Reflection 이 여러군데에서 많이 쓸모가 있을 것 같다.
-
-## 호눅스의 AWS 강의 보기
+이번 주는 JVM을 위주로 공부하려 합니다.
