@@ -22,14 +22,18 @@ public class UserLoginController extends Controller {
         String userInputPassword = params.get("password");
         String userId = params.get("userId");
 
-        User user = Database.findUserById(userId).orElseThrow(() -> new UserInfoException("존재하지 않는 유저입니다."));
+        User user = Database.findUserById(userId).orElseThrow(() -> {
+            httpResponse.setModelAttribute("errorMessage", "존재하지 않는 유저입니다.");
+            throw new UserInfoException();
+        });
 
         if (user.validate(userInputPassword)){
             String session = SessionDb.addSessionedUser(user);
             httpResponse.addHeader("Set-cookie", String.format("sid=%s; Path=/", session));
             return "redirect:/";
         }
-        throw new UserInfoException("로그인 실패");
+        httpResponse.setModelAttribute("errorMessage", "비밀번호가 틀렸습니다.");
+        throw new UserInfoException();
     }
 
     @ExceptionHandler(exception = "UserInfoException.class")

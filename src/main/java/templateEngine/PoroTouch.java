@@ -37,6 +37,7 @@ public class PoroTouch {
                 if (modelAndView.getModelAttribute("maxCount") == null) {
                     return sb.replace(startOfBlockWithTag, endOfBlockWithTag, "").toString().getBytes("UTF-8");
                 }
+
                 StringBuilder blockBuilder = new StringBuilder();
                 int maxCount = Integer.parseInt((String)modelAndView.getModelAttribute("maxCount"));
                 for (int order = 0; order < maxCount; order++) {
@@ -80,18 +81,12 @@ public class PoroTouch {
             //Model 속성 이름을 찾는다.
             String modelAttributeKey = sb.substring(startIndex + OPENING_TAG.length(), endIndex).trim();
 
-            //System.out.println(modelAttributeKey);
             Object modelAttribute = modelAndView.getModelAttribute(modelAttributeKey);
             if (modelAttribute != null) {
-                if (modelAttribute instanceof List) {
-                    sb.replace(startIndex, endIndex + CLOSING_TAG.length(), modelAttribute.toString());
-                }
-                if (modelAttribute instanceof String) {
-                    sb.replace(startIndex, endIndex + CLOSING_TAG.length(), modelAttribute.toString());
-                }
-
+                sb.replace(startIndex, endIndex + CLOSING_TAG.length(), modelAttribute.toString());
+                continue;
             }
+            sb.replace(startIndex, endIndex + CLOSING_TAG.length(), "");
         }
     }
-
 }

@@ -12,7 +12,6 @@ import view.ModelAndView;
 
 /**
  * 이 클래스는 Response에 대한 메타 데이터를 저장합니다.
- * Body는 메모리 용량에 부담이 될 것 같아 buffer를 통해서만 전달됩니다.
  */
 public class HttpResponse {
 
@@ -57,11 +56,11 @@ public class HttpResponse {
             List<User> userList = (List<User>)attribute;
             int index = 0;
             for (User user : userList) {
-                modelAndView.setModelAttribute("user.userId"+String.valueOf(index), user.getUserId());
-                modelAndView.setModelAttribute("user.password"+String.valueOf(index), user.getPassword());
-                modelAndView.setModelAttribute("user.name"+String.valueOf(index), user.getName());
-                modelAndView.setModelAttribute("user.email"+String.valueOf(index), user.getEmail());
-                modelAndView.setModelAttribute("user.index"+String.valueOf(index), String.valueOf(index));
+                modelAndView.setModelAttribute("user.userId"+index, user.getUserId());
+                modelAndView.setModelAttribute("user.password"+index, user.getPassword());
+                modelAndView.setModelAttribute("user.name"+index, user.getName());
+                modelAndView.setModelAttribute("user.email"+index, user.getEmail());
+                modelAndView.setModelAttribute("user.index"+index, String.valueOf(index));
                 index++;
             }
             modelAndView.setModelAttribute("maxCount", String.valueOf(index));
