@@ -13,6 +13,7 @@ import request.HttpRequest;
 import response.HttpResponseBuilder;
 import response.NotFoundResponseBuilder;
 import response.RightResponseBuilder;
+import util.SingletonContainer;
 
 public class RequestHandler implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(RequestHandler.class);
@@ -36,7 +37,9 @@ public class RequestHandler implements Runnable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
 
             HttpRequest httpRequest = new HttpRequest(br);
-            String returnUrl = httpRequest.getValueByNameInRequestLine("returnUrl");
+
+            String returnUrl = orderToController(httpRequest);
+            logger.info("UUUPdate return url={}", returnUrl);
 
             path = Stream.of(Paths.get(templatePath, returnUrl), Paths.get(staticPath, returnUrl))
                     .filter(Files::exists)
@@ -61,6 +64,20 @@ public class RequestHandler implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String orderToController(HttpRequest httpRequest) {
+
+        String httpMethod = httpRequest.getValueByNameInRequestLine("httpMethod");
+        String resourceUrl = httpRequest.getValueByNameInRequestLine("resourceUrl");
+
+        logger.info("order To Controller httpMethod={} resourceUrl={}", httpMethod, resourceUrl);
+
+        if (resourceUrl.startsWith("/user")) {
+            return SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
+        }
+
+        return httpRequest.getValueByNameInRequestLine("resourceUrl");
     }
 }
 

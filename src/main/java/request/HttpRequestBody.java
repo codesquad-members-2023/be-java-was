@@ -27,6 +27,5 @@ public class HttpRequestBody {
             body.put(keyAndValue[0], keyAndValue[1]);
             log.info("body data key = [{}], value = [{}]", keyAndValue[0], keyAndValue[1]);
         }
-
     }
 }

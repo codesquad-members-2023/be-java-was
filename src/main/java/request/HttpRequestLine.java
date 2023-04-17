@@ -3,7 +3,6 @@ package request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import util.RequestParser;
-import util.SingletonContainer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,21 +22,17 @@ public class HttpRequestLine {
             String[] parsedUrl = RequestParser.separateUrls(requestLine);
             String httpMethod = parsedUrl[0];
             String resourceUrl = parsedUrl[1];
+            String httpVersion = parsedUrl[2];
 
-            String returnUrl = resourceUrl.split("\\?")[0];
-            if (returnUrl.equals("/")) {
-                returnUrl = "/index.html";
+            if (resourceUrl.equals("/")) {
+                resourceUrl = "/index.html";
             }
 
-            if (resourceUrl.startsWith("/user")) {
-                returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
-            }
-
-            log.info("http method={} resourceUrl={} returnUrl={}", httpMethod, resourceUrl, returnUrl);
+            log.info("http method={} resourceUrl={}", httpMethod, resourceUrl);
 
             saveRequestLineNameAndValue("httpMethod", httpMethod);
             saveRequestLineNameAndValue("resourceUrl", resourceUrl);
-            saveRequestLineNameAndValue("returnUrl", returnUrl);
+            saveRequestLineNameAndValue("httpVersion", httpVersion);
         }
     }
 
@@ -46,7 +41,7 @@ public class HttpRequestLine {
     }
 
     public String getExtension() {
-        String fileName = httpRequestLineMap.get("returnUrl");
+        String fileName = httpRequestLineMap.get("resourceUrl");
         int index = fileName.lastIndexOf(".");
         return fileName.substring(index + 1);
     }
