@@ -15,33 +15,12 @@ public class HttpRequest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private Map<String, String> httpRequestLineMap;
+    private HttpRequestLine httpRequestLine;
     private Map<String, String> httpRequestHeader;
 
     public HttpRequest(BufferedReader br) throws IOException {
-        this.httpRequestLineMap = new HashMap<>();
         this.httpRequestHeader = new HashMap<>();
-
-        String requestLine = br.readLine();
-
-        if (requestLine != null) {
-            String[] parsedUrl = RequestParser.separateUrls(requestLine);
-            String httpMethod = parsedUrl[0];
-            String resourceUrl = parsedUrl[1];
-
-            String returnUrl = resourceUrl.split("\\?")[0];
-            if (returnUrl.equals("/")) {
-                returnUrl = "/index.html";
-            }
-
-            if (resourceUrl.startsWith("/user")) {
-                returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
-            }
-
-            httpRequestLineMap.put("httpMethod", httpMethod);
-            httpRequestLineMap.put("resourceUrl", resourceUrl);
-            httpRequestLineMap.put("returnUrl", returnUrl);
-        }
+        this.httpRequestLine = new HttpRequestLine(br.readLine());
 
         String requestHeaders = br.readLine();
 
@@ -69,13 +48,13 @@ public class HttpRequest {
         return httpRequestHeader.get(name);
     }
 
-    public String getValueByNameInRequestLine(String name) {
-        return httpRequestLineMap.get(name);
-    }
-
     public String getExtension() {
-        String fileName = httpRequestLineMap.get("returnUrl");
+        String fileName = httpRequestLine.getValueByNameInRequestLine("returnUrl");
         int index = fileName.lastIndexOf(".");
         return fileName.substring(index + 1);
+    }
+
+    public String getValueByNameInRequestLine(String name) {
+        return httpRequestLine.getValueByNameInRequestLine(name);
     }
 }
