@@ -1,10 +1,15 @@
 package request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 
 public class HttpRequestHeader {
+
+    private Logger log = LoggerFactory.getLogger(getClass());
     private HashMap<String, String> header;
 
     public HttpRequestHeader(BufferedReader br) throws IOException {
@@ -20,6 +25,7 @@ public class HttpRequestHeader {
             String headersValue = requestHeaders.substring(separatorIdx + 1).trim();
 
             saveHeaderNameAndValue(headersName, headersValue);
+            log.info("headersName = {}, headersValue = {}", headersName, headersValue);
             requestHeaders = br.readLine();
         }
     }

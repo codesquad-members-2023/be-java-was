@@ -1,5 +1,7 @@
 package request;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import util.RequestParser;
 import util.SingletonContainer;
 
@@ -9,10 +11,12 @@ import java.util.HashMap;
 
 public class HttpRequestLine {
 
-    private HashMap<String, String> httpRequestLineMap = new HashMap<>();
+    private Logger log = LoggerFactory.getLogger(getClass());
+    private HashMap<String, String> httpRequestLineMap;
 
     public HttpRequestLine(BufferedReader br) throws IOException {
 
+        httpRequestLineMap = new HashMap<>();
         String requestLine = br.readLine();
 
         if (requestLine != null) {
@@ -28,6 +32,8 @@ public class HttpRequestLine {
             if (resourceUrl.startsWith("/user")) {
                 returnUrl = SingletonContainer.getUserController().mapToFunctions(httpMethod, resourceUrl);
             }
+
+            log.info("http method={} resourceUrl={} returnUrl={}", httpMethod, resourceUrl, returnUrl);
 
             saveRequestLineNameAndValue("httpMethod", httpMethod);
             saveRequestLineNameAndValue("resourceUrl", resourceUrl);

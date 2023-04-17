@@ -34,9 +34,9 @@ public class RequestHandler implements Runnable {
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+
             HttpRequest httpRequest = new HttpRequest(br);
             String returnUrl = httpRequest.getValueByNameInRequestLine("returnUrl");
-            DataOutputStream dos = new DataOutputStream(out);
 
             path = Stream.of(Paths.get(templatePath, returnUrl), Paths.get(staticPath, returnUrl))
                     .filter(Files::exists)
@@ -46,6 +46,8 @@ public class RequestHandler implements Runnable {
             byte[] body = Files.readAllBytes(path);
 
             HttpResponseBuilder httpResponseBuilder;
+
+            DataOutputStream dos = new DataOutputStream(out);
 
             if (returnUrl.startsWith("/error")) {
                 httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
