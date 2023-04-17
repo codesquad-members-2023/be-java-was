@@ -4,14 +4,14 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
-import session.Session;
+import model.User;
 
 public class SessionDb {
-    private static Map<String, Session> sessionMap = Maps.newHashMap();
+    private static Map<Session, User> sessionMap = Maps.newHashMap();
 
-    public static String addSessionedUser(String userId) {
+    public static String addSessionedUser(User user) {
         Session userSession = new Session();
-        sessionMap.put(userId, userSession);
+        sessionMap.put(userSession, user);
         return userSession.getSessionId();
     }
 
