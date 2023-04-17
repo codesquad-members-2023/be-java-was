@@ -29,6 +29,7 @@ Java Web Application Server 2022
 ### 1.3. 사용 기술
 Java
 
+![img.png](img.png)
 
 
 ## 2. 블로그 학습 정리
