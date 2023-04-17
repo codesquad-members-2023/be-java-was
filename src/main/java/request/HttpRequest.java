@@ -2,8 +2,7 @@ package request;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.SingletonContainer;
-import webserver.ContentTypeParser;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
@@ -22,6 +21,8 @@ public class HttpRequest {
     public HttpRequest(BufferedReader br) throws IOException {
         this.httpRequestLine = new HttpRequestLine(br);
         this.httpRequestHeader = new HttpRequestHeader(br);
+
+        log.info("나 찍혔다~~~~~~~~~~~={}", httpRequestLine.getValueByNameInRequestLine("resourceUrl"));
 
         Optional<String> contentLengthHeader = Optional.ofNullable(getValueByNameInHeader(CONTENT_LENGTH));
         contentLengthHeader.ifPresent(value -> {
