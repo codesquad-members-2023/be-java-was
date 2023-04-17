@@ -1,8 +1,9 @@
-package webserver;
+package response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import util.ContentTypeMapper;
+import request.HttpRequest;
+import webserver.ContentTypeParser;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

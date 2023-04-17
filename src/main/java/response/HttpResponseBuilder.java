@@ -1,4 +1,4 @@
-package webserver;
+package response;
 
 import java.io.DataOutputStream;
 
