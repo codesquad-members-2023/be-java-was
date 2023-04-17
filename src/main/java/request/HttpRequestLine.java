@@ -3,13 +3,17 @@ package request;
 import util.RequestParser;
 import util.SingletonContainer;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashMap;
 
 public class HttpRequestLine {
 
     private HashMap<String, String> httpRequestLineMap = new HashMap<>();
 
-    public HttpRequestLine(String requestLine) {
+    public HttpRequestLine(BufferedReader br) throws IOException {
+
+        String requestLine = br.readLine();
 
         if (requestLine != null) {
             String[] parsedUrl = RequestParser.separateUrls(requestLine);
@@ -35,6 +39,11 @@ public class HttpRequestLine {
         return httpRequestLineMap.get(name);
     }
 
+    public String getExtension() {
+        String fileName = httpRequestLineMap.get("returnUrl");
+        int index = fileName.lastIndexOf(".");
+        return fileName.substring(index + 1);
+    }
 
     private void saveRequestLineNameAndValue(String name, String value) {
         httpRequestLineMap.put(name, value);
