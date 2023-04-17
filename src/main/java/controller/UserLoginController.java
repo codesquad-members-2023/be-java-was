@@ -33,7 +33,7 @@ public class UserLoginController extends Controller {
     }
 
     @ExceptionHandler(exception = "UserInfoException.class")
-    public String failLogin() {
+    public String failLogin(HttpRequest httpRequest, HttpResponse httpResponse) {
         return "/user/login_failed.html";
     }
 }

@@ -17,6 +17,7 @@ public class SessionDb {
     }
 
     public static User getUserBySessionId(String sessionId) {
+        System.out.println(sessionMap);
         return sessionMap.get(sessionId);
     }
 

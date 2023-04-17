@@ -22,6 +22,10 @@ public class ModelAndView {
         return this;
     }
 
+    public Object getModelAttribute(String key) {
+        return model.get(key);
+    }
+
     public void setModelAttribute(String key, Object value) {
         model.put(key, value);
     }

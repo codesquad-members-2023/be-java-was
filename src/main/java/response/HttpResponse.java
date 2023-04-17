@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
+import templateEngine.PoroTouch;
 import view.ModelAndView;
 
 /**
@@ -70,8 +71,10 @@ public class HttpResponse {
         // Body가 있는 경우
         outputStream.write(headers);
         if (modelAndView.hasBody()) {
+            //템플릿 엔진 기능 추가
             byte[] body = Files.readAllBytes(new File(modelAndView.getPath()).toPath());
 
+            body = PoroTouch.render(body, modelAndView);
             //ContentLength도 같이 바꿔줘야함
             setContentLength(body.length);
             outputStream.write(body);
