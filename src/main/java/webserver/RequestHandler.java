@@ -3,6 +3,9 @@ package webserver;
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,27 +25,21 @@ public class RequestHandler implements Runnable {
         logger.debug("New Client Connect! Connected IP : {}, Port : {}", connection.getInetAddress(),
                 connection.getPort());
 
+        Path path;
+
         try (InputStream in = connection.getInputStream(); OutputStream out = connection.getOutputStream()) {
-            // TODO 사용자 요청에 대한 처리는 이 곳에 구현하면 된다.
+
             BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-
             HttpRequest httpRequest = new HttpRequest(br);
-
-
             String returnUrl = httpRequest.getValueByName("returnUrl");
-
             DataOutputStream dos = new DataOutputStream(out);
 
-            File f = new File(templatePath + returnUrl);
-            if (!f.exists()) {
-                f = new File(staticPath + returnUrl);
-            }
-            if (!f.exists()) {
-                returnUrl = "/error.html";
-                f = new File(templatePath + returnUrl);
-            }
+            path = Stream.of(Paths.get(templatePath, returnUrl), Paths.get(staticPath, returnUrl))
+                    .filter(Files::exists)
+                    .findFirst()
+                    .orElse(Paths.get(templatePath, "/error.html"));
 
-            byte[] body = Files.readAllBytes(f.toPath());
+            byte[] body = Files.readAllBytes(path);
 
             if (returnUrl.startsWith("/error")) {
                 HttpResponseBuilder httpResponseBuilder = new NotFoundResponseBuilder(httpRequest);
@@ -53,8 +50,10 @@ public class RequestHandler implements Runnable {
                 httpResponseBuilder.buildResponse(dos, body.length, httpRequest.getExtension());
                 httpResponseBuilder.responseBody(dos, body);
             }
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
+

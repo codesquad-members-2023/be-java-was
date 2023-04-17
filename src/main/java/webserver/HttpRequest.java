@@ -57,7 +57,7 @@ public class HttpRequest {
         }
 
         ContentTypeParser contentTypeParser = new ContentTypeParser();
-        String returnType = contentTypeParser.getPriorityContentType(httpRequestHeader.get("Accept"));
+        String returnType = contentTypeParser.getPriorityContentType(httpRequestHeader.get("Accept"), getExtension());
         logger.info("return Type = {}", returnType);
     }
 
