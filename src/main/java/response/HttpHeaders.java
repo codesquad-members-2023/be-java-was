@@ -2,6 +2,7 @@ package response;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 public class HttpHeaders {
@@ -23,6 +24,10 @@ public class HttpHeaders {
         }
 
         return 0;
+    }
+
+    public Optional<String> getSessionId() {
+        return Optional.ofNullable(headers.get("Cookie"));
     }
 
     @Override

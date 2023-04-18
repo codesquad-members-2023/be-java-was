@@ -1,19 +1,20 @@
 package controller;
 
-import annotation.ExceptionHandler;
-import exception.UserInfoException;
 import java.util.Map;
 
+import annotation.ExceptionHandler;
 import annotation.MethodType;
 import annotation.RequestMapping;
 import db.Database;
-import session.SessionDb;
+import exception.UserInfoException;
+import model.User;
 import request.HttpRequest;
 import request.HttpRequestUtils;
 import response.HttpResponse;
+import session.SessionDb;
 
 @RequestMapping(url = "/users/login")
-public class UserLoginController extends Controller{
+public class UserLoginController extends Controller {
 
     @MethodType(value = "POST")
     public String login(HttpRequest httpRequest, HttpResponse httpResponse) {
@@ -21,17 +22,22 @@ public class UserLoginController extends Controller{
         String userInputPassword = params.get("password");
         String userId = params.get("userId");
 
-        if (Database.findUserById(userId).get().validate(userInputPassword)) {
-            String session = SessionDb.addSessionedUser(userId);
+        User user = Database.findUserById(userId).orElseThrow(() -> {
+            httpResponse.setModelAttribute("errorMessage", "존재하지 않는 유저입니다.");
+            throw new UserInfoException();
+        });
+
+        if (user.validate(userInputPassword)){
+            String session = SessionDb.addSessionedUser(user);
             httpResponse.addHeader("Set-cookie", String.format("sid=%s; Path=/", session));
             return "redirect:/";
         }
-        throw new UserInfoException("로그인 실패");
+        httpResponse.setModelAttribute("errorMessage", "비밀번호가 틀렸습니다.");
+        throw new UserInfoException();
     }
 
     @ExceptionHandler(exception = "UserInfoException.class")
-    public String failLogin() {
-        //TODO : 예외 핸들링 로직 구현
+    public String failLogin(HttpRequest httpRequest, HttpResponse httpResponse) {
         return "/user/login_failed.html";
     }
 }

@@ -4,7 +4,9 @@ import com.google.common.collect.Maps;
 
 import model.User;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -17,6 +19,10 @@ public class Database {
 
     public static Optional<User> findUserById(String userId) {
         return Optional.ofNullable(users.get(userId));
+    }
+
+    public static List<User> getUserList() {
+        return new ArrayList<>(users.values());
     }
 
     public static Collection<User> findAll() {

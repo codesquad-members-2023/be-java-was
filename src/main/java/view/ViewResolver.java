@@ -3,7 +3,6 @@ package view;
 import java.io.IOException;
 
 import response.ContentsType;
-import response.HttpHeaders;
 import response.HttpResponse;
 import response.Status;
 
@@ -18,26 +17,31 @@ public class ViewResolver {
     public byte[] mapView(String viewName, HttpResponse httpResponse) throws IOException {
         //Redirect 키워드가 있는 경우 redirect 헤더로 작성
         if (viewName.startsWith("redirect:")) {
-            String redirectViewName = viewName.replace("redirect:", "");
-
-            View redirectView = new View(redirectViewName);
-
-            httpResponse.setHttpVersion("HTTP/1.1")
-                    .setStatus(Status.FOUND)
-                    .addHeader("Location", redirectViewName)
-                    .setView(redirectView);
-
-            return httpResponse.render();
+            return redirect(viewName, httpResponse);
         }
-
         //그 외의 경우 200 OK 응답을 반환
+        return forward(viewName, httpResponse);
+    }
+
+    private byte[] forward(String viewName, HttpResponse httpResponse) throws IOException {
         ContentsType contentsType = mapTypeByIndentifier(viewName);
-        View okView = new View(viewName, contentsType);
 
         httpResponse.setHttpVersion("HTTP/1.1")
                 .setStatus(Status.OK)
                 .addHeader("Content-Type", contentsType.getContentType())
-                .setView(okView);
+                .setViewName(viewName)
+                .setContentsType(contentsType);
+
+        return httpResponse.render();
+    }
+
+    private static byte[] redirect(String viewName, HttpResponse httpResponse) throws IOException {
+        String redirectViewName = viewName.replace("redirect:", "");
+
+        httpResponse.setHttpVersion("HTTP/1.1")
+                .setStatus(Status.FOUND)
+                .addHeader("Location", redirectViewName)
+                .setViewName(redirectViewName);
 
         return httpResponse.render();
     }

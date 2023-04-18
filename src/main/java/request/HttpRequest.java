@@ -2,6 +2,7 @@ package request;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.StringTokenizer;
 
 import response.HttpHeaders;
@@ -34,6 +35,10 @@ public class HttpRequest {
             return ;
         }
         url = urlWithParams;
+    }
+
+    public Optional<String> getSessionId() {
+        return httpHeaders.getSessionId();
     }
 
     public void setHttpHeaders(HttpHeaders httpHeaders) {

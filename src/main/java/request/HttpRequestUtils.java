@@ -3,6 +3,8 @@ package request;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HttpRequestUtils {
     /**
@@ -21,5 +23,18 @@ public class HttpRequestUtils {
         }
 
         return params;
+    }
+
+    public static String parseSessionId(String input) {
+        // sid=로 시작하고 세미콜론으로 종료되는 문자열 추출
+        String regex = "(?<=sid=).(.*?)(?=;)|(?<=sid=).(.*)";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(0);
+        }
+        return null;
     }
 }
