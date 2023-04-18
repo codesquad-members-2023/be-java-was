@@ -3,9 +3,13 @@ package response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import model.User;
 import templateEngine.PoroTouch;
 import view.ModelAndView;
@@ -45,26 +49,12 @@ public class HttpResponse {
         return this;
     }
 
-    public HttpResponse setContentsType(ContentsType contentsType){
+    public HttpResponse setContentsType(ContentsType contentsType) {
         modelAndView.setContentsType(contentsType);
         return this;
     }
 
     public void setModelAttribute(String attributeName, Object attribute) {
-        //TODO : 현재는 유저 리스트만 호환됨
-        if (attribute instanceof List) {
-            List<User> userList = (List<User>)attribute;
-            int index = 0;
-            for (User user : userList) {
-                modelAndView.setModelAttribute("user.userId"+index, user.getUserId());
-                modelAndView.setModelAttribute("user.password"+index, user.getPassword());
-                modelAndView.setModelAttribute("user.name"+index, user.getName());
-                modelAndView.setModelAttribute("user.email"+index, user.getEmail());
-                modelAndView.setModelAttribute("user.index"+index, String.valueOf(index));
-                index++;
-            }
-            modelAndView.setModelAttribute("maxCount", String.valueOf(index));
-        }
         modelAndView.setModelAttribute(attributeName, attribute);
     }
 
@@ -73,7 +63,8 @@ public class HttpResponse {
     }
 
     public byte[] getResponseLine() {
-        String headLine = String.join(" ", httpVersion, status.getStatusCode(), status.getStatusMessage());
+        String headLine = String.join(" ", httpVersion, status.getStatusCode(),
+            status.getStatusMessage());
         return (headLine + "\r\n" + httpHeaders).getBytes();
     }
 

@@ -1,6 +1,7 @@
 package model;
 
 public class User {
+    private int index;
     private String userId;
     private String password;
     private String name;
@@ -31,6 +32,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     @Override
