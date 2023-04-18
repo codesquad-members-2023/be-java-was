@@ -3,7 +3,10 @@ package webserver.protocol.response;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 
+import static util.Constants.EQUALS;
+
 public class Cookie {
+    private final String COOKIE_SEPARATOR = "; ";
     private final String name;
     private final String value;
     private String domain;
@@ -69,14 +72,14 @@ public class Cookie {
     public String toString() {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(name).append("=").append(value);
+            sb.append(name).append(EQUALS).append(value);
 
             Field[] fields = getClass().getDeclaredFields();
 
             for (Field field : fields) {
                 Object value = field.get(this);
                 if (!isIgnore(field.getName()) && value != null) {
-                    sb.append("; ").append(toNameFormat(field.getName())).append("=").append(value);
+                    sb.append(COOKIE_SEPARATOR).append(toNameFormat(field.getName())).append(EQUALS).append(value);
                 }
             }
             return sb.toString();
