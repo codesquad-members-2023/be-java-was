@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
@@ -63,9 +64,11 @@ public class HttpResponse {
     }
 
     public byte[] getResponseLine() {
+        final String CRLF = "\r\n";
+
         String headLine = String.join(" ", httpVersion, status.getStatusCode(),
             status.getStatusMessage());
-        return (headLine + "\r\n" + httpHeaders).getBytes();
+        return (headLine + CRLF + httpHeaders).getBytes();
     }
 
     public byte[] render() throws IOException {
@@ -78,7 +81,11 @@ public class HttpResponse {
             //템플릿 엔진 기능 추가
             byte[] body = Files.readAllBytes(modelAndView.getFile().toPath());
             if (modelAndView.isDynamicFile()) {
-                body = PoroTouch.render(body, modelAndView);
+                try {
+                    body = PoroTouch.render(body, modelAndView).getBytes(StandardCharsets.UTF_8);
+                } catch (InvocationTargetException | IllegalAccessException e){
+                    e.printStackTrace();
+                }
             }
 
             //ContentLength도 같이 바꿔줘야함
@@ -88,6 +95,4 @@ public class HttpResponse {
 
         return outputStream.toByteArray();
     }
-
-
 }
