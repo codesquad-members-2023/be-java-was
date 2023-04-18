@@ -7,7 +7,6 @@ import util.ProtocolParser;
 import view.Model;
 import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
-import webserver.protocol.response.StatusCode;
 import webserver.protocol.session.Session;
 import webserver.protocol.session.SessionStore;
 
@@ -29,14 +28,13 @@ public class UserLoginController extends FrontController {
 
     @Override
     protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        return login(httpRequest, httpResponse);
-    }
-
-    private String login(HttpRequest httpRequest, HttpResponse httpResponse) throws IllegalArgumentException {
         Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
         User loginedUser = userService.login(parameter);
 
-        SessionStore.addSession(new Session(loginedUser));
+        Session session = new Session(loginedUser);
+        SessionStore.addSession(session);
+
+        httpResponse.setCookie("sid", session.getId());
         return "redirect:/";
     }
 }
