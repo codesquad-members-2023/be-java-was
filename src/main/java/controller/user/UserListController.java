@@ -1,26 +1,31 @@
-package controller;
+package controller.user;
 
+import controller.FrontController;
+import db.Database;
+import service.UserService;
 import view.Model;
 import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
 
 import java.io.IOException;
 
-import static util.Constants.BASE_PATH;
+public class UserListController extends FrontController {
 
-public class DefaultController extends FrontController {
+    UserService userService;
+
+    public UserListController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse, Model model) throws IOException {
-        if (httpRequest.isPath(BASE_PATH)) {
-            return "/index.html";
-        }
-
-        return httpRequest.getUrlPath();
+        model.addObject("user", Database.findAll());
+        return "/user/list.html";
     }
 
     @Override
     protected String doPost(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
         return null;
     }
+
 }
