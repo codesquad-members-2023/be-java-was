@@ -1,8 +1,9 @@
 package util;
 
-import webserver.protocol.Method;
+import webserver.protocol.request.Method;
 
 import java.net.URLDecoder;
+import java.net.http.HttpHeaders;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
