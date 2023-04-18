@@ -72,8 +72,6 @@ public class HttpResponse {
         httpHeaders.put("Content-Length", String.valueOf(contentLength));
     }
 
-
-
     public byte[] getResponseLine() {
         String headLine = String.join(" ", httpVersion, status.getStatusCode(), status.getStatusMessage());
         return (headLine + "\r\n" + httpHeaders).getBytes();
@@ -87,9 +85,11 @@ public class HttpResponse {
         outputStream.write(headers);
         if (modelAndView.hasBody()) {
             //템플릿 엔진 기능 추가
-            byte[] body = Files.readAllBytes(new File(modelAndView.getPath()).toPath());
+            byte[] body = Files.readAllBytes(modelAndView.getFile().toPath());
+            if (modelAndView.isDynamicFile()) {
+                body = PoroTouch.render(body, modelAndView);
+            }
 
-            body = PoroTouch.render(body, modelAndView);
             //ContentLength도 같이 바꿔줘야함
             setContentLength(body.length);
             outputStream.write(body);
