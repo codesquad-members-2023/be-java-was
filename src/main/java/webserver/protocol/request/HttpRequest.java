@@ -11,7 +11,7 @@ public class HttpRequest {
     private HttpRequestHeader headers;
     private HttpRequestBody httpRequestBody;
 
-    public HttpRequest(HttpRequestLine requestLine, HttpRequestHeader headers, HttpRequestBody body) {
+    private HttpRequest(HttpRequestLine requestLine, HttpRequestHeader headers, HttpRequestBody body) {
         this.requestLine = requestLine;
         this.headers = headers;
         this.httpRequestBody = body;
@@ -44,10 +44,5 @@ public class HttpRequest {
         HttpRequestHeader httpRequestHeader = HttpRequestHeader.from(br);
         HttpRequestBody httpRequestBody = HttpRequestBody.of(httpRequestHeader.getContentLength(), br);
         return new HttpRequest(httpRequestLine, httpRequestHeader, httpRequestBody);
-    }
-
-    public static HttpRequest fromRequestLine(String requestLine) {
-        HttpRequestLine httpRequestLine = HttpRequestLine.from(requestLine);
-        return new HttpRequest(httpRequestLine, new HttpRequestHeader(), new HttpRequestBody(null));
     }
 }

@@ -11,7 +11,7 @@ public class HttpRequestBody {
         return body;
     }
 
-    public HttpRequestBody(String body) {
+    private HttpRequestBody(String body) {
         this.body = body;
     }
 
