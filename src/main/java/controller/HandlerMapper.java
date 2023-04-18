@@ -5,14 +5,12 @@ import controller.user.UserListController;
 import controller.user.UserLoginController;
 import service.UserService;
 
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Map;
 
-public class HandlerMapping {
-    private static String USER_JOIN = "/user/create";
-    private static String USER_LIST = "/user/list";
-    private static String USER_LOGIN = "/user/login";
+public class HandlerMapper {
+    private static final String USER_JOIN = "/user/create";
+    private static final String USER_LIST = "/user/list";
+    private static final String USER_LOGIN = "/user/login";
 
     private static Map<String, Controller> map = Map.of(
         USER_JOIN, new UserJoinController(new UserService()),
