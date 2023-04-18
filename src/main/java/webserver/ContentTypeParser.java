@@ -2,17 +2,21 @@ package webserver;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import util.ContentTypeMapper;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class ContentTypeParser {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    public String getPriorityContentType(String accept) {
+    public String getPriorityContentType(String accept, String extension) {
 
         if (accept.equals("*/*")) {
-            return null;
+            return ContentTypeMapper.getContentTypeByExtension(extension);
         }
 
         String priorityContentType = accept.split(",")[0];
