@@ -9,9 +9,9 @@ import util.ObjectMapper;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
-public class UserService {
-    private Logger logger = LoggerFactory.getLogger(UserService.class);
+import static webserver.RequestHandler.logger;
 
+public class UserService {
     /**
      * 회원가입 메서드
      * @param parameter 회원가입 폼 입력값. userId, password, name, email
@@ -26,10 +26,9 @@ public class UserService {
         }
 
         User user = (User) new ObjectMapper(parameter, User.class).mapObject();
-
         Database.addUser(user);
 
-        logger.info("[WELCOME] NEW USER = {}", user);
+        logger.debug("[WELCOME] NEW USER = {}", user);
     }
 
     /**
@@ -47,7 +46,7 @@ public class UserService {
             throw new IllegalArgumentException("아이디가 없거나 비밀번호가 잘못되었습니다.");
         }
 
-        logger.info("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
+        logger.debug("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
         return user;
     }
 }
