@@ -31,7 +31,7 @@ public abstract class FrontController implements Controller {
                     returnPage = doPost(httpRequest, httpResponse);
                     break;
             }
-        } catch (java.lang.Exception e) {
+        } catch (Exception e) {
             logger.error(e.getMessage());
             returnPage = ExceptionHandler.handle(model, e);
         }

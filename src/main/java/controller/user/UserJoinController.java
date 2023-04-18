@@ -32,8 +32,6 @@ public class UserJoinController extends FrontController {
         return join(httpRequest, httpResponse);
     }
 
-
-
     private String join(HttpRequest httpRequest, HttpResponse httpResponse) {
         try {
             Map<String, String> parameter = ProtocolParser.parseParameter(httpRequest.getBody());
