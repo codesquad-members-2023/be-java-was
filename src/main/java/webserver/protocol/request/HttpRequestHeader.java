@@ -1,5 +1,6 @@
 package webserver.protocol.request;
 
+import com.google.common.net.HttpHeaders;
 import util.ProtocolParser;
 
 import java.io.BufferedReader;
@@ -8,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.google.common.net.HttpHeaders.CONTENT_LENGTH;
+import static com.google.common.net.HttpHeaders.COOKIE;
+import static webserver.RequestHandler.logger;
 
 public class HttpRequestHeader {
     private Map<String, String> headers;
@@ -44,5 +47,9 @@ public class HttpRequestHeader {
             return 0;
         }
         return Integer.parseInt(length);
+    }
+
+    public String getCookie() {
+        return headers.get(COOKIE);
     }
 }

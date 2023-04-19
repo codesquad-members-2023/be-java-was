@@ -1,10 +1,16 @@
 package webserver.protocol.request;
 
+import util.ProtocolParser;
+import webserver.protocol.session.SessionStore;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import static webserver.RequestHandler.logger;
 
 public class HttpRequest {
     private HttpRequestLine requestLine;
@@ -37,6 +43,10 @@ public class HttpRequest {
         return httpRequestBody.getBody();
     }
 
+    public String getSessionKey() {
+        return ProtocolParser.parseSession(headers.getCookie());
+    }
+
     public static HttpRequest from(InputStream in) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
 
@@ -44,5 +54,13 @@ public class HttpRequest {
         HttpRequestHeader httpRequestHeader = HttpRequestHeader.from(br);
         HttpRequestBody httpRequestBody = HttpRequestBody.of(httpRequestHeader.getContentLength(), br);
         return new HttpRequest(httpRequestLine, httpRequestHeader, httpRequestBody);
+    }
+
+    public boolean isSessionValid() {
+        return SessionStore.isPresent(getSessionKey());
+    }
+
+    public Object getSession() {
+        return SessionStore.findSessionById(getSessionKey()).getValue();
     }
 }
