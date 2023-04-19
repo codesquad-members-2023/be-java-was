@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
+import static util.Constants.REDIRECT_BASE;
+
 public class UserJoinController extends FrontController {
 
     UserService userService;
@@ -45,7 +47,7 @@ public class UserJoinController extends FrontController {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-        return "redirect:/";
+        return REDIRECT_BASE;
     }
 
 }
