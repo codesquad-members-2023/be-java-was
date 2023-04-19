@@ -1,5 +1,6 @@
 package controller;
 
+import controller.interceptor.PreHandler;
 import exception.ExceptionHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,9 @@ public abstract class FrontController implements Controller {
     public ModelAndView service(HttpRequest httpRequest, HttpResponse httpResponse) {
         Model model = Model.create();
         String returnPage = httpRequest.getUrlPath();
+
+        PreHandler.create().handle(httpRequest, httpResponse, model);
+
         try {
             switch (httpRequest.getMethod()) {
                 case GET:
