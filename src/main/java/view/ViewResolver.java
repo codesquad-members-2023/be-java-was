@@ -1,8 +1,8 @@
 package view;
 
 import exception.ExceptionMessageBox;
+import view.viewTemplate.ViewTemplate;
 import webserver.protocol.ContentType;
-import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
 import webserver.protocol.response.StatusCode;
 
@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static util.Constants.NEW_LINE;
-import static view.ViewTemplate.START_TAG;
+import static view.viewTemplate.TemplateConstans.START_TAG;
 import static webserver.protocol.response.HttpResponse.REDIRECT_KEY;
 
 public class ViewResolver {
@@ -39,7 +39,8 @@ public class ViewResolver {
                 String viewString = new String(renderView(viewPath, viewType), StandardCharsets.UTF_8);
 
                 if (viewString.contains(START_TAG)) {
-                    viewString = ViewTemplate.renderViewWithModel(viewString, mv);
+                    viewString = ViewTemplate.from(viewString)
+                                        .renderViewWithModel(viewString, mv);
                 }
                 httpResponse.sendForward(viewString.getBytes(), viewType);
             }
