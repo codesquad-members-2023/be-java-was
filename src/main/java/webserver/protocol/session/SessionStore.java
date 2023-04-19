@@ -17,4 +17,8 @@ public class SessionStore {
     public static synchronized void removeSession(String sessionId) {
         sessions.remove(sessionId);
     }
+
+    public static boolean isPresent(String sessionKey) {
+        return sessions.size() > 0;
+    }
 }
