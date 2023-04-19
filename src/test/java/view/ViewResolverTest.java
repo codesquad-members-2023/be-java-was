@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import view.viewTemplate.ViewTemplate;
 import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
 
@@ -38,7 +39,7 @@ class ViewResolverTest {
         String message = "{{user.getUserId}}";
         
         //when
-        String result = ViewTemplate.renderModel(message, model);
+        String result = ViewTemplate.from(message).renderModel(message, model);
 
         //then
         logger.debug(result);
