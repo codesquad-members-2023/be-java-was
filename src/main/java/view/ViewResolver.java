@@ -38,7 +38,7 @@ public class ViewResolver {
             if (!viewPath.contains(REDIRECT_KEY)) {
                 String viewString = new String(renderView(viewPath, viewType), StandardCharsets.UTF_8);
 
-                if (viewString.contains(START_TAG)) {
+                if (viewString.contains(START_TAG)) {   // template의 시작 태그가 있으면 model을 이용하여 렌더한다.
                     viewString = ViewTemplate.from(viewString)
                                         .renderViewWithModel(viewString, mv);
                 }

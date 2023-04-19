@@ -11,14 +11,14 @@ import java.util.stream.Collectors;
 
 import static util.Constants.EMPTY;
 import static view.viewTemplate.TemplateConstans.*;
-import static view.viewTemplate.TemplateParser.formantted;
+import static view.viewTemplate.TemplateParser.formatted;
 import static webserver.RequestHandler.logger;
 
 public class ViewTemplate {
-    private String before;
-    private String after;
-    private String unless;
-    private String key;
+    private String before;  // 변경할 String + 변경할 문구를 표시하는 태그 : {{#user}}변경할 내용{{/user}}
+    private String after;   // 변경할 String (태그가없다.) ex : 변경할 내용
+    private String unless;  // 만약 해당 객체가 없을 때 대신 표시되는 구역 ex : {{^user}}표시할 내용{{/^user}}
+    private String key; // model value를 찾을 key
 
     public ViewTemplate(String before, String after, String unless, String key) {
         this.before = before;
@@ -27,6 +27,14 @@ public class ViewTemplate {
         this.key = key;
     }
 
+    /**
+     *
+     * @param httpResponse 반환할 body
+     * @param model and view
+     * @return model 데이터를 포함한 httpResponse 반환할 body
+     * @throws InvocationTargetException
+     * @throws IllegalAccessException
+     */
     public String renderViewWithModel(String viewString, ModelAndView mv) throws InvocationTargetException, IllegalAccessException {
         if (mv.getModelSize() > 0) {
             viewString = viewString.replace(before, renderModel(after, mv.getModel()));
@@ -64,7 +72,7 @@ public class ViewTemplate {
             Object o = model.getObject(key)
                     .orElseThrow(() -> new RuntimeException(key + "를 찾을 수 없습니다."));
 
-            if (o instanceof List) {
+            if (o instanceof List) {    // object가 리스트 형태일 때
                 message = renderModelList(message, key, o);
             } else {
                 List<Method> methods = Arrays.stream(o.getClass().getDeclaredMethods())
@@ -72,7 +80,7 @@ public class ViewTemplate {
                         .collect(Collectors.toList());
 
                 for (Method m : methods) {
-                    message = message.replace(formantted(key, m.getName()), String.valueOf(m.invoke(o)));
+                    message = message.replace(formatted(key, m.getName()), String.valueOf(m.invoke(o)));
                 }
             }
 
@@ -83,7 +91,7 @@ public class ViewTemplate {
         List<?> list = (List<?>) o;
         StringBuilder result = new StringBuilder();
         for (Object item : list) {
-            result.append(renderModel(message, Model.from(key, item)));
+            result.append(renderModel(message, Model.from(key, item))); // 하위 요소를 하나씩 추가한다.
         }
         return result.toString();
     }
