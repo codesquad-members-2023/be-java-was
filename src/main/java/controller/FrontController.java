@@ -2,58 +2,45 @@ package controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.UserService;
+import util.ContentType;
+import view.ViewResolver;
 import webserver.HttpRequest;
 import webserver.HttpResponse;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FrontController {
     private static final Logger log = LoggerFactory.getLogger(FrontController.class);
-    private Map<String, Handler> handlerMap;
-    private Controller controller;
-
-    public FrontController() {
-        handlerMap = new HashMap<>();
-        handlerMap.put("/", new HomeHandler());
-        handlerMap.put("/index.html", new HomeHandler());
-        handlerMap.put("/user", new UserHandler());
-    }
 
     public void handleRequest(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-        String uriRootPath = httpRequest.getHttpUriRootPath();
-        log.debug("uriRootPath : {}", uriRootPath);
-        Handler handler = handlerMap.get(uriRootPath);
-        if (handler == null) {
-            log.error("Requested resource not found");
+        String uri = httpRequest.getUri();
+
+        // uri가 "/"이면 홈 화면을 출력한다
+        if (uri.equals("/")) {
+            uri = "/index.html";
         }
-        handler.handle(httpRequest, httpResponse);
-    }
 
-    public interface Handler {
-        void handle(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException;
-    }
+        if (uri.startsWith("/user/create")) {
+            String userId = httpRequest.getQueryParameter("userId");
+            String password = httpRequest.getQueryParameter("password");
+            String name = httpRequest.getQueryParameter("name");
+            String email = httpRequest.getQueryParameter("email");
+            UserService.join(userId, password, name, email);
 
-    public class HomeHandler implements Handler {
-        @Override
-        public void handle(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-            String uri = httpRequest.getHttpUriPath();
-            byte[] body = httpResponse.readFile(uri);
-            httpResponse.response200Header(body.length);
+            // 다시 홈 화면을 출력한다.
+            uri = "/index.html";
+            ContentType contentType = ContentType.getContentType(uri);
+            ViewResolver.resolveView(uri, contentType, httpResponse);
+
+            byte[] body = httpResponse.readFile(contentType.getRootPath(), uri);
+            httpResponse.response200Header(body.length, contentType);
             httpResponse.responseBody(body);
+            return;
         }
-    }
 
-    public class UserHandler implements Handler {
-        @Override
-        public void handle(HttpRequest httpRequest, HttpResponse httpResponse) throws IOException {
-            controller = new UserController();
-            controller.run(httpRequest);
-            String uri = httpRequest.getHttpUriPath();
-            byte[] body = httpResponse.readFile(uri);
-            httpResponse.response200Header(body.length);
-            httpResponse.responseBody(body);
-        }
+        // 요청받은 파일을 처리한다
+        ContentType contentType = ContentType.getContentType(uri);
+        ViewResolver.resolveView(uri, contentType, httpResponse);
     }
 }

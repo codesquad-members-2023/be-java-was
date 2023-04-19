@@ -33,8 +33,8 @@ public class HttpRequestTest {
     @Test
     @DisplayName("request header에 원하는 헤더 이름을 넣으면 올바른 헤더 값을 반환해야 함")
     public void get_header_value() {
-        assertThat(httpRequest.getHttpHeaderValue("Host")).isEqualTo("www.example.com");
-        assertThat(httpRequest.getHttpHeaderValue("Connection")).isEqualTo("keep-alive");
-        assertThat(httpRequest.getHttpHeaderValue("Cache-Control")).isEqualTo("max-age=0");
+        assertThat(httpRequest.getHeaderValue("Host")).isEqualTo("www.example.com");
+        assertThat(httpRequest.getHeaderValue("Connection")).isEqualTo("keep-alive");
+        assertThat(httpRequest.getHeaderValue("Cache-Control")).isEqualTo("max-age=0");
     }
 }
