@@ -1,6 +1,7 @@
 package service;
 
 import db.Database;
+import exception.LoginFailNotValidUser;
 import model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +44,7 @@ public class UserService {
 
         User user;
         if ((user=Database.findUserById(userId))==null || !user.isLogined(password)) {
-            throw new IllegalArgumentException("아이디가 없거나 비밀번호가 잘못되었습니다.");
+            throw new LoginFailNotValidUser("아이디가 없거나 비밀번호가 잘못되었습니다.");
         }
 
         logger.debug("[LOGIN SUCCESS!!] userId = {}, password = {}", userId, password);
