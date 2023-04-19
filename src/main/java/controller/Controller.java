@@ -1,40 +1,20 @@
 package controller;
 
+import annotation.ExceptionHandler;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
-import annotation.ExceptionHandler;
-import annotation.MethodType;
-import mapper.ExceptionMapper;
+import mapper.MappingInfoRepository;
 import request.HttpRequest;
 import response.HttpResponse;
 
 public abstract class Controller {
 
-    Map<String, Method> handlerMethodMap;
-    Map<String, Class<?>> exceptionMap;
-
-    public void initMethodMapping() {
-        handlerMethodMap = new HashMap<>();
-        //어노테이션 메소드 목록을 Reflection으로 불러와서 map에 추가
-        for (Method method : this.getClass().getDeclaredMethods()) {
-            Annotation annotation = method.getDeclaredAnnotation(MethodType.class);
-            if (annotation instanceof MethodType) {
-                MethodType methodType = (MethodType)annotation;
-                handlerMethodMap.put(methodType.value(), method);
-            }
-        }
-        exceptionMap = ExceptionMapper.doMapException();
-    }
-
     public String process(HttpRequest httpRequest, HttpResponse httpResponse) throws
             NoSuchMethodException,
             InvocationTargetException,
             IllegalAccessException, InstantiationException {
-        Method method = handlerMethodMap.get(httpRequest.getMethod());
+        Method method = MappingInfoRepository.getMappedMethod(this.getClass().getName(), httpRequest.getMethod());
 
         String viewName = "";
         try {
@@ -61,7 +41,7 @@ public abstract class Controller {
                 Annotation annotation = exceptionMethod.getDeclaredAnnotation(
                         ExceptionHandler.class);
                 // ExceptionMapper 클래스에서 등록해둔 클래스이름 - 클래스 map에서 일치하는 클래스를 가져온다.
-                Class<?> exception = exceptionMap.get(((ExceptionHandler)annotation).exception());
+                Class<?> exception = MappingInfoRepository.getException(((ExceptionHandler)annotation).exception());
                 // 발생한 Invocation으로 Wrapping된 예외가 annotation가 일치하면 예외 로직을 실행한다.
                 if (exception.isInstance(e.getTargetException())) {
                     viewName = (String)exceptionMethod.invoke(this.getClass().newInstance(), httpRequest, httpResponse);

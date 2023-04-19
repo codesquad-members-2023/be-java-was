@@ -4,30 +4,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 
 import mapper.HandlerMapper;
+import mapper.MappingInfoRepository;
 import request.HttpRequest;
 import response.HttpResponse;
 
 public class FrontController {
-
-    private Map<String, Controller> handlerControllerMap;
-
-    public FrontController() {
-        handlerControllerMap = HandlerMapper.doMapController();
-        HandlerMapper.doMapMethods(handlerControllerMap);
-    }
 
     /**
      * 처리할 Controller를 조회해서 리턴합니다.
      * @param httpRequest
      * @return
      */
-    public Controller getHandler(HttpRequest httpRequest) {
-        return handlerControllerMap.get(httpRequest.getUrl());
-    }
 
-    public boolean hasMapping(HttpRequest httpRequest) {
-        return handlerControllerMap.containsKey(httpRequest.getUrl());
-    }
 
     /**
      * 들어온 요청을 적합한 Controller에게 위임한다.
@@ -35,11 +23,11 @@ public class FrontController {
      * @return
      */
     public String dispatch(HttpRequest httpRequest, HttpResponse httpResponse) {
-        if (!hasMapping(httpRequest)) {
+        if (!MappingInfoRepository.hasMapping(httpRequest)) {
             return httpRequest.getUrl();
         }
 
-        Controller controller = getHandler(httpRequest);
+        Controller controller = MappingInfoRepository.getHandler(httpRequest);
         String viewName;
         try {
             viewName = controller.process(httpRequest, httpResponse);
