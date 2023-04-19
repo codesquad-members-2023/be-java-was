@@ -3,6 +3,7 @@ package webserver.protocol.response;
 import com.google.common.net.HttpHeaders;
 import webserver.protocol.ContentType;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,11 +27,16 @@ public class HttpResponseHeader {
         return headers.get(headerKey);
     }
 
-    public void setCookie (String cookieKey, String value) {
+    public void setCookieSession(String cookieKey, String value) {
         Cookie cookie = new Cookie(cookieKey, value);
         cookie.setDomain(DOMAIN);
         cookie.setPath(BASE_PATH);
         cookies.put(cookieKey, cookie);
+    }
+
+    public void setCookieExpired(String cookieKey) {
+        Cookie cookie = new Cookie(cookieKey, "logout");
+        cookie.setExpires(LocalDateTime.now());
     }
 
     public String getSetCookie () {

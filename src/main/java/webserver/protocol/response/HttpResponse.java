@@ -42,7 +42,12 @@ public class HttpResponse {
     }
 
     public HttpResponse setCookie(String key, String value) {
-        httpResponseHeader.setCookie(key, value);
+        httpResponseHeader.setCookieSession(key, value);
+        return this;
+    }
+
+    public HttpResponse setCookieExpired(String key) {
+        httpResponseHeader.setCookieExpired(key);
         return this;
     }
 
