@@ -11,8 +11,9 @@ import webserver.protocol.response.HttpResponse;
 
 import java.io.IOException;
 
+import static webserver.RequestHandler.logger;
+
 public abstract class FrontController implements Controller {
-    protected Logger logger = LoggerFactory.getLogger(FrontController.class);
 
     /**
      * 작업을 처리할 메서드를 호출한다.
