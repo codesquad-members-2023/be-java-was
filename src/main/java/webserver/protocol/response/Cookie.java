@@ -89,7 +89,7 @@ public class Cookie {
     }
 
     private boolean isIgnore(String name) {
-        return "name".equals(name) || "value".equals(name);
+        return "name".equals(name) || "value".equals(name) || "COOKIE_SEPARATOR".equals(name);
     }
 
     private String toNameFormat(String name) {
