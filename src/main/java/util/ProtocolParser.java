@@ -1,11 +1,16 @@
 package util;
 
-import webserver.protocol.Method;
+import webserver.protocol.request.Method;
 
 import java.net.URLDecoder;
+import java.net.http.HttpHeaders;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import static util.Constants.EMPTY;
+import static util.Constants.SPACE;
+import static webserver.RequestHandler.logger;
 
 public class ProtocolParser {
     /**
@@ -99,5 +104,17 @@ public class ProtocolParser {
         }
 
         return headers;
+    }
+
+    public static String parseSession(String cookie) {
+        logger.debug("cookie = {}", cookie);
+        String[] split = cookie.split(SPACE);
+
+        for (String c : split) {
+            if (c.contains("sid")) {
+                return c.replace("sid=", EMPTY).replace(";",EMPTY);
+            }
+        }
+        return null;
     }
 }

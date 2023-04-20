@@ -1,17 +1,18 @@
 package controller;
 
+import controller.user.UserJoinController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class HandlerMappingTest {
-    HandlerMapping handlerMapping;
+class HandlerMapperTest {
+    HandlerMapper handlerMapper;
 
     @BeforeEach
     void init(){
-        handlerMapping = new HandlerMapping();
+        handlerMapper = new HandlerMapper();
     }
 
     @Test
@@ -21,10 +22,10 @@ class HandlerMappingTest {
         String user_url = "/user/create";
 
         //when
-        Controller controller = handlerMapping.getController(user_url);
+        Controller controller = handlerMapper.getController(user_url);
 
         //then
-        assertThat(controller.getClass()).isEqualTo(UserController.class);
+        assertThat(controller.getClass()).isEqualTo(UserJoinController.class);
     }
 
     @Test
@@ -34,9 +35,10 @@ class HandlerMappingTest {
         String user_url = "/";
 
         //when
-        Controller controller = handlerMapping.getController(user_url);
+        Controller controller = handlerMapper.getController(user_url);
 
         //then
         assertThat(controller.getClass()).isEqualTo(DefaultController.class);
     }
+
 }

@@ -1,8 +1,5 @@
-package session;
+package webserver.protocol.session;
 
-import model.User;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,5 +16,9 @@ public class SessionStore {
 
     public static synchronized void removeSession(String sessionId) {
         sessions.remove(sessionId);
+    }
+
+    public static boolean isPresent(String sessionKey) {
+        return sessions.size() > 0;
     }
 }

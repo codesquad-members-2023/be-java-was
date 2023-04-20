@@ -1,22 +1,24 @@
-package controller;
+package controller.user;
 
+import controller.FrontController;
 import view.Model;
 import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
+import webserver.protocol.session.SessionStore;
 
 import java.io.IOException;
 
-import static util.Constants.BASE_PATH;
+import static util.Constants.REDIRECT_BASE;
 
-public class DefaultController extends FrontController {
+public class UserLogOutController extends FrontController {
 
     @Override
     protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse, Model model) throws IOException {
-        if (httpRequest.isPath(BASE_PATH)) {
-            return "/index.html";
+        if (httpRequest.isSessionValid()) {
+            httpResponse.setCookieExpired("sid");
+            SessionStore.removeSession(httpRequest.getSessionKey());
         }
-
-        return httpRequest.getUrlPath();
+        return REDIRECT_BASE;
     }
 
     @Override

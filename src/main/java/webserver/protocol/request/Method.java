@@ -1,4 +1,4 @@
-package webserver.protocol;
+package webserver.protocol.request;
 
 import java.util.Arrays;
 

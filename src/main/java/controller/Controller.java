@@ -1,8 +1,9 @@
 package controller;
 
-import webserver.protocol.HttpRequest;
-import webserver.protocol.HttpResponse;
+import view.ModelAndView;
+import webserver.protocol.request.HttpRequest;
+import webserver.protocol.response.HttpResponse;
 
 public interface Controller {
-    String service(HttpRequest httpRequest, HttpResponse httpResponse);
+    ModelAndView service(HttpRequest httpRequest, HttpResponse httpResponse);
 }
