@@ -4,6 +4,7 @@ import controller.FrontController;
 import view.Model;
 import webserver.protocol.request.HttpRequest;
 import webserver.protocol.response.HttpResponse;
+import webserver.protocol.session.SessionStore;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ public class UserLogOutController extends FrontController {
     protected String doGet(HttpRequest httpRequest, HttpResponse httpResponse, Model model) throws IOException {
         if (httpRequest.isSessionValid()) {
             httpResponse.setCookieExpired("sid");
+            SessionStore.removeSession(httpRequest.getSessionKey());
         }
         return REDIRECT_BASE;
     }
