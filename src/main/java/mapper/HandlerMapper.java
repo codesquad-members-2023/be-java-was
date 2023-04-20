@@ -1,6 +1,7 @@
 package mapper;
 
 import controller.Controller;
+import interceptor.Interceptor;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import annotation.RequestMapping;
+import net.sf.cglib.proxy.Enhancer;
 
 public class HandlerMapper {
     /**
@@ -42,11 +44,17 @@ public class HandlerMapper {
                 //Controller 인터페이스를 구현하면서 Controller 인터페이스가 아닌 클래스 구현체만 mapping시킨다.
                 if (controllerInterface.isAssignableFrom(controllerImpl) && !controllerImpl.equals(
                         Controller.class)) {
+                    Enhancer enhancer = new Enhancer();
+                    enhancer.setSuperclass(controllerImpl);
+
+                    enhancer.setCallback(new Interceptor());
+                    Controller proxyController = (Controller) enhancer.create();
+
                     mapper.put(controllerImpl.getDeclaredAnnotation(RequestMapping.class).url(),
-                            (Controller)controllerImpl.newInstance());
+                            proxyController);
                 }
             }
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
         return mapper;
@@ -54,7 +62,7 @@ public class HandlerMapper {
 
     public static void doMapMethods(Map<String, Controller> mapper) {
         for (Controller controller : mapper.values()) {
-            controller.initMethodMapping();
+            MappingInfoRepository.initMethodMapping(controller);
         }
     }
 }

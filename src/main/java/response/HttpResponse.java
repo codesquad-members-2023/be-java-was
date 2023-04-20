@@ -3,9 +3,14 @@ package response;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.List;
 
+import java.util.stream.Collectors;
 import model.User;
 import templateEngine.PoroTouch;
 import view.ModelAndView;
@@ -45,26 +50,12 @@ public class HttpResponse {
         return this;
     }
 
-    public HttpResponse setContentsType(ContentsType contentsType){
+    public HttpResponse setContentsType(ContentsType contentsType) {
         modelAndView.setContentsType(contentsType);
         return this;
     }
 
     public void setModelAttribute(String attributeName, Object attribute) {
-        //TODO : 현재는 유저 리스트만 호환됨
-        if (attribute instanceof List) {
-            List<User> userList = (List<User>)attribute;
-            int index = 0;
-            for (User user : userList) {
-                modelAndView.setModelAttribute("user.userId"+index, user.getUserId());
-                modelAndView.setModelAttribute("user.password"+index, user.getPassword());
-                modelAndView.setModelAttribute("user.name"+index, user.getName());
-                modelAndView.setModelAttribute("user.email"+index, user.getEmail());
-                modelAndView.setModelAttribute("user.index"+index, String.valueOf(index));
-                index++;
-            }
-            modelAndView.setModelAttribute("maxCount", String.valueOf(index));
-        }
         modelAndView.setModelAttribute(attributeName, attribute);
     }
 
@@ -72,11 +63,12 @@ public class HttpResponse {
         httpHeaders.put("Content-Length", String.valueOf(contentLength));
     }
 
-
-
     public byte[] getResponseLine() {
-        String headLine = String.join(" ", httpVersion, status.getStatusCode(), status.getStatusMessage());
-        return (headLine + "\r\n" + httpHeaders).getBytes();
+        final String CRLF = "\r\n";
+
+        String headLine = String.join(" ", httpVersion, status.getStatusCode(),
+            status.getStatusMessage());
+        return (headLine + CRLF + httpHeaders).getBytes();
     }
 
     public byte[] render() throws IOException {
@@ -87,9 +79,15 @@ public class HttpResponse {
         outputStream.write(headers);
         if (modelAndView.hasBody()) {
             //템플릿 엔진 기능 추가
-            byte[] body = Files.readAllBytes(new File(modelAndView.getPath()).toPath());
+            byte[] body = Files.readAllBytes(modelAndView.getFile().toPath());
+            if (modelAndView.isDynamicFile()) {
+                try {
+                    body = PoroTouch.render(body, modelAndView).getBytes(StandardCharsets.UTF_8);
+                } catch (InvocationTargetException | IllegalAccessException e){
+                    e.printStackTrace();
+                }
+            }
 
-            body = PoroTouch.render(body, modelAndView);
             //ContentLength도 같이 바꿔줘야함
             setContentLength(body.length);
             outputStream.write(body);
@@ -97,6 +95,4 @@ public class HttpResponse {
 
         return outputStream.toByteArray();
     }
-
-
 }
