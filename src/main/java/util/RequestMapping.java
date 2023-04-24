@@ -9,7 +9,7 @@ import java.util.Collection;
 public class RequestMapping {
 
     // TODO : 코드 정리가 필요한 시점!
-    public static Method requestHandlerMapping(Class<?> controller, String url, RequestMethod requestMethod) {
+    public static Method requestMethodMapping(Class<? extends Controller> controller, String url, RequestMethod requestMethod) {
         Method[] methods = controller.getMethods();
         annotation.RequestMapping controllerAnnotation = controller.getAnnotation(annotation.RequestMapping.class);
         String[] controllerPaths = controllerAnnotation.path();

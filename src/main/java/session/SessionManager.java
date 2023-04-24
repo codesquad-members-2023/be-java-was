@@ -1,8 +1,7 @@
 package session;
 
-import model.HttpRequest;
-import model.HttpResponse;
-import webserver.RequestHandler;
+import servlet.HttpRequest;
+import servlet.HttpResponse;
 
 import java.util.Map;
 import java.util.UUID;

@@ -5,7 +5,7 @@ plugins {
 
 group 'codesquad'
 version '1.0-SNAPSHOT'
-sourceCompatibility = 11
+sourceCompatibility = 15
 
 repositories {
     mavenCentral()
@@ -31,3 +31,4 @@ test {
 repositories {
     mavenCentral()
 }
+targetCompatibility = JavaVersion.VERSION_15

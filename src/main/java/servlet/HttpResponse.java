@@ -1,6 +1,7 @@
-package model;
+package servlet;
 
 import session.Cookie;
+import type.ContentType;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -11,15 +12,27 @@ import java.util.Map;
 public class HttpResponse {
 
     public static int SC_OK = 200;
-    public static int SC_CREATE  = 201;
     public static int SC_FOUND = 302;
-    public static int SC_SEE_OTHER = 303;
-    public static int SC_UNAUTHORIZED = 401;
-    public static int SC_NOT_FOUND = 404;
+
+    private ContentType contentType;
+    private final String LOCATION = "Location";
+
+    private final String REDIRECT = "redirect:";
+
 
     private Collection<Cookie> cookies;
 
     private String redirectURL;
+
+    private String pathInfo;
+
+    public String getPathInfo() {
+        return pathInfo;
+    }
+
+    public void setPathInfo(String pathInfo) {
+        this.pathInfo = pathInfo;
+    }
 
     private int statusCode;
 
@@ -33,9 +46,6 @@ public class HttpResponse {
         this.headers = new HashMap<>();
         this.cookies = new ArrayList<>();
         this.outputStream = outputStream;
-
-        // TODO : 처음부터 OK 상태가 맞는지 나중에 다시 한번 생각해보기
-        statusCode = SC_OK;
     }
 
     public OutputStream getOutputStream() {
@@ -79,12 +89,23 @@ public class HttpResponse {
     }
 
     public void sendRedirect(String url) {
-        // TODO : 리다이렉트에도 여러 종류가 있다!! (하지만 디폴트로 302는 나쁘지 않은 뜻?)
-        this.statusCode = SC_FOUND;
-        this.redirectURL = url;
+        if (url.startsWith(REDIRECT)) {
+            String replaceURL = url.replace(REDIRECT, "");
+            this.statusCode = SC_FOUND;
+            this.headers.put(LOCATION, replaceURL);
+            this.redirectURL= replaceURL;
+        }
     }
 
     public String getRedirectURL() {
         return this.redirectURL;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
     }
 }

@@ -1,6 +1,6 @@
 package util;
 
-import model.HttpRequest;
+import servlet.HttpRequest;
 import session.Cookie;
 
 import java.io.BufferedReader;

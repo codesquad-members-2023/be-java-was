@@ -1,59 +1,66 @@
 package servlet;
 
+import controller.DefaultController;
+import interceptor.Interceptor;
 import controller.Controller;
 import controller.UserController;
-import model.HttpRequest;
-import model.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import type.RequestMethod;
-import util.RequestMapping;
+import util.MethodAdaptor;
+import util.MyHandler;
+import view.View;
+import view.ModelAndView;
 import view.ViewResolver;
 
-import java.lang.reflect.Method;
+import java.io.IOException;
 import java.util.Collection;
 
 public class DispatcherServlet implements HttpServlet {
 
     private final Collection<Controller> controllers;
+    private final Collection<Interceptor> interceptors;
     private final ViewResolver viewResolver;
+    private final MethodAdaptor methodAdaptor;
 
-    public DispatcherServlet(Collection<Controller> controllers, ViewResolver viewResolver) {
+    public DispatcherServlet(Collection<Controller> controllers, ViewResolver viewResolver, Collection<Interceptor> interceptors, MethodAdaptor methodAdaptor) {
         this.controllers = controllers;
         this.viewResolver = viewResolver;
+        this.interceptors = interceptors;
+        this.methodAdaptor = methodAdaptor;
+
     }
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     public void service(HttpRequest httpRequest, HttpResponse httpResponse) throws Exception {
 
-        String pathInfo = httpRequest.getPathInfo();
-        String requestMethod = httpRequest.getMethod();
+        // 요청에 맞는 컨트롤러와 메소드를 찾는다.
+        MyHandler handler = new MyHandler(httpRequest, controllers);
 
-        // URL 을 처리할 수 있는 컨트롤러를 찾는다.
-        Controller serviceController = RequestMapping.requestControllerMapping(controllers, pathInfo);
-        if (serviceController == null) {
-            String viewName = defaultService(httpRequest, httpResponse);
-            viewResolver.resolve(viewName, httpResponse);
-            return;
-        }
-        // 컨트롤러에서 URL 을 처리할 수 있는 핸들러를 찾는다.
-        Method method = RequestMapping.requestHandlerMapping(serviceController.getClass(), pathInfo, RequestMethod.getMethod(requestMethod));
-        if (method == null) {
-            logger.info("메서드를 찾지 못했습니다.");
-            return;
+        logger.info("핸들러 {} : 메소드 {}", handler.getController(), handler.getMethod());
+
+        // DefaultController가 응답할 경우 바로 특별한 로직없이 바로 응답
+        if (handler.getController() instanceof DefaultController) {
+            doResponse(httpResponse, new ModelAndView(), httpRequest.getPathInfo());
         }
 
-        String viewName = (String) method.invoke(serviceController, httpRequest, httpResponse);
+        ModelAndView modelAndView = new ModelAndView();
 
-        // 아래의 뷰 리졸버는 , 스프링에서 사용하는 리졸버랑 관련이 없다!
-        viewResolver.resolve(viewName, httpResponse);
+        for (Interceptor interceptor : interceptors) {
+            if (!interceptor.preHandle(httpRequest, httpResponse, handler)) {
+                String redirectURL = httpResponse.getRedirectURL();
+                doResponse(httpResponse, modelAndView, redirectURL);
+            }
+        }
 
+        String viewName = methodAdaptor.handle(httpRequest, httpResponse, modelAndView, handler);
+
+        doResponse(httpResponse, modelAndView, viewName);
     }
 
-    // TODO : 애초에 디폴트 서비스란게 있나?
-    // TODO : 서버에게 의도치 않는 URL 이 오면 예외처리가 맞는 것 같다. (수정 필요)
-    private String defaultService(HttpRequest httpRequest, HttpResponse httpResponse) {
-        return httpRequest.getPathInfo();
+    private void doResponse(HttpResponse httpResponse, ModelAndView modelAndView, String viewName) throws IOException {
+        View view = viewResolver.resolve(viewName);
+        view.render(modelAndView.getModel(), httpResponse);
     }
+
 }

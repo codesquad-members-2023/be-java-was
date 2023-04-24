@@ -1,8 +1,6 @@
 package servlet;
 
 import annotation.RequestMapping;
-import model.HttpRequest;
-import model.HttpResponse;
 
 @RequestMapping
 public interface HttpServlet {

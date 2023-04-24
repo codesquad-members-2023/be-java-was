@@ -5,8 +5,8 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
 import configure.ApplicationContext;
-import model.HttpRequest;
-import model.HttpResponse;
+import servlet.HttpRequest;
+import servlet.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import servlet.DispatcherServlet;

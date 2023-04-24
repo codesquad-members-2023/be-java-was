@@ -3,7 +3,7 @@ package webserver;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import configure.AppConfigure;
+import configure.AppConfiguration;
 import configure.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ public class WebServer {
     private static final int DEFAULT_PORT = 8080;
 
     public static void main(String args[]) throws Exception {
-        AppConfigure appConfigure = new AppConfigure();
+        AppConfiguration appConfigure = new AppConfiguration();
         ApplicationContext applicationContext = new ApplicationContext(appConfigure);
 
         int port = 0;
