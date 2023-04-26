@@ -1,12 +1,18 @@
 package service;
 
-import db.Database;
+import db.UserDatabase;
 import model.User;
 import util.MyObjectMapper;
 
+import java.util.Collection;
 import java.util.Optional;
 
 public class UserService {
+
+    private UserDatabase userDatabase;
+    public UserService(UserDatabase userDatabase) {
+        this.userDatabase = userDatabase;
+    }
 
     public void join(Object requestParams) throws Exception {
         User user = MyObjectMapper.readValue(requestParams, User.class)
@@ -14,12 +20,16 @@ public class UserService {
                 .map(User.class::cast)
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 요청 파라미터입니다."));
 
-        Database.addUser(user);
+        userDatabase.join(user);
     }
 
     public Optional<User> login(String userId, String password) {
-        User user = Database.findUserById(userId);
+        User user = userDatabase.findUserById(userId);
         return Optional.ofNullable(user).filter(u -> u.getPassword().equals(password));
+    }
+
+    public Collection<User> findAll() {
+        return userDatabase.findAll();
     }
 
 }

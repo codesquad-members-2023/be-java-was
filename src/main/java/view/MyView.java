@@ -13,7 +13,8 @@ import java.util.Map;
 
 public class MyView implements View{
 
-    private final String name;
+    private String name;
+    private String path;
 
     private final String SET_COOKIE = "Set-Cookie";
 
@@ -23,8 +24,16 @@ public class MyView implements View{
 
     private static final int NULL_STATUS_CODE = 0;
 
-    public MyView(String name) {
+    public MyView(){};
+
+    public MyView(MyView myView) {
+        this.name = myView.name;
+        this.path = myView.path;
+    }
+
+    public MyView(String name, String path) {
         this.name = name;
+        this.path = path;
     }
 
     @Override
@@ -32,12 +41,14 @@ public class MyView implements View{
         return this.name;
     }
 
+    public String getPath() {return this.path; }
+
     public void render(Map<String, ?> model, HttpResponse httpResponse) throws IOException {
         byte[] body = new byte[0];
         byte[] head = new byte[0];
 
         if (httpResponse.getStatus() != HttpResponse.SC_FOUND) {
-            File file = new File(this.name);
+            File file = new File(this.path);
 
             resolveContentType(httpResponse, file);
             body = renderBody(model, httpResponse, file);

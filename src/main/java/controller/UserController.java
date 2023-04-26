@@ -2,6 +2,7 @@ package controller;
 
 import annotation.RequestMapping;
 import db.Database;
+import db.UserDatabase;
 import servlet.HttpRequest;
 import servlet.HttpResponse;
 import model.User;
@@ -19,10 +20,11 @@ import static webserver.RequestHandler.logger;
 @RequestMapping(path = "/user")
 public class UserController implements Controller {
 
-    private final UserService userService = new UserService();
-    private SessionManager sessionManager;
+    private final SessionManager sessionManager;
+    private final UserService userService;
 
-    public UserController(SessionManager sessionManager) {
+    public UserController(UserService userService, SessionManager sessionManager) {
+        this.userService = userService;
         this.sessionManager = sessionManager;
     }
 
@@ -43,11 +45,11 @@ public class UserController implements Controller {
         Optional<User> user = userService.login(userId, password);
 
         if (user.isEmpty()) {
-            return "redirect:/user/login_failed.html";
+            return "redirect:/user/login_failed";
         }
         sessionManager.createSession(user.get(),httpResponse);
         modelAndView.addModel("user", user.get());
-        return "redirect:/user";
+        return "redirect:/qna/list";
     }
 
     @RequestMapping(path = "/logout",method = RequestMethod.GET)
@@ -59,30 +61,25 @@ public class UserController implements Controller {
     @RequestMapping(path = "/list", method = RequestMethod.GET)
     public String list(ModelAndView modelAndView) {
 
-        Collection<User> users = Database.findAll();
+        Collection<User> users = userService.findAll();
         modelAndView.addModel("users",users);
 
-        return "/user/list.html";
+        return "/user/list";
     }
 
-    @RequestMapping
-    public String show() {
-        return "/index.html";
-    }
-
-    @RequestMapping(path = "/login.html")
+    @RequestMapping(path = "/login")
     public String showLogin() {
-        return "/user/login.html";
+        return "/user/login";
     }
 
-    @RequestMapping(path = "/login_failed.html")
+    @RequestMapping(path = "/login_failed")
     public String showLoginFailed() {
-        return "/user/login_failed.html";
+        return "/user/login_failed";
     }
 
-    @RequestMapping(path = "/form.html")
+    @RequestMapping(path = "/form")
     public String showForm() {
-        return "/user/form.html";
+        return "/user/form";
     }
 
 }

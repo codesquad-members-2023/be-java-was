@@ -27,6 +27,8 @@ public class RequestMapping {
             for (String controllerPath : controllerPaths) {
                 for (String methodPath : methodPaths) {
                     String path = controllerPath + methodPath;
+                    String pattern = "\\{[^}]*\\}";
+                    path = path.replaceAll(pattern, "");
                     if (url.startsWith(path)) {
                         return method;
                     }

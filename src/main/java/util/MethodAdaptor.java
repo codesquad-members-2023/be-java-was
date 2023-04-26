@@ -1,6 +1,5 @@
 package util;
 
-
 import controller.Controller;
 import model.User;
 import servlet.HttpRequest;
@@ -10,39 +9,23 @@ import view.ModelAndView;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MethodAdaptor {
 
+    private MyArgumentResolver myArgumentResolver;
     private SessionManager sessionManager;
 
-    public MethodAdaptor(SessionManager sessionManager) {
+    public MethodAdaptor(MyArgumentResolver myArgumentResolver, SessionManager sessionManager) {
+        this.myArgumentResolver = myArgumentResolver;
         this.sessionManager = sessionManager;
     }
 
     public String handle(HttpRequest httpRequest, HttpResponse httpResponse, ModelAndView modelAndView, MyHandler handlerMethod) throws InvocationTargetException, IllegalAccessException {
         Controller controller = handlerMethod.getController();
         Method method = handlerMethod.getMethod();
-        Class<?>[] parameterTypes = method.getParameterTypes();
 
-        List<Object> arguments = new ArrayList<>();
-
-        // 더 멋진 방법이 있겠지만 이정도로 하자..
-        for(Class<?> parameterType :parameterTypes) {
-            if (parameterType == HttpRequest.class) {
-                arguments.add(httpRequest);
-                continue;
-            }
-            if (parameterType == HttpResponse.class) {
-                arguments.add(httpResponse);
-                continue;
-            }
-            if (parameterType == ModelAndView.class) {
-                arguments.add(modelAndView);
-            }
-        }
-
+        List<Object> arguments = myArgumentResolver.resolve(httpRequest, httpResponse, modelAndView, handlerMethod);
 
         String viewName = (String) method.invoke(controller, arguments.toArray());
         httpResponse.sendRedirect(viewName);
@@ -54,4 +37,5 @@ public class MethodAdaptor {
         }
         return viewName;
     }
+
 }

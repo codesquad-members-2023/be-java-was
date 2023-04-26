@@ -27,7 +27,6 @@ public class DispatcherServlet implements HttpServlet {
         this.viewResolver = viewResolver;
         this.interceptors = interceptors;
         this.methodAdaptor = methodAdaptor;
-
     }
 
     private final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -41,6 +40,11 @@ public class DispatcherServlet implements HttpServlet {
 
         // DefaultController가 응답할 경우 바로 특별한 로직없이 바로 응답
         if (handler.getController() instanceof DefaultController) {
+            // TODO : DispatcherServlet 에 어떠한 로직이 존재하는 것이 마음에 들지 않는다.
+            String pathInfo = httpRequest.getPathInfo();
+            if(pathInfo.equals("/")) {
+                httpResponse.sendRedirect("redirect:/qna/list");
+            }
             doResponse(httpResponse, new ModelAndView(), httpRequest.getPathInfo());
         }
 
